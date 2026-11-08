@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Heart & Romantic Album (MacBook Pro 2015 Edition)</title>
+    <title>3D Heart & Romantic Album</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -27,25 +27,26 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
 
-        /* Minimal Bottom Dock (Gọn gàng, tối ưu hiệu năng) */
+        /* Minimal Floating Bottom Bar (Gọn gàng, tinh tế) */
         .bottom-dock {
-            position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 8px; z-index: 20;
-            background: rgba(18, 4, 22, 0.8);
-            backdrop-filter: blur(12px);
-            padding: 6px 16px; border-radius: 40px;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 10px; z-index: 20;
+            background: rgba(18, 4, 22, 0.75);
+            backdrop-filter: blur(16px);
+            padding: 7px 18px; border-radius: 40px;
             border: 1px solid rgba(255, 105, 180, 0.35);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s;
         }
         .btn {
             background: linear-gradient(135deg, #ff2a70 0%, #ba1254 100%);
-            border: none; color: #fff; padding: 6px 14px; border-radius: 30px;
-            font-family: 'Quicksand', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 5px;
-            box-shadow: 0 3px 10px rgba(255, 42, 112, 0.4);
-            transition: all 0.2s;
+            border: none; color: #fff; padding: 7px 15px; border-radius: 30px;
+            font-family: 'Quicksand', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 3px 12px rgba(255, 42, 112, 0.4);
+            transition: all 0.25s;
         }
-        .btn:hover { transform: translateY(-1px); box-shadow: 0 5px 15px rgba(255, 42, 112, 0.6); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(255, 42, 112, 0.7); }
         .btn.secondary {
             background: rgba(255, 255, 255, 0.12);
             box-shadow: none; border: 1px solid rgba(255, 255, 255, 0.15);
@@ -54,37 +55,37 @@
 
         /* Quick count picker */
         .count-picker {
-            display: inline-flex; align-items: center; gap: 3px;
+            display: inline-flex; align-items: center; gap: 4px;
             background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px; padding: 2px 6px;
+            border-radius: 20px; padding: 2px 7px;
             border: 1px solid rgba(255, 105, 180, 0.25);
         }
-        .count-picker span { font-size: 0.7rem; color: #f9a8d4; margin-right: 2px; }
+        .count-picker span { font-size: 0.72rem; color: #f9a8d4; margin-right: 2px; }
         .cnt-btn {
             background: transparent; border: none; color: #ffb8da;
-            width: 20px; height: 20px; border-radius: 50%;
-            cursor: pointer; font-size: 0.72rem; font-weight: 700;
+            width: 22px; height: 22px; border-radius: 50%;
+            cursor: pointer; font-size: 0.75rem; font-weight: 700;
             display: inline-flex; align-items: center; justify-content: center;
             transition: all 0.2s;
         }
         .cnt-btn.active, .cnt-btn:hover {
             background: #ff2a70; color: #fff;
-            box-shadow: 0 0 8px #ff2a70;
+            box-shadow: 0 0 10px #ff2a70;
         }
 
         /* Compact Webcam HUD góc dưới phải */
         .webcam-hud {
-            position: fixed; bottom: 18px; right: 18px;
-            width: 110px; height: 82px; z-index: 20;
+            position: fixed; bottom: 20px; right: 20px;
+            width: 120px; height: 90px; z-index: 20;
             background: #000; border-radius: 12px; overflow: hidden;
             border: 2px solid rgba(255, 105, 180, 0.4);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
         }
         .webcam-hud video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         .hud-status {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            background: rgba(10, 0, 15, 0.9); font-size: 0.62rem; color: #ff94c2;
-            text-align: center; padding: 2px 2px; white-space: nowrap; overflow: hidden;
+            background: rgba(10, 0, 15, 0.9); font-size: 0.65rem; color: #ff94c2;
+            text-align: center; padding: 3px 2px; white-space: nowrap; overflow: hidden;
             text-overflow: ellipsis; font-weight: 600;
         }
 
@@ -92,10 +93,11 @@
         .status-badge {
             position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
             z-index: 10; pointer-events: none;
-            background: rgba(20, 5, 25, 0.65); backdrop-filter: blur(8px);
+            background: rgba(20, 5, 25, 0.6); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 105, 180, 0.3); border-radius: 20px;
-            padding: 4px 14px; font-size: 0.78rem; color: #fce7f3;
-            box-shadow: 0 0 12px rgba(255, 42, 112, 0.3);
+            padding: 4px 16px; font-size: 0.8rem; color: #fce7f3;
+            box-shadow: 0 0 15px rgba(255, 42, 112, 0.3);
+            transition: opacity 0.3s;
         }
 
         /* =============================================================
@@ -104,11 +106,11 @@
         .love-confession-overlay {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             background: radial-gradient(circle at center, rgba(35, 2, 25, 0.92) 0%, rgba(8, 0, 12, 0.98) 100%);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 999999;
             opacity: 0; pointer-events: none;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.4s ease;
             cursor: pointer;
         }
         .love-confession-overlay.active {
@@ -117,7 +119,7 @@
         .love-card-center {
             text-align: center; padding: 25px;
             transform: scale(0.92);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 90vw;
         }
         .love-confession-overlay.active .love-card-center {
@@ -125,70 +127,77 @@
         }
         .love-neon-title {
             font-family: 'Great Vibes', 'Dancing Script', cursive;
-            font-size: 5.5rem; line-height: 1.15;
+            font-size: 5.8rem; line-height: 1.15;
             color: #ffffff;
             text-shadow: 
                 0 0 10px #ff69b4,
                 0 0 25px #ff1493,
                 0 0 50px #ff007f,
                 0 0 80px #ff0055,
-                0 0 120px #ff0055;
+                0 0 120px #ff0055,
+                0 0 160px #ff007f;
             margin-bottom: 15px;
             animation: pulseNeonTitle 2.5s infinite ease-in-out;
         }
         @keyframes pulseNeonTitle {
             0%, 100% {
                 transform: scale(1);
-                text-shadow: 0 0 10px #ff69b4, 0 0 25px #ff1493, 0 0 50px #ff007f, 0 0 80px #ff0055;
+                text-shadow: 
+                    0 0 10px #ff69b4, 0 0 25px #ff1493, 0 0 50px #ff007f,
+                    0 0 80px #ff0055, 0 0 120px #ff0055;
             }
             50% {
-                transform: scale(1.03);
-                text-shadow: 0 0 15px #fff, 0 0 35px #ff69b4, 0 0 65px #ff1493, 0 0 95px #ff0055;
+                transform: scale(1.04);
+                text-shadow: 
+                    0 0 15px #fff, 0 0 35px #ff69b4, 0 0 65px #ff1493,
+                    0 0 95px #ff0055, 0 0 140px #ff007f;
             }
         }
         .love-neon-sub {
-            font-size: 1.3rem; color: #ffe4f3;
+            font-size: 1.35rem; color: #ffe4f3;
             letter-spacing: 4px; text-transform: uppercase;
             font-weight: 700;
-            text-shadow: 0 0 12px rgba(255, 105, 180, 0.9);
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.9);
             margin-bottom: 20px;
         }
         .love-click-hint {
             display: inline-block;
-            font-size: 0.85rem; color: #f9a8d4;
+            font-size: 0.88rem; color: #f9a8d4;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 105, 180, 0.4);
-            border-radius: 30px; padding: 6px 20px;
+            border-radius: 30px; padding: 7px 22px;
             letter-spacing: 1px;
         }
 
         /* Pháo hoa tim bay lượn */
         .sparkle-heart {
             position: fixed; pointer-events: none; z-index: 1000000;
-            animation: flyUpAndFade 2.2s ease-out forwards;
+            animation: flyUpAndFade 2.4s ease-out forwards;
         }
         @keyframes flyUpAndFade {
             0% { transform: translate(0, 0) scale(0.4) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot)); opacity: 0; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.6) rotate(var(--rot)); opacity: 0; }
         }
 
         #photoMultiInput, #audioInput { display: none; }
 
         @media (max-width: 768px) {
-            .love-neon-title { font-size: 3.5rem; }
-            .bottom-dock { padding: 5px 10px; gap: 5px; bottom: 10px; }
-            .btn { padding: 5px 8px; font-size: 0.7rem; }
-            .webcam-hud { width: 90px; height: 68px; bottom: 10px; right: 10px; }
+            .love-neon-title { font-size: 3.6rem; }
+            .bottom-dock { padding: 6px 12px; gap: 6px; bottom: 12px; }
+            .btn { padding: 6px 10px; font-size: 0.72rem; }
+            .webcam-hud { width: 95px; height: 72px; bottom: 12px; right: 12px; }
         }
     </style>
 </head>
 <body>
     <canvas id="webgl-canvas"></canvas>
 
+    <!-- Status badge gọn gàng góc trên -->
     <div class="status-badge" id="statusBadge">
         ✊ Trái Tim 3D (Xòe tay để bung ảnh)
     </div>
 
+    <!-- Minimal Bottom Dock -->
     <div class="bottom-dock">
         <button class="btn" onclick="document.getElementById('photoMultiInput').click()">
             <i class="fa-solid fa-images"></i> Thay Ảnh
@@ -217,12 +226,13 @@
         </button>
     </div>
 
+    <!-- Webcam HUD góc dưới phải -->
     <div class="webcam-hud">
         <video id="webcamVideo" playsinline autoplay muted></video>
         <div class="hud-status" id="hudStatus">Khởi động camera...</div>
     </div>
 
-    <!-- "ANH YÊU EM" Fullscreen Overlay -->
+    <!-- "ANH YÊU EM" Fullscreen Overlay (Bấm bất kỳ đâu để tắt) -->
     <div class="love-confession-overlay" id="loveModal" onclick="closeLoveModal()">
         <div class="love-card-center">
             <h1 class="love-neon-title" id="loveMainText" onclick="event.stopPropagation(); editLoveText();">
@@ -246,10 +256,7 @@
 
     <script>
         /* -------------------------------------------------------------
-           1. CẤU HÌNH TỐI ƯU HÓA ĐẶC BIỆT CHO MACBOOK PRO 2015
-           - Khóa PixelRatio = 1.0 (Tránh quá tải màn Retina 2.5K/2.8K)
-           - Giảm số hạt xuống 1800 hạt phát sáng (Nhẹ hơn 75% GPU/CPU)
-           - Giảm tải MediaPipe xuống ~15 FPS (Giảm 70% tải CPU Haswell/Broadwell)
+           1. TỐI ƯU HÓA THREE.JS SCENE (SIÊU MƯỢT, 60 FPS)
         ------------------------------------------------------------- */
         const canvas = document.getElementById('webgl-canvas');
         const scene = new THREE.Scene();
@@ -258,36 +265,36 @@
 
         const renderer = new THREE.WebGLRenderer({
             canvas,
-            antialias: false, // Tắt antialias để GPU Intel Iris chạy siêu nhẹ
+            antialias: false,
             alpha: true,
             powerPreference: "high-performance"
         });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        // KHÓA CỨNG 1.0 để Mac Retina không phải render 4 triệu điểm ảnh
         renderer.setPixelRatio(1.0);
 
+        // Circular glow particle sprite
         function createGlowSprite() {
             const c = document.createElement('canvas');
-            c.width = 48; c.height = 48;
+            c.width = 64; c.height = 64;
             const ctx = c.getContext('2d');
-            const grad = ctx.createRadialGradient(24, 24, 0, 24, 24, 24);
+            const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
             grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            grad.addColorStop(0.3, 'rgba(255, 105, 180, 0.85)');
-            grad.addColorStop(0.7, 'rgba(255, 20, 147, 0.25)');
+            grad.addColorStop(0.25, 'rgba(255, 105, 180, 0.85)');
+            grad.addColorStop(0.65, 'rgba(255, 20, 147, 0.3)');
             grad.addColorStop(1, 'rgba(255, 0, 100, 0)');
             ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 48, 48);
+            ctx.fillRect(0, 0, 64, 64);
             return new THREE.CanvasTexture(c);
         }
 
-        // 1800 hạt: Rực rỡ nhưng nhẹ gấp 3 lần bản 7000 hạt
-        const PARTICLE_COUNT = 1800;
+        const PARTICLE_COUNT = 1500;
         const heartPositions = new Float32Array(PARTICLE_COUNT * 3);
         const galaxyPositions = new Float32Array(PARTICLE_COUNT * 3);
         const currentPositions = new Float32Array(PARTICLE_COUNT * 3);
         const colors = new Float32Array(PARTICLE_COUNT * 3);
 
         for (let i = 0; i < PARTICLE_COUNT; i++) {
+            // Heart 3D Parametric
             const t = Math.PI * 2 * Math.random();
             const x = 16 * Math.pow(Math.sin(t), 3);
             const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
@@ -298,14 +305,15 @@
             heartPositions[i * 3 + 1] = y * scale;
             heartPositions[i * 3 + 2] = z * scale;
 
-            const radius = Math.random() * 92 + 15;
+            // Galaxy Sphere / Vũ trụ như cũ
+            const radius = Math.random() * 95 + 15;
             const theta = Math.random() * Math.PI * 2;
             const phi = (Math.random() - 0.5) * Math.PI * 0.85;
             galaxyPositions[i * 3] = radius * Math.cos(theta) * Math.cos(phi);
             galaxyPositions[i * 3 + 1] = radius * Math.sin(theta) * Math.cos(phi);
             galaxyPositions[i * 3 + 2] = radius * Math.sin(phi);
 
-            // MẶC ĐỊNH: BẮT ĐẦU Ở TRÁI TIM CHƯA BUNG
+            // ⭐ MẶC ĐỊNH KHI MỞ: BẮT ĐẦU Ở DẠNG TRÁI TIM CHƯA BUNG ⭐
             currentPositions[i * 3] = heartPositions[i * 3];
             currentPositions[i * 3 + 1] = heartPositions[i * 3 + 1];
             currentPositions[i * 3 + 2] = heartPositions[i * 3 + 2];
@@ -321,12 +329,12 @@
         particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const particleMaterial = new THREE.PointsMaterial({
-            size: 2.6,
+            size: 3.5,
             map: createGlowSprite(),
             vertexColors: true,
             blending: THREE.AdditiveBlending,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.92,
             depthWrite: false,
             depthTest: false
         });
@@ -335,20 +343,20 @@
         scene.add(particleSystem);
 
         /* -------------------------------------------------------------
-           2. 3D 1-5 PHOTO SYSTEM
+           2. 3D 1-5 PHOTO SYSTEM (ĐẢM BẢO LUÔN CÓ ĐỦ ẢNH, KHÔNG BỊ MẤT)
         ------------------------------------------------------------- */
         const defaultPhotos = [
-            "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80"
+            "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"
         ];
 
         let activePhotos = [...defaultPhotos];
         let currentPhotoCount = 5;
 
-        // Mặc định: Chưa bung (isBung = false)
+        // ⭐ MẶC ĐỊNH KHI MỞ: CHƯA BUNG (isBung = false) ⭐
         let isBung = false;
         let isZoomed = false;
         let currentPhotoIndex = 0;
@@ -360,6 +368,7 @@
         let photoMeshes = [];
         const sharedGeo = new THREE.PlaneGeometry(16, 20);
 
+        // Fallback tự vẽ ảnh nghệ thuật tuyệt đẹp nếu ảnh ngoài bị chậm hoặc mất mạng
         function drawRomanticFallback(ctx, index) {
             const gradients = [
                 ['#ff5858', '#f09819'],
@@ -369,38 +378,38 @@
                 ['#f857a6', '#ff5858']
             ];
             const g = gradients[index % gradients.length];
-            const grad = ctx.createLinearGradient(12, 12, 308, 368);
+            const grad = ctx.createLinearGradient(18, 18, 382, 398);
             grad.addColorStop(0, g[0]);
             grad.addColorStop(1, g[1]);
             ctx.fillStyle = grad;
-            ctx.fillRect(12, 12, 296, 310);
+            ctx.fillRect(18, 18, 364, 380);
 
-            ctx.font = '55px sans-serif';
+            ctx.font = '70px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             const icons = ['❤️', '💖', '🌹', '💕', '🥰'];
-            ctx.fillText(icons[index % icons.length], 160, 150);
+            ctx.fillText(icons[index % icons.length], 200, 185);
 
-            ctx.font = 'bold 18px "Quicksand", sans-serif';
+            ctx.font = 'bold 22px "Quicksand", sans-serif';
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(`Kỷ Niệm Tình Yêu ${index + 1}`, 160, 215);
+            ctx.fillText(`Kỷ Niệm Tình Yêu ${index + 1}`, 200, 260);
         }
 
         function createCardTexture(imageSrc, index, callback) {
-            // Tối ưu kích thước texture xuống 320x384 (Tiết kiệm VRAM)
             const c = document.createElement('canvas');
-            c.width = 320; c.height = 384;
+            c.width = 400; c.height = 480;
             const ctx = c.getContext('2d');
 
             function finishCard() {
+                // Viền Polaroid trắng sang trọng
                 ctx.strokeStyle = '#ff69b4';
-                ctx.lineWidth = 5;
+                ctx.lineWidth = 6;
                 ctx.stroke();
 
-                ctx.font = 'bold 20px "Dancing Script", cursive';
+                ctx.font = 'bold 24px "Dancing Script", cursive';
                 ctx.fillStyle = '#ff2a70';
                 ctx.textAlign = 'center';
-                ctx.fillText(`Love Story ❤️ Ảnh ${index + 1}`, 160, 355);
+                ctx.fillText(`Love Story ❤️ Ảnh ${index + 1}`, 200, 442);
 
                 const texture = new THREE.CanvasTexture(c);
                 texture.generateMipmaps = false;
@@ -408,12 +417,14 @@
                 callback(texture);
             }
 
+            // Vẽ nền khung ảnh trước
             ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
             ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(6, 6, 308, 372, 14);
-            else ctx.rect(6, 6, 308, 372);
+            if (ctx.roundRect) ctx.roundRect(8, 8, 384, 464, 18);
+            else ctx.rect(8, 8, 384, 464);
             ctx.fill();
 
+            // Tải ảnh
             const img = new Image();
             img.crossOrigin = 'anonymous';
 
@@ -423,21 +434,22 @@
                 loaded = true;
                 ctx.save();
                 ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(14, 14, 292, 305, 10);
-                else ctx.rect(14, 14, 292, 305);
+                if (ctx.roundRect) ctx.roundRect(18, 18, 364, 380, 14);
+                else ctx.rect(18, 18, 364, 380);
                 ctx.clip();
 
-                const hRatio = 292 / img.width;
-                const vRatio = 305 / img.height;
+                const hRatio = 364 / img.width;
+                const vRatio = 380 / img.height;
                 const ratio = Math.max(hRatio, vRatio);
-                const centerShift_x = 14 + (292 - img.width * ratio) / 2;
-                const centerShift_y = 14 + (305 - img.height * ratio) / 2;
+                const centerShift_x = 18 + (364 - img.width * ratio) / 2;
+                const centerShift_y = 18 + (380 - img.height * ratio) / 2;
                 ctx.drawImage(img, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
                 ctx.restore();
 
                 finishCard();
             };
 
+            // Nếu lỗi mạng hoặc CORS: Vẽ ảnh nghệ thuật fallback đẹp mắt ngay lập tức
             img.onerror = () => {
                 if (loaded) return;
                 loaded = true;
@@ -445,13 +457,14 @@
                 finishCard();
             };
 
+            // Timeout an toàn sau 3s nếu mạng lag
             setTimeout(() => {
                 if (!loaded) {
                     loaded = true;
                     drawRomanticFallback(ctx, index);
                     finishCard();
                 }
-            }, 2500);
+            }, 3000);
 
             img.src = imageSrc;
         }
@@ -471,12 +484,12 @@
             for (let i = 0; i < count; i++) {
                 const mat = new THREE.MeshBasicMaterial({
                     transparent: true,
-                    opacity: 0,
+                    opacity: 0, // Mặc định ở tâm trái tim: opacity = 0
                     side: THREE.DoubleSide
                 });
 
                 const mesh = new THREE.Mesh(sharedGeo, mat);
-                mesh.scale.set(0, 0, 0);
+                mesh.scale.set(0, 0, 0); // Mặc định thu nhỏ về 0
                 mesh.userData = { index: i };
 
                 mesh.callback = () => {
@@ -490,6 +503,7 @@
                 photosGroup.add(mesh);
                 photoMeshes.push(mesh);
 
+                // Lấy ảnh từ danh sách người dùng hoặc ảnh mặc định
                 const src = activePhotos[i % activePhotos.length];
                 createCardTexture(src, i, (tex) => {
                     mat.map = tex;
@@ -500,6 +514,7 @@
 
         buildPhotoMeshes();
 
+        // Tải ảnh từ máy tính
         document.getElementById('photoMultiInput').addEventListener('change', (e) => {
             const files = Array.from(e.target.files).slice(0, 5);
             if (files.length > 0) {
@@ -513,6 +528,7 @@
             }
         });
 
+        // Bấm số lượng ảnh (1 đến 5) luôn luôn hoạt động chuẩn xác
         function setPhotoCount(cnt) {
             currentPhotoCount = Math.min(Math.max(1, cnt), 5);
             currentPhotoIndex = Math.min(currentPhotoIndex, currentPhotoCount - 1);
@@ -585,11 +601,11 @@
                     osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.07);
                     gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.07);
                     gain.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + idx * 0.07 + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.07 + 0.45);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.07 + 0.5);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start(audioCtx.currentTime + idx * 0.07);
-                    osc.stop(audioCtx.currentTime + idx * 0.07 + 0.5);
+                    osc.stop(audioCtx.currentTime + idx * 0.07 + 0.55);
                 });
             } catch (err) {}
         }
@@ -606,54 +622,70 @@
 
         function spawnHeartsExplosion() {
             const emojis = ['💖', '💕', '❤️', '✨', '🌹', '🥰', '💘'];
-            for (let i = 0; i < 25; i++) {
+            for (let i = 0; i < 35; i++) {
                 setTimeout(() => {
                     const h = document.createElement('div');
                     h.className = 'sparkle-heart';
                     h.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                    h.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 280) + 'px';
-                    h.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 140) + 'px';
-                    h.style.fontSize = (Math.random() * 26 + 18) + 'px';
-                    h.style.setProperty('--tx', `${(Math.random() - 0.5) * 600}px`);
-                    h.style.setProperty('--ty', `${-Math.random() * 500 - 120}px`);
-                    h.style.setProperty('--rot', `${(Math.random() - 0.5) * 120}deg`);
+                    h.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 300) + 'px';
+                    h.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 150) + 'px';
+                    h.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    h.style.setProperty('--tx', `${(Math.random() - 0.5) * 700}px`);
+                    h.style.setProperty('--ty', `${-Math.random() * 600 - 150}px`);
+                    h.style.setProperty('--rot', `${(Math.random() - 0.5) * 140}deg`);
                     document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 2200);
-                }, i * 35);
+                    setTimeout(() => h.remove(), 2500);
+                }, i * 30);
             }
         }
 
         /* -------------------------------------------------------------
-           4. RENDER LOOP (MƯỢT MÀ 60 FPS, TIẾT KIỆM TỐI ĐA PIN & CPU)
+           4. RENDER LOOP (MẶC ĐỊNH TRÁI TIM, CHỈ DI CHUYỂN KHI ZOOM)
         ------------------------------------------------------------- */
         let targetRotX = 0, targetRotY = 0;
         let clock = new THREE.Clock();
+        let currentMorph = 0.0; // 0.0: Heart, 1.0: Galaxy
 
         function animate() {
             requestAnimationFrame(animate);
 
             const elapsedTime = clock.getElapsedTime();
-            const positions = particleGeometry.attributes.position.array;
-            const targetShapePos = isBung ? galaxyPositions : heartPositions;
+            const targetMorph = isBung ? 1.0 : 0.0;
+            const morphDiff = Math.abs(targetMorph - currentMorph);
 
-            const beatScale = !isBung ? (1 + 0.06 * Math.sin(elapsedTime * 6) + 0.03 * Math.sin(elapsedTime * 12)) : 1;
-
-            const len = PARTICLE_COUNT * 3;
-            for (let i = 0; i < len; i += 3) {
-                positions[i] += (targetShapePos[i] * beatScale - positions[i]) * 0.065;
-                positions[i + 1] += (targetShapePos[i + 1] * beatScale - positions[i + 1]) * 0.065;
-                positions[i + 2] += (targetShapePos[i + 2] * beatScale - positions[i + 2]) * 0.065;
+            // ⭐ SIÊU TỐI ƯU HÓA: CHỈ cập nhật buffer đỉnh khi đang chuyển đổi bung/gom ⭐
+            if (morphDiff > 0.001) {
+                currentMorph += (targetMorph - currentMorph) * 0.08;
+                const positions = particleGeometry.attributes.position.array;
+                const len = PARTICLE_COUNT * 3;
+                for (let i = 0; i < len; i += 3) {
+                    positions[i] = heartPositions[i] + (galaxyPositions[i] - heartPositions[i]) * currentMorph;
+                    positions[i + 1] = heartPositions[i + 1] + (galaxyPositions[i + 1] - heartPositions[i + 1]) * currentMorph;
+                    positions[i + 2] = heartPositions[i + 2] + (galaxyPositions[i + 2] - heartPositions[i + 2]) * currentMorph;
+                }
+                particleGeometry.attributes.position.needsUpdate = true;
             }
-            particleGeometry.attributes.position.needsUpdate = true;
 
-            particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.05;
-            particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.05 + 0.0015;
+            // Nhịp tim đập 3D thực thi 100% bằng ma trận GPU (Zero CPU buffer upload):
+            if (!isBung) {
+                const beatScale = 1 + 0.06 * Math.sin(elapsedTime * 6) + 0.03 * Math.sin(elapsedTime * 12);
+                particleSystem.scale.set(beatScale, beatScale, beatScale);
+            } else {
+                particleSystem.scale.set(1, 1, 1);
+            }
 
+            // Xoay hệ thống hạt
+            particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.06;
+            particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.06 + 0.0015;
+
+            // XOAY CỤM ẢNH:
             if (isZoomed) {
+                // Khi đang Zoom: Giữ ảnh ổn định ngay giữa màn hình
                 photosGroup.rotation.x += (targetRotX * 0.12 - photosGroup.rotation.x) * 0.08;
                 photosGroup.rotation.y += (targetRotY * 0.12 - photosGroup.rotation.y) * 0.08;
                 smoothCarouselPos += (currentPhotoIndex - smoothCarouselPos) * 0.12;
             } else {
+                // KHI BUNG BÌNH THƯỜNG HOẶC ĐÓNG TIM: Xoay đồng bộ theo tay cùng hạt
                 photosGroup.rotation.x = particleSystem.rotation.x;
                 photosGroup.rotation.y = particleSystem.rotation.y;
             }
@@ -664,11 +696,11 @@
                 let tx = 0, ty = 0, tz = 0, trotY = 0, ts = 1, topa = 1;
 
                 if (!isBung) {
-                    // MẶC ĐỊNH CHƯA BUNG: ẢNH GIẤU HOÀN TOÀN Ở TÂM, SCALE = 0
+                    // ⭐ 1. KHI CHƯA BUNG (MẶC ĐỊNH): ẢNH GIẤU HOÀN TOÀN Ở TÂM, SCALE = 0 ⭐
                     tx = 0; ty = 0; tz = 0; trotY = 0; ts = 0; topa = 0;
                 } 
                 else if (isZoomed) {
-                    // KHI ZOOM (1 NGÓN TAY): ẢNH DI CHUYỂN PHÓNG TO GIỮA MÀN HÌNH
+                    // ⭐ 2. KHI ZOOM (1 NGÓN TAY): ẢNH DI CHUYỂN PHÓNG TO GIỮA MÀN HÌNH ⭐
                     const rel = i - smoothCarouselPos;
                     tx = rel * 34;
                     tz = 44 - Math.min(Math.abs(rel), 3.0) * 22;
@@ -678,7 +710,7 @@
                     topa = Math.max(0.18, 1.0 - Math.abs(rel) * 0.42);
                 } 
                 else {
-                    // KHI BUNG TRÁI TIM: BỐ CỤC NHƯ CŨ (TẤT CẢ ẢNH NẰM TRONG VÒNG QUỸ ĐẠO, KHÔNG DI CHUYỂN)
+                    // ⭐ 3. KHI BUNG TRÁI TIM: BỐ CỤC NHƯ CŨ (TẤT CẢ ẢNH NẰM TRONG VÒNG QUỸ ĐẠO, KHÔNG DI CHUYỂN) ⭐
                     if (count === 1) {
                         tx = 0; ty = 0; tz = 8; ts = 1.15; trotY = 0; topa = 1;
                     } else if (count === 2) {
@@ -694,13 +726,15 @@
                         tx = Math.cos(a) * 36; ty = Math.sin(a) * 24; tz = (i % 2 === 0 ? 5 : -5);
                         ts = 0.82; trotY = Math.cos(a) * 0.3; topa = 1;
                     } else {
+                        // 5 ảnh - Bố cục vòng hoa 5 cánh lộng lẫy quanh tâm như cũ
                         const angle = (i * (Math.PI * 2) / 5) - Math.PI / 2;
                         tx = Math.cos(angle) * 38; ty = Math.sin(angle) * 26; tz = Math.sin(i * 2) * 5;
                         ts = 0.82; trotY = Math.cos(angle) * 0.35; topa = 1;
                     }
-                    ty += Math.sin(elapsedTime * 2 + i) * 0.4;
+                    ty += Math.sin(elapsedTime * 2 + i) * 0.5;
                 }
 
+                // Cập nhật vị trí mượt mà
                 mesh.position.x += (tx - mesh.position.x) * 0.1;
                 mesh.position.y += (ty - mesh.position.y) * 0.1;
                 mesh.position.z += (tz - mesh.position.z) * 0.1;
@@ -722,6 +756,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
+        // Click trên ảnh bất kỳ để zoom
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         window.addEventListener('click', (e) => {
@@ -737,7 +772,7 @@
         });
 
         /* -------------------------------------------------------------
-           5. MEDIAPIPE AI TIẾT KIỆM TẢI CPU CHO MAC ĐỜI CŨ (THROTTLED 15FPS)
+           5. MEDIAPIPE HANDS SIÊU NHẸ (MODEL COMPLEXITY 0 - ZERO LAG)
         ------------------------------------------------------------- */
         const video = document.getElementById('webcamVideo');
         const hudStatus = document.getElementById('hudStatus');
@@ -756,14 +791,14 @@
         const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
         hands.setOptions({
             maxNumHands: 1,
-            modelComplexity: 0, // Lite Model cho CPU 2 nhân
+            modelComplexity: 0,
             minDetectionConfidence: 0.5,
             minTrackingConfidence: 0.5
         });
 
         hands.onResults((res) => {
             if (!res.multiHandLandmarks || res.multiHandLandmarks.length === 0) {
-                hudStatus.innerText = "Đang tìm tay...";
+                hudStatus.innerText = "Đang tìm bàn tay...";
                 return;
             }
 
@@ -781,21 +816,25 @@
 
             let detected = '';
 
+            // 1. Giơ 2 ngón (✌️) -> ANH YÊU EM
             if (isIndex && isMiddle && !isRing && !isPinky) {
                 detected = 'TWO_FINGERS';
                 hudStatus.innerText = "✌️ 2 Ngón: Tỏ tình";
             }
+            // 2. Giơ 1 ngón (☝️) -> Zoom ảnh
             else if (isIndex && !isMiddle && !isRing && !isPinky) {
                 detected = 'ONE_FINGER';
                 hudStatus.innerText = "☝️ 1 Ngón: Zoom ảnh";
             }
+            // 3. Xòe tay (🖐️) -> Bung tim & bố cục như cũ (không zoom)
             else if (isIndex && isMiddle && isRing && isPinky) {
                 detected = 'OPEN_PALM';
-                hudStatus.innerText = "🖐️ Xòe: Bung ảnh";
+                hudStatus.innerText = "🖐️ Xòe tay: Bung ảnh";
             }
+            // 4. Nắm tay (✊) -> Gom tim
             else if (!isIndex && !isMiddle && !isRing && !isPinky) {
                 detected = 'FIST';
-                hudStatus.innerText = "✊ Nắm: Gom tim";
+                hudStatus.innerText = "✊ Nắm tay: Gom tim";
             }
 
             // CHỈ KHI ĐANG ZOOM THÌ DI CHUYỂN TAY MỚI CHUYỂN ẢNH:
@@ -808,12 +847,12 @@
                         currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
                         playChimeSound();
                         updateStatusBadge(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount}`);
-                        swipeCooldown = 12;
+                        swipeCooldown = 15;
                     } else if (deltaX < -0.045) {
                         currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
                         playChimeSound();
                         updateStatusBadge(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount}`);
-                        swipeCooldown = 12;
+                        swipeCooldown = 15;
                     }
                 }
 
@@ -843,6 +882,7 @@
                             updateStatusBadge("✊ Nắm tay: Gom Trái Tim 3D");
                         } 
                         else if (detected === 'OPEN_PALM') {
+                            // XÒE TAY: BUNG TRÁI TIM VÀ CẢ 5 ẢNH NẰM TRONG VÒNG QUỸ ĐẠO NHƯ CŨ (KHÔNG ZOOM)
                             isBung = true;
                             isZoomed = false;
                             closeLoveModal();
@@ -850,10 +890,11 @@
                             updateStatusBadge(`🖐️ Xòe tay: Bung Trái Tim & ${currentPhotoCount} ảnh`);
                         } 
                         else if (detected === 'ONE_FINGER') {
+                            // CHỈ KHI GIƠ 1 NGÓN MỚI ZOOM ẢNH VÀO GIỮA
                             isBung = true;
                             isZoomed = true;
                             closeLoveModal();
-                            updateStatusBadge(`☝️ Đang zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} ở giữa`);
+                            updateStatusBadge(`☝️ Đang zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} ở giữa màn hình`);
                             playChimeSound();
                         } 
                         else if (detected === 'TWO_FINGERS') {
@@ -868,15 +909,13 @@
             }
         });
 
-        // GIỚI HẠN TẦN SỐ GỬI KHUNG HÌNH (THROTTLE) ĐỂ CPU MAC 2015 KHÔNG BỊ NÓNG
         let isProcessing = false;
         let lastProcessTime = 0;
 
         new Camera(video, {
             onFrame: async () => {
                 const now = performance.now();
-                // Chỉ xử lý AI tối đa 15 lần/giây (cách nhau ít nhất 65ms)
-                if (!isProcessing && (now - lastProcessTime > 65)) {
+                if (!isProcessing && (now - lastProcessTime > 80)) {
                     isProcessing = true;
                     lastProcessTime = now;
                     try {
@@ -885,7 +924,7 @@
                     isProcessing = false;
                 }
             },
-            width: 240, height: 180 // Độ phân giải đầu vào tối ưu
+            width: 240, height: 180
         }).start().then(() => {
             hudStatus.innerText = "Camera sẵn sàng!";
         }).catch((err) => {

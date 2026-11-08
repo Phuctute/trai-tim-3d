@@ -265,7 +265,7 @@
 
         const renderer = new THREE.WebGLRenderer({
             canvas,
-            antialias: true,
+            antialias: false,
             alpha: true,
             powerPreference: "high-performance"
         });
@@ -287,7 +287,7 @@
             return new THREE.CanvasTexture(c);
         }
 
-        const PARTICLE_COUNT = 3600;
+        const PARTICLE_COUNT = 1500;
         const heartPositions = new Float32Array(PARTICLE_COUNT * 3);
         const galaxyPositions = new Float32Array(PARTICLE_COUNT * 3);
         const currentPositions = new Float32Array(PARTICLE_COUNT * 3);
@@ -329,13 +329,14 @@
         particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
         const particleMaterial = new THREE.PointsMaterial({
-            size: 2.2,
+            size: 3.5,
             map: createGlowSprite(),
             vertexColors: true,
             blending: THREE.AdditiveBlending,
             transparent: true,
-            opacity: 0.85,
-            depthWrite: false
+            opacity: 0.92,
+            depthWrite: false,
+            depthTest: false
         });
 
         const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
@@ -643,28 +644,39 @@
         ------------------------------------------------------------- */
         let targetRotX = 0, targetRotY = 0;
         let clock = new THREE.Clock();
+        let currentMorph = 0.0; // 0.0: Heart, 1.0: Galaxy
 
         function animate() {
             requestAnimationFrame(animate);
 
             const elapsedTime = clock.getElapsedTime();
-            const positions = particleGeometry.attributes.position.array;
-            const targetShapePos = isBung ? galaxyPositions : heartPositions;
+            const targetMorph = isBung ? 1.0 : 0.0;
+            const morphDiff = Math.abs(targetMorph - currentMorph);
 
-            // Nhịp tim đập khi gom tim (mặc định)
-            const beatScale = !isBung ? (1 + 0.06 * Math.sin(elapsedTime * 6) + 0.03 * Math.sin(elapsedTime * 12)) : 1;
-
-            const len = PARTICLE_COUNT * 3;
-            for (let i = 0; i < len; i += 3) {
-                positions[i] += (targetShapePos[i] * beatScale - positions[i]) * 0.06;
-                positions[i + 1] += (targetShapePos[i + 1] * beatScale - positions[i + 1]) * 0.06;
-                positions[i + 2] += (targetShapePos[i + 2] * beatScale - positions[i + 2]) * 0.06;
+            // ⭐ SIÊU TỐI ƯU HÓA: CHỈ cập nhật buffer đỉnh khi đang chuyển đổi bung/gom ⭐
+            if (morphDiff > 0.001) {
+                currentMorph += (targetMorph - currentMorph) * 0.08;
+                const positions = particleGeometry.attributes.position.array;
+                const len = PARTICLE_COUNT * 3;
+                for (let i = 0; i < len; i += 3) {
+                    positions[i] = heartPositions[i] + (galaxyPositions[i] - heartPositions[i]) * currentMorph;
+                    positions[i + 1] = heartPositions[i + 1] + (galaxyPositions[i + 1] - heartPositions[i + 1]) * currentMorph;
+                    positions[i + 2] = heartPositions[i + 2] + (galaxyPositions[i + 2] - heartPositions[i + 2]) * currentMorph;
+                }
+                particleGeometry.attributes.position.needsUpdate = true;
             }
-            particleGeometry.attributes.position.needsUpdate = true;
+
+            // Nhịp tim đập 3D thực thi 100% bằng ma trận GPU (Zero CPU buffer upload):
+            if (!isBung) {
+                const beatScale = 1 + 0.06 * Math.sin(elapsedTime * 6) + 0.03 * Math.sin(elapsedTime * 12);
+                particleSystem.scale.set(beatScale, beatScale, beatScale);
+            } else {
+                particleSystem.scale.set(1, 1, 1);
+            }
 
             // Xoay hệ thống hạt
-            particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.05;
-            particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.05 + 0.0015;
+            particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.06;
+            particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.06 + 0.0015;
 
             // XOAY CỤM ẢNH:
             if (isZoomed) {
@@ -903,7 +915,7 @@
         new Camera(video, {
             onFrame: async () => {
                 const now = performance.now();
-                if (!isProcessing && (now - lastProcessTime > 65)) {
+                if (!isProcessing && (now - lastProcessTime > 80)) {
                     isProcessing = true;
                     lastProcessTime = now;
                     try {
