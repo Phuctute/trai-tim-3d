@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <title>Aura Love - iOS 26 Spatial Experience</title>
+
+    <!-- Modern Typography: Inter & Plus Jakarta Sans (SF Pro Aesthetics) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MediaPipe AI Hands CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --bg-pure: #000000;
+            --apple-tint: #ff2d55;
+            --apple-purple: #af52de;
+            --apple-blue: #0a84ff;
+            --apple-glass: rgba(22, 22, 26, 0.72);
+            --apple-border: rgba(255, 255, 255, 0.12);
+            --apple-border-active: rgba(255, 255, 255, 0.35);
+            --ios-spring: cubic-bezier(0.25, 1, 0.35, 1);
+            --ios-fluid: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        body {
+            background-color: var(--bg-pure);
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            color: #ffffff;
+            position: relative;
+            letter-spacing: -0.02em;
+        }
+
+        /* -------------------------------------------------------------
+           APPLE INTELLIGENCE AMBIENT LIGHT MESH
+        ------------------------------------------------------------- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .mesh-light {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.32;
+            will-change: transform;
+            animation: meshDrift 16s infinite alternate var(--ios-spring);
+        }
+        .mesh-1 {
+            width: 70vw; height: 70vw;
+            top: -20vw; left: -10vw;
+            background: radial-gradient(circle, #ff2d55 0%, rgba(255, 45, 85, 0) 70%);
+        }
+        .mesh-2 {
+            width: 65vw; height: 65vw;
+            bottom: -15vw; right: -10vw;
+            background: radial-gradient(circle, #5856d6 0%, rgba(88, 86, 214, 0) 70%);
+            animation-delay: -8s;
+        }
+        .mesh-3 {
+            width: 50vw; height: 50vw;
+            top: 25%; left: 25%;
+            background: radial-gradient(circle, #ff375f 0%, rgba(255, 55, 95, 0) 70%);
+            opacity: 0.18;
+            animation-duration: 12s;
+        }
+        @keyframes meshDrift {
+            0% { transform: scale(0.92) translate(0, 0); }
+            100% { transform: scale(1.12) translate(30px, 20px); }
+        }
+
+        /* -------------------------------------------------------------
+           LUMINOUS HEART CANVAS (2D 120 FPS)
+        ------------------------------------------------------------- */
+        #auraCanvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2;
+        }
+
+        /* -------------------------------------------------------------
+           DYNAMIC ISLAND STATUS CAPSULE (iOS 26)
+        ------------------------------------------------------------- */
+        .island-container {
+            position: absolute;
+            top: 20px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            pointer-events: none;
+        }
+        .island-capsule {
+            background: rgba(18, 18, 22, 0.82);
+            backdrop-filter: blur(40px) saturate(190%);
+            -webkit-backdrop-filter: blur(40px) saturate(190%);
+            border: 1px solid var(--apple-border);
+            border-radius: 40px;
+            padding: 9px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: #ffffff;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), inset 0 0.5px 1px rgba(255, 255, 255, 0.2);
+            pointer-events: auto;
+            transition: all 0.4s var(--ios-spring);
+        }
+        .island-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--apple-tint);
+            box-shadow: 0 0 10px var(--apple-tint);
+            animation: islandBlink 2.2s infinite ease-in-out;
+        }
+        @keyframes islandBlink {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.6; }
+        }
+        .island-label {
+            color: rgba(255, 255, 255, 0.92);
+            letter-spacing: -0.01em;
+        }
+
+        /* Top Action Buttons */
+        .top-shelf {
+            position: absolute;
+            top: 20px; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 28px;
+            z-index: 90;
+            pointer-events: none;
+        }
+        .top-shelf > * { pointer-events: auto; }
+
+        .shelf-btn {
+            background: rgba(28, 28, 32, 0.65);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--apple-border);
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.25s var(--ios-spring);
+        }
+        .shelf-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        /* -------------------------------------------------------------
+           SPATIAL PHOTO TILES (APPLE VISIONOS / iOS 26 CARDS)
+        ------------------------------------------------------------- */
+        #spatialDeck {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .spatial-card {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 260px; height: 350px;
+            margin-left: -130px; margin-top: -175px;
+            border-radius: 28px;
+            background: rgba(24, 24, 28, 0.65);
+            backdrop-filter: blur(45px) saturate(200%);
+            -webkit-backdrop-filter: blur(45px) saturate(200%);
+            border: 1px solid var(--apple-border);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.75),
+                0 0 1px 1px rgba(255, 255, 255, 0.12),
+                inset 0 1px 1px rgba(255, 255, 255, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+            cursor: pointer;
+            will-change: transform, opacity;
+            transition: transform 0.65s var(--ios-spring), opacity 0.5s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            transform-origin: center center;
+        }
+
+        .spatial-card.focused {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 40px 90px rgba(0, 0, 0, 0.95),
+                0 0 50px rgba(255, 45, 85, 0.35),
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .card-media-viewport {
+            width: 100%;
+            height: 275px;
+            overflow: hidden;
+            background: #0d0d10;
+            position: relative;
+        }
+        .card-media-viewport img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+            transition: transform 0.6s var(--ios-spring);
+        }
+        .spatial-card:hover .card-media-viewport img {
+            transform: scale(1.03);
+        }
+
+        .art-modern-frame {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            position: relative;
+            background: radial-gradient(circle at 50% 40%, rgba(255, 45, 85, 0.25) 0%, #101014 80%);
+        }
+        .art-modern-symbol {
+            font-size: 3.8rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+            filter: drop-shadow(0 0 15px rgba(255, 45, 85, 0.6));
+            animation: floatSymbol 3.5s infinite ease-in-out alternate;
+        }
+        @keyframes floatSymbol {
+            0% { transform: translateY(-4px); }
+            100% { transform: translateY(4px); }
+        }
+        .art-modern-tag {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .card-meta-bar {
+            height: 75px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 18px;
+            background: rgba(18, 18, 22, 0.85);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .card-meta-num {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 2px;
+        }
+        .card-meta-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.02em;
+        }
+
+        /* -------------------------------------------------------------
+           FUTURISTIC FLOATING DOCK (iOS 26)
+        ------------------------------------------------------------- */
+        .dock-wrapper {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            max-width: 96vw;
+        }
+
+        .glass-dock {
+            background: rgba(20, 20, 24, 0.76);
+            backdrop-filter: blur(45px) saturate(210%);
+            -webkit-backdrop-filter: blur(45px) saturate(210%);
+            border: 1px solid var(--apple-border);
+            border-radius: 44px;
+            padding: 7px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.85),
+                0 0 1px 1px rgba(255, 255, 255, 0.12),
+                inset 0 1px 1.5px rgba(255, 255, 255, 0.25);
+            overflow-x: auto;
+        }
+
+        .dock-action {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--apple-border);
+            color: #ffffff;
+            padding: 9px 18px;
+            border-radius: 28px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.86rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+            transition: all 0.25s var(--ios-spring);
+        }
+        .dock-action:active {
+            transform: scale(0.93);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .dock-action.primary {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            box-shadow: 0 4px 18px rgba(255, 255, 255, 0.25);
+        }
+        .dock-action.primary:active {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Segmented Count Control */
+        .dock-segmented {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            padding: 3px;
+            gap: 2px;
+        }
+        .dock-segmented span {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.45);
+            margin: 0 6px 0 4px;
+        }
+        .seg-tile {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s var(--ios-spring);
+        }
+        .seg-tile.active {
+            background: #ffffff;
+            color: #000000;
+            font-weight: 700;
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* -------------------------------------------------------------
+           HIGH-END EDITORIAL CONFESSION OVERLAY ("anh yêu em.")
+        ------------------------------------------------------------- */
+        .confession-cinema-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s var(--ios-spring);
+            cursor: pointer;
+            padding: 40px;
+        }
+        .confession-cinema-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .confession-pure-statement {
+            text-align: center;
+            max-width: 900px;
+            transform: scale(0.92);
+            transition: transform 0.5s var(--ios-spring);
+        }
+        .confession-cinema-modal.active .confession-pure-statement {
+            transform: scale(1);
+        }
+
+        .editorial-hero-text {
+            font-size: 7.2rem;
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.045em;
+            background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.6) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: 0 0 60px rgba(255, 45, 85, 0.4);
+            animation: statementPulse 3s infinite ease-in-out alternate;
+        }
+        @keyframes statementPulse {
+            0% { filter: drop-shadow(0 0 20px rgba(255, 45, 85, 0.2)); }
+            100% { filter: drop-shadow(0 0 50px rgba(255, 45, 85, 0.6)); }
+        }
+
+        .editorial-sub-text {
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .editorial-body-note {
+            font-size: 1.35rem;
+            font-weight: 400;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 650px;
+            margin: 0 auto;
+            letter-spacing: -0.015em;
+        }
+
+        /* Ambient Heart Particles */
+        .ambient-sparkle {
+            position: fixed; pointer-events: none; z-index: 1000000;
+            animation: sparkleFloat 2.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes sparkleFloat {
+            0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.6); opacity: 0; }
+        }
+
+        /* FaceTime Minimalist PiP Camera HUD */
+        .pip-hud {
+            position: absolute;
+            top: 76px; right: 28px;
+            width: 140px; height: 105px;
+            background: #111114;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            display: none;
+            z-index: 95;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+        .pip-hud video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+        .pip-caption {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 3px 0;
+            font-weight: 600;
+        }
+
+        #photoInput, #audioInput { display: none; }
+
+        @media (max-width: 768px) {
+            .editorial-hero-text { font-size: 4.5rem; }
+            .editorial-sub-text { font-size: 0.95rem; letter-spacing: 0.15em; }
+            .editorial-body-note { font-size: 1.1rem; }
+            .spatial-card { width: 220px; height: 300px; margin-left: -110px; margin-top: -150px; }
+            .card-media-viewport { height: 230px; }
+            .card-meta-bar { height: 70px; }
+            .glass-dock { padding: 6px 12px; gap: 6px; }
+            .dock-action { padding: 8px 14px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Apple Intelligence Ambient Lighting Mesh -->
+    <div class="ambient-mesh">
+        <div class="mesh-light mesh-1"></div>
+        <div class="mesh-light mesh-2"></div>
+        <div class="mesh-light mesh-3"></div>
+    </div>
+
+    <!-- 2D Luminous Heart Particle Core (Zero Lag 120 FPS) -->
+    <canvas id="auraCanvas"></canvas>
+
+    <!-- Spatial Media Deck (1 - 5 Photo Cards) -->
+    <div id="spatialDeck"></div>
+
+    <!-- Dynamic Island Capsule (iOS 26 Status Pill) -->
+    <div class="island-container">
+        <div class="island-capsule" id="islandCapsule">
+            <div class="island-dot"></div>
+            <span class="island-label" id="islandLabel">Chạm màn hình để mở Album</span>
+        </div>
+    </div>
+
+    <!-- Top Shelf Buttons -->
+    <div class="top-shelf">
+        <button class="shelf-btn" onclick="toggleAudio()" title="Bật/Tắt Âm thanh">
+            <i class="fa-solid fa-volume-high" id="audioIcon"></i>
+        </button>
+        <button class="shelf-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
+            <i class="fa-solid fa-expand" id="fsIcon"></i>
+        </button>
+    </div>
+
+    <!-- FaceTime PiP Camera HUD -->
+    <div class="pip-hud" id="pipHud">
+        <video id="pipVideo" autoplay playsinline muted></video>
+        <div class="pip-caption" id="pipCaption">Đang tìm tay...</div>
+    </div>
+
+    <!-- Futuristic Floating Glass Dock -->
+    <div class="dock-wrapper">
+        <div class="glass-dock">
+            <!-- Segmented Count [ 1 | 2 | 3 | 4 | 5 ] -->
+            <div class="dock-segmented">
+                <span>Số ảnh:</span>
+                <button class="seg-tile" onclick="setCount(1)">1</button>
+                <button class="seg-tile" onclick="setCount(2)">2</button>
+                <button class="seg-tile" onclick="setCount(3)">3</button>
+                <button class="seg-tile" onclick="setCount(4)">4</button>
+                <button class="seg-tile active" onclick="setCount(5)">5</button>
+            </div>
+
+            <!-- Thay ảnh cá nhân -->
+            <button class="dock-action" onclick="document.getElementById('photoInput').click()">
+                <i class="fa-solid fa-photo-film"></i> Thay Ảnh
+            </button>
+
+            <!-- Bung / Gom Tim -->
+            <button class="dock-action primary" id="toggleDeckBtn" onclick="toggleBung()">
+                <i class="fa-solid fa-sparkles"></i> <span id="deckBtnLabel">Bung Ảnh</span>
+            </button>
+
+            <!-- Tỏ tình -->
+            <button class="dock-action" onclick="openConfession()">
+                <i class="fa-solid fa-heart" style="color:var(--apple-tint);"></i> Tỏ Tình
+            </button>
+
+            <!-- Camera AI (Cử chỉ tay MediaPipe) -->
+            <button class="dock-action" id="camBtn" onclick="toggleCameraAI()">
+                <i class="fa-solid fa-video"></i> <span id="camBtnLabel">Camera AI</span>
+            </button>
+
+            <!-- Nhạc MP3 -->
+            <button class="dock-action" onclick="document.getElementById('audioInput').click()">
+                <i class="fa-solid fa-music"></i> MP3
+            </button>
+        </div>
+    </div>
+
+    <!-- High-End Editorial Confession Overlay -->
+    <div class="confession-cinema-modal" id="confessionModal" onclick="closeConfession()">
+        <div class="confession-pure-statement" onclick="event.stopPropagation()">
+            <h1 class="editorial-hero-text" id="heroConfessTitle" onclick="editConfessTitle()">
+                anh yêu em.
+            </h1>
+            <div class="editorial-sub-text">
+                mãi mãi • một tình yêu duy nhất
+            </div>
+            <p class="editorial-body-note">
+                "Cảm ơn em đã bước đến, thắp sáng cuộc sống của anh và cùng anh tạo nên những ký ức rực rỡ nhất."
+            </p>
+        </div>
+    </div>
+
+    <input type="file" id="photoInput" accept="image/*" multiple>
+    <input type="file" id="audioInput" accept="audio/*">
+    <audio id="ambientAudio" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-moment-2964.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. 2D LUMINOUS HEART CORE ENGINE (120 FPS LOCK, ZERO CPU LOAD)
+        ------------------------------------------------------------- */
+        const canvas = document.getElementById('auraCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            calculateAuraPositions();
+            updateSpatialCards();
+        });
+
+        const CORE_COUNT = 480;
+        const auraParticles = [];
+        let isBung = false;
+        let isFocused = false;
+        let activeIndex = 0;
+        let activeCount = 5;
+
+        let morphProgress = 0.0;
+        let targetMorph = 0.0;
+
+        class AuraParticle {
+            constructor(idx) {
+                this.idx = idx;
+                this.t = Math.PI * 2 * Math.random();
+                this.radiusVar = 0.88 + Math.random() * 0.24;
+                this.size = 1.6 + Math.random() * 2.2;
+                this.alpha = 0.35 + Math.random() * 0.55;
+                this.sparkle = Math.random() * Math.PI * 2;
+
+                const palette = ['#ffffff', '#ff2d55', '#ff375f', '#af52de', '#ffffff'];
+                this.color = palette[Math.floor(Math.random() * palette.length)];
+
+                this.hx = 0; this.hy = 0;
+                this.gx = 0; this.gy = 0;
+                this.x = 0;  this.y = 0;
+            }
+
+            compute(cx, cy, scale) {
+                const t = this.t;
+                // Parametric Cardioid
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                this.hx = cx + x * scale * this.radiusVar;
+                this.hy = cy + y * scale * this.radiusVar;
+
+                const angle = this.t;
+                const galaxyR = (Math.min(width, height) * 0.28) + (Math.random() - 0.5) * 80;
+                this.gx = cx + Math.cos(angle) * galaxyR * this.radiusVar;
+                this.gy = cy + Math.sin(angle) * (galaxyR * 0.7) * this.radiusVar;
+            }
+        }
+
+        function calculateAuraPositions() {
+            const cx = width / 2;
+            const cy = height / 2 - 15;
+            const scale = Math.min(width, height) / 38;
+            auraParticles.forEach(p => p.compute(cx, cy, scale));
+        }
+
+        for (let i = 0; i < CORE_COUNT; i++) {
+            auraParticles.push(new AuraParticle(i));
+        }
+        calculateAuraPositions();
+        auraParticles.forEach(p => { p.x = p.hx; p.y = p.hy; });
+
+        /* -------------------------------------------------------------
+           2. SPATIAL MEDIA TILES (VISIONOS STYLE 120 FPS)
+        ------------------------------------------------------------- */
+        const spatialDeck = document.getElementById('spatialDeck');
+        let userPhotoUrls = [];
+        let cardNodes = [];
+
+        const defaultArtPreset = [
+            { symbol: '✦', tag: 'The Beginning', title: 'Khoảnh Khắc Đầu Tiên', num: '01 • MEMORY' },
+            { symbol: '❋', tag: 'Pure Light', title: 'Nụ Cười Tỏa Nắng', num: '02 • SUNSHINE' },
+            { symbol: '♥', tag: 'Together', title: 'Hạnh Phúc Bình Yên', num: '03 • ETERNAL' },
+            { symbol: '✧', tag: 'Starlight', title: 'Ánh Sao Trong Đêm', num: '04 • INFINITY' },
+            { symbol: '★', tag: 'Endless Love', title: 'Mãi Mãi Bên Nhau', num: '05 • FOREVER' }
+        ];
+
+        function renderSpatialDeck() {
+            spatialDeck.innerHTML = '';
+            cardNodes = [];
+
+            const count = activeCount;
+            for (let i = 0; i < count; i++) {
+                const card = document.createElement('div');
+                card.className = 'spatial-card';
+                card.dataset.index = i;
+
+                const customSrc = userPhotoUrls.length > 0 ? userPhotoUrls[i % userPhotoUrls.length] : null;
+                const preset = defaultArtPreset[i % defaultArtPreset.length];
+
+                let mediaHtml = '';
+                if (customSrc) {
+                    mediaHtml = `<img src="${customSrc}" alt="Memory">`;
+                } else {
+                    mediaHtml = `
+                        <div class="art-modern-frame">
+                            <div class="art-modern-symbol">${preset.symbol}</div>
+                            <div class="art-modern-tag">${preset.tag}</div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-media-viewport">
+                        ${mediaHtml}
+                    </div>
+                    <div class="card-meta-bar">
+                        <div class="card-meta-num">${preset.num}</div>
+                        <div class="card-meta-title">${preset.title}</div>
+                    </div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!isFocused || activeIndex !== i) {
+                        activeIndex = i;
+                        isFocused = true;
+                        isBung = true;
+                        targetMorph = 1.0;
+                        document.getElementById('deckBtnLabel').innerText = "Gom Tim";
+                        updateIsland(`0${i+1} • ${preset.title}`);
+                        triggerAudioHaptic();
+                    } else {
+                        isFocused = false;
+                        updateIsland(`Vòng ảnh không gian (${count} ảnh)`);
+                    }
+                    updateSpatialCards();
+                });
+
+                spatialDeck.appendChild(card);
+                cardNodes.push(card);
+            }
+
+            updateSpatialCards();
+        }
+
+        renderSpatialDeck();
+
+        function updateSpatialCards() {
+            const count = cardNodes.length;
+            const radiusX = Math.min(width, height) * 0.42;
+            const radiusY = Math.min(width, height) * 0.28;
+
+            cardNodes.forEach((card, i) => {
+                if (!isBung) {
+                    // Mặc định: Giấu tại tâm, scale = 0
+                    card.style.transform = `translate3d(0, 0, 0) scale(0)`;
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    card.classList.remove('focused');
+                } 
+                else if (isFocused) {
+                    // Khi Focus: Card phóng to giữa màn hình, các card khác trượt ra sau Cover Flow
+                    const rel = i - activeIndex;
+                    card.style.pointerEvents = 'auto';
+
+                    if (rel === 0) {
+                        card.style.transform = `translate3d(0, -10px, 0) scale(1.22)`;
+                        card.style.opacity = '1';
+                        card.style.zIndex = '50';
+                        card.classList.add('focused');
+                    } else {
+                        const shiftX = rel * (width < 768 ? 165 : 225);
+                        const scale = Math.max(0.65, 0.88 - Math.abs(rel) * 0.15);
+                        const opacity = Math.max(0.18, 0.65 - Math.abs(rel) * 0.25);
+                        card.style.transform = `translate3d(${shiftX}px, 20px, 0) scale(${scale})`;
+                        card.style.opacity = opacity.toString();
+                        card.style.zIndex = (30 - Math.abs(rel)).toString();
+                        card.classList.remove('focused');
+                    }
+                } 
+                else {
+                    // Khi Bung: Xếp vòng elip lơ lửng
+                    card.style.pointerEvents = 'auto';
+                    card.classList.remove('focused');
+                    card.style.zIndex = '20';
+
+                    let tx = 0, ty = 0, rot = 0;
+                    if (count === 1) {
+                        tx = 0; ty = 0; rot = 0;
+                    } else {
+                        const angle = (i * (Math.PI * 2) / count) - Math.PI / 2;
+                        tx = Math.cos(angle) * radiusX;
+                        ty = Math.sin(angle) * radiusY;
+                        rot = Math.cos(angle) * 7.5;
+                    }
+
+                    card.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(0.92) rotate(${rot}deg)`;
+                    card.style.opacity = '1';
+                }
+            });
+        }
+
+        // Tải ảnh riêng từ thiết bị
+        document.getElementById('photoInput').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files).slice(0, 5);
+            if (files.length > 0) {
+                userPhotoUrls = files.map(f => URL.createObjectURL(f));
+                activeCount = files.length;
+                activeIndex = 0;
+                updateSegmented(activeCount);
+                renderSpatialDeck();
+                updateIsland(`Đã nạp ${files.length} ảnh của bạn • Chạm để xem`);
+            }
+        });
+
+        function setCount(cnt) {
+            activeCount = Math.min(Math.max(1, cnt), 5);
+            activeIndex = Math.min(activeIndex, activeCount - 1);
+            updateSegmented(activeCount);
+            renderSpatialDeck();
+            updateIsland(`Hiển thị ${activeCount} ảnh không gian`);
+        }
+
+        function updateSegmented(cnt) {
+            document.querySelectorAll('.seg-tile').forEach((b, idx) => {
+                b.classList.toggle('active', (idx + 1) === cnt);
+            });
+        }
+
+        function updateIsland(text) {
+            document.getElementById('islandLabel').innerText = text;
+        }
+
+        function toggleBung() {
+            if (!isBung) {
+                isBung = true;
+                isFocused = false;
+                targetMorph = 1.0;
+                document.getElementById('deckBtnLabel').innerText = "Gom Tim";
+                updateIsland(`Bung ${activeCount} ảnh không gian`);
+            } else {
+                isBung = false;
+                isFocused = false;
+                targetMorph = 0.0;
+                document.getElementById('deckBtnLabel').innerText = "Bung Ảnh";
+                updateIsland("Chạm màn hình để mở Album");
+            }
+            updateSpatialCards();
+        }
+
+        /* -------------------------------------------------------------
+           3. 2D ANIMATION RENDER LOOP (120 FPS SUPREME SMOOTH)
+        ------------------------------------------------------------- */
+        let lastTime = performance.now();
+        let heartTimer = 0;
+
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+            heartTimer += dt;
+
+            ctx.clearRect(0, 0, width, height);
+
+            morphProgress += (targetMorph - morphProgress) * 0.09;
+
+            // Nhịp đập EKG sinh học chân thực
+            let pulseScale = 1.0;
+            if (!isBung) {
+                const cycle = (heartTimer * 1.6) % 1.0;
+                if (cycle < 0.15) {
+                    pulseScale = 1.0 + Math.sin(cycle / 0.15 * Math.PI) * 0.08;
+                } else if (cycle >= 0.22 && cycle < 0.35) {
+                    pulseScale = 1.0 + Math.sin((cycle - 0.22) / 0.13 * Math.PI) * 0.04;
+                }
+            }
+
+            const cx = width / 2;
+            const cy = height / 2 - 15;
+
+            const len = auraParticles.length;
+            for (let i = 0; i < len; i++) {
+                const p = auraParticles[i];
+
+                const tx = p.hx + (p.gx - p.hx) * morphProgress;
+                const ty = p.hy + (p.gy - p.hy) * morphProgress;
+
+                p.x += (tx - p.x) * 0.1;
+                p.y += (ty - p.y) * 0.1;
+
+                let drawX = p.x;
+                let drawY = p.y;
+                if (!isBung && pulseScale !== 1.0) {
+                    drawX = cx + (p.x - cx) * pulseScale;
+                    drawY = cy + (p.y - cy) * pulseScale;
+                }
+
+                const spark = 0.75 + Math.sin(now * 0.005 + p.sparkle) * 0.25;
+                const curSize = p.size * spark;
+
+                ctx.beginPath();
+                ctx.arc(drawX, drawY, curSize, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha * spark;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+
+        requestAnimationFrame(animate);
+
+        /* -------------------------------------------------------------
+           4. TOUCH / SWIPE CONTROLS (120 FPS FLUID GESTURES)
+        ------------------------------------------------------------- */
+        let startX = 0, startY = 0, startTime = 0;
+        let lastTap = 0;
+
+        window.addEventListener('pointerdown', (e) => {
+            startX = e.clientX;
+            startY = e.clientY;
+            startTime = Date.now();
+
+            const curTime = Date.now();
+            if (curTime - lastTap < 320) {
+                openConfession();
+            }
+            lastTap = curTime;
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const duration = Date.now() - startTime;
+
+            // Vuốt lướt ngang chuyển ảnh
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) && duration < 450) {
+                if (!isBung) {
+                    isBung = true;
+                    targetMorph = 1.0;
+                    document.getElementById('deckBtnLabel').innerText = "Gom Tim";
+                }
+                isFocused = true;
+
+                if (dx < 0) {
+                    activeIndex = (activeIndex + 1) % activeCount;
+                } else {
+                    activeIndex = (activeIndex - 1 + activeCount) % activeCount;
+                }
+                triggerAudioHaptic();
+                updateIsland(`0${activeIndex+1} • Lướt xem ảnh`);
+                updateSpatialCards();
+            } 
+            else if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && duration < 300) {
+                const elem = document.elementFromPoint(e.clientX, e.clientY);
+                if (elem && (elem.closest('.glass-dock') || elem.closest('.top-shelf') || elem.closest('.spatial-card') || elem.closest('.confession-cinema-modal') || elem.closest('.pip-hud') || elem.closest('.island-capsule'))) {
+                    return;
+                }
+
+                if (!isBung) {
+                    toggleBung();
+                } else if (isFocused) {
+                    isFocused = false;
+                    updateIsland(`Vòng ảnh không gian (${activeCount} ảnh)`);
+                    updateSpatialCards();
+                }
+            }
+        });
+
+        /* -------------------------------------------------------------
+           5. MEDIAPIPE AI HANDS (AIR GESTURE RECOGNITION)
+        ------------------------------------------------------------- */
+        let isCamActive = false;
+        let camRunner = null;
+        let handsRunner = null;
+        let lastHandNormX = 0.5;
+        let lastGesture = '';
+        let holdCount = 0;
+
+        function toggleCameraAI() {
+            const btn = document.getElementById('camBtn');
+            const label = document.getElementById('camBtnLabel');
+            const hud = document.getElementById('pipHud');
+
+            if (!isCamActive) {
+                label.innerText = "Đang mở...";
+                startHandsCamera().then(() => {
+                    isCamActive = true;
+                    hud.style.display = 'block';
+                    label.innerText = "Tắt Cam";
+                    btn.classList.add('primary');
+                    updateIsland("📷 Camera AI sẵn sàng • Điều khiển cử chỉ từ xa");
+                }).catch(() => {
+                    label.innerText = "Camera AI";
+                    alert("Không thể bật camera. Bạn có thể vuốt chạm trực tiếp trên màn hình 120Hz siêu mượt!");
+                });
+            } else {
+                stopHandsCamera();
+                isCamActive = false;
+                hud.style.display = 'none';
+                label.innerText = "Camera AI";
+                btn.classList.remove('primary');
+                updateIsland("Đã tắt Camera");
+            }
+        }
+
+        async function startHandsCamera() {
+            const video = document.getElementById('pipVideo');
+            const caption = document.getElementById('pipCaption');
+
+            if (!handsRunner) {
+                handsRunner = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+                handsRunner.setOptions({
+                    maxNumHands: 1,
+                    modelComplexity: 0,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                handsRunner.onResults((res) => {
+                    if (!res.multiHandLandmarks || res.multiHandLandmarks.length === 0) {
+                        caption.innerText = "Đang tìm tay...";
+                        return;
+                    }
+
+                    const lm = res.multiHandLandmarks[0];
+                    const handX = 1 - lm[9].x;
+
+                    const isIndex = Math.hypot(lm[8].x - lm[0].x, lm[8].y - lm[0].y) > Math.hypot(lm[6].x - lm[0].x, lm[6].y - lm[0].y) * 1.15;
+                    const isMiddle = Math.hypot(lm[12].x - lm[0].x, lm[12].y - lm[0].y) > Math.hypot(lm[10].x - lm[0].x, lm[10].y - lm[0].y) * 1.15;
+                    const isRing = Math.hypot(lm[16].x - lm[0].x, lm[16].y - lm[0].y) > Math.hypot(lm[14].x - lm[0].x, lm[14].y - lm[0].y) * 1.15;
+                    const isPinky = Math.hypot(lm[20].x - lm[0].x, lm[20].y - lm[0].y) > Math.hypot(lm[18].x - lm[0].x, lm[18].y - lm[0].y) * 1.15;
+
+                    let g = '';
+                    if (isIndex && isMiddle && !isRing && !isPinky) {
+                        g = 'TWO_FINGERS';
+                        caption.innerText = "✌️ 2 Ngón: Tỏ tình";
+                    } else if (isIndex && !isMiddle && !isRing && !isPinky) {
+                        g = 'ONE_FINGER';
+                        caption.innerText = "☝️ 1 Ngón: Focus ảnh";
+                    } else if (isIndex && isMiddle && isRing && isPinky) {
+                        g = 'OPEN_PALM';
+                        caption.innerText = "🖐️ Xòe tay: Bung ảnh";
+                    } else if (!isIndex && !isMiddle && !isRing && !isPinky) {
+                        g = 'FIST';
+                        caption.innerText = "✊ Nắm tay: Gom tim";
+                    }
+
+                    if (isFocused) {
+                        const delta = handX - lastHandNormX;
+                        if (Math.abs(delta) > 0.05) {
+                            if (delta > 0.05) {
+                                activeIndex = (activeIndex + 1) % activeCount;
+                            } else {
+                                activeIndex = (activeIndex - 1 + activeCount) % activeCount;
+                            }
+                            triggerAudioHaptic();
+                            updateSpatialCards();
+                            lastHandNormX = handX;
+                        }
+                    }
+                    lastHandNormX = handX;
+
+                    if (g) {
+                        if (g === lastGesture) {
+                            holdCount++;
+                            if (holdCount === 3) {
+                                if (g === 'FIST') {
+                                    isBung = false; isFocused = false; targetMorph = 0.0;
+                                    closeConfession();
+                                    document.getElementById('deckBtnLabel').innerText = "Bung Ảnh";
+                                    updateIsland("✊ Nắm tay: Gom Tim");
+                                    updateSpatialCards();
+                                } else if (g === 'OPEN_PALM') {
+                                    isBung = true; isFocused = false; targetMorph = 1.0;
+                                    closeConfession();
+                                    document.getElementById('deckBtnLabel').innerText = "Gom Tim";
+                                    updateIsland(`🖐️ Xòe tay: Bung ${activeCount} ảnh`);
+                                    updateSpatialCards();
+                                } else if (g === 'ONE_FINGER') {
+                                    isBung = true; isFocused = true; targetMorph = 1.0;
+                                    closeConfession();
+                                    updateIsland(`☝️ Focus ảnh ${activeIndex + 1}`);
+                                    triggerAudioHaptic();
+                                    updateSpatialCards();
+                                } else if (g === 'TWO_FINGERS') {
+                                    updateIsland("✌️ 2 Ngón tay: anh yêu em.");
+                                    openConfession();
+                                }
+                            }
+                        } else {
+                            lastGesture = g;
+                            holdCount = 0;
+                        }
+                    }
+                });
+            }
+
+            let processing = false;
+            let lastP = 0;
+
+            camRunner = new Camera(video, {
+                onFrame: async () => {
+                    const now = performance.now();
+                    if (!processing && (now - lastP > 75)) {
+                        processing = true;
+                        lastP = now;
+                        try {
+                            await handsRunner.send({ image: video });
+                        } catch(e) {}
+                        processing = false;
+                    }
+                },
+                width: 240, height: 180
+            });
+
+            await camRunner.start();
+        }
+
+        function stopHandsCamera() {
+            if (camRunner) {
+                try {
+                    const v = document.getElementById('pipVideo');
+                    if (v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
+                } catch(e) {}
+            }
+        }
+
+        /* -------------------------------------------------------------
+           6. AUDIO & CINEMA CONFESSION
+        ------------------------------------------------------------- */
+        const ambientAudio = document.getElementById('ambientAudio');
+        const audioIcon = document.getElementById('audioIcon');
+
+        function toggleAudio() {
+            if (ambientAudio.paused) {
+                ambientAudio.play().then(() => {
+                    audioIcon.className = 'fa-solid fa-volume-high';
+                    audioIcon.style.color = '#ff2d55';
+                }).catch(() => {});
+            } else {
+                ambientAudio.pause();
+                audioIcon.className = 'fa-solid fa-volume-xmark';
+                audioIcon.style.color = 'rgba(255, 255, 255, 0.6)';
+            }
+        }
+
+        document.getElementById('audioInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                ambientAudio.src = URL.createObjectURL(e.target.files[0]);
+                ambientAudio.play();
+                audioIcon.className = 'fa-solid fa-volume-high';
+                audioIcon.style.color = '#ff2d55';
+            }
+        });
+
+        let audioCtx = null;
+        function triggerAudioHaptic() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const notes = [587.33, 880.00];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.05);
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + idx * 0.05 + 0.015);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.05 + 0.35);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.05);
+                    osc.stop(audioCtx.currentTime + idx * 0.05 + 0.38);
+                });
+            } catch(e) {}
+        }
+
+        function openConfession() {
+            document.getElementById('confessionModal').classList.add('active');
+            triggerAudioHaptic();
+            spawnAmbientParticles();
+        }
+
+        function closeConfession() {
+            document.getElementById('confessionModal').classList.remove('active');
+        }
+
+        function editConfessTitle() {
+            const v = prompt("Nhập thông điệp tình yêu của bạn:", document.getElementById('heroConfessTitle').innerText);
+            if (v) document.getElementById('heroConfessTitle').innerText = v;
+        }
+
+        function spawnAmbientParticles() {
+            const emojis = ['♥', '✦', '✧', '★', '❋', '♥', '✨'];
+            for (let i = 0; i < 28; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'ambient-sparkle';
+                    el.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    el.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 360) + 'px';
+                    el.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 180) + 'px';
+                    el.style.fontSize = (Math.random() * 24 + 18) + 'px';
+                    el.style.color = i % 2 === 0 ? '#ff2d55' : '#ffffff';
+                    el.style.setProperty('--tx', `${(Math.random() - 0.5) * 600}px`);
+                    el.style.setProperty('--ty', `${-Math.random() * 500 - 120}px`);
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 2500);
+                }, i * 35);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-compress';
+            } else {
+                document.exitFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-expand';
+            }
+        }
+    </script>
+</body>
+</html>
