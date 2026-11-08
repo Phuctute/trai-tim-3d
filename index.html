@@ -4,225 +4,460 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="color-scheme" content="dark only">
-    <title>3D Heart & Spatial Album (Samsung Tab S8+)</title>
+    <title>Trái Tim Tình Yêu 2D & Album Cử Chỉ (Siêu Mượt 120 FPS)</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Three.js CDN (Tự động fallback offline nếu không có mạng) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MediaPipe CDN (Tùy chọn khi bật Camera nhận diện tay) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 
     <style>
         * {
-            box-sizing: border-box; margin: 0; padding: 0;
+            box-sizing: border-box;
+            margin: 0; padding: 0;
             user-select: none; -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             touch-action: none;
         }
-        html, body {
-            width: 100%; height: 100%;
-            overflow: hidden; background: #020005;
-            color: #fff; font-family: 'Quicksand', sans-serif;
-            position: fixed;
+
+        body {
+            background: radial-gradient(circle at 50% 50%, #1c0524 0%, #0d0112 60%, #050008 100%);
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            color: #ffffff;
+            position: relative;
         }
-        #webgl-canvas {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+
+        /* Ambient Glow Nebula Effects */
+        .ambient-aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.35;
+            z-index: 1;
+            animation: pulseAurora 8s infinite alternate ease-in-out;
+        }
+        .aurora-1 {
+            width: 50vw; height: 50vw;
+            top: 10%; left: 15%;
+            background: radial-gradient(circle, #ff1493 0%, rgba(255, 20, 147, 0) 70%);
+        }
+        .aurora-2 {
+            width: 45vw; height: 45vw;
+            bottom: 10%; right: 15%;
+            background: radial-gradient(circle, #9400d3 0%, rgba(148, 0, 211, 0) 70%);
+            animation-delay: -4s;
+        }
+        @keyframes pulseAurora {
+            0% { transform: scale(0.9) translate(-20px, -10px); opacity: 0.25; }
+            100% { transform: scale(1.15) translate(20px, 15px); opacity: 0.45; }
+        }
+
+        /* 2D Canvas cho Trái Tim Hạt Tình Yêu */
+        #heartCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2;
+        }
+
+        /* Container cho 1 - 5 Khung Ảnh Nghệ Thuật (Tăng tốc bằng GPU CSS 120 FPS) */
+        #photosContainer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .photo-card-item {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 240px; height: 310px;
+            margin-left: -120px; margin-top: -155px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 30px rgba(255, 42, 112, 0.4);
+            border: 3px solid rgba(255, 105, 180, 0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+            cursor: pointer;
+            will-change: transform, opacity;
+            transition: transform 0.55s cubic-bezier(0.2, 0.85, 0.25, 1), opacity 0.5s ease, box-shadow 0.4s ease;
+            transform-origin: center center;
+        }
+
+        .photo-card-item:hover, .photo-card-item.zoomed {
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 50px rgba(255, 42, 112, 0.85);
+            border-color: #ff2a70;
+        }
+
+        .card-img-wrap {
+            width: 100%;
+            height: 245px;
+            overflow: hidden;
+            position: relative;
+            background: #110519;
+        }
+
+        .card-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .card-default-art {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .card-default-icon {
+            font-size: 4rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+        }
+
+        .card-default-msg {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .card-caption-bar {
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            padding: 0 12px;
+            text-align: center;
+        }
+
+        .card-caption-bar span {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #d11252;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Top Action Bar */
-        .top-bar {
-            position: fixed; top: 16px; left: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; z-index: 30; pointer-events: none;
-        }
-        .status-badge {
-            pointer-events: auto;
-            background: rgba(22, 5, 28, 0.8); backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 105, 180, 0.45); border-radius: 24px;
-            padding: 7px 20px; font-size: 0.88rem; color: #fce7f3;
-            box-shadow: 0 0 20px rgba(255, 42, 112, 0.4);
-            margin: 0 auto; font-weight: 700; letter-spacing: 0.5px;
-            transition: all 0.3s;
-        }
-        .icon-btn {
-            pointer-events: auto; width: 46px; height: 46px; border-radius: 50%;
-            background: rgba(22, 5, 28, 0.8); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 105, 180, 0.45); color: #ff94c2;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 1.15rem; transition: all 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-        .icon-btn:active { transform: scale(0.9); background: #ff2a70; color: #fff; }
-
-        /* Quick Touch Mode Bar (Dành riêng cho màn hình cảm ứng Tab S8+) */
-        .gesture-pill-dock {
-            position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 8px; z-index: 25; pointer-events: auto;
-        }
-        .pill-btn {
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 105, 180, 0.4);
-            color: #ffe4f0; padding: 7px 15px; border-radius: 20px;
-            font-size: 0.82rem; font-family: 'Quicksand', sans-serif;
-            font-weight: 700; cursor: pointer; backdrop-filter: blur(12px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 6px;
-            transition: all 0.2s;
-        }
-        .pill-btn:active, .pill-btn.active {
-            background: linear-gradient(135deg, #ff2a70 0%, #ba1254 100%);
-            border-color: transparent; color: #fff;
-            box-shadow: 0 0 16px rgba(255, 42, 112, 0.7);
-            transform: scale(0.96);
+        .top-nav {
+            position: absolute;
+            top: 20px; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 100;
+            pointer-events: none;
         }
 
-        /* Bottom Floating Dock - Thiết kế to rõ cho Tab S8+ */
-        .bottom-dock {
-            position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-            display: flex; align-items: center; gap: 10px; z-index: 25;
-            background: rgba(18, 4, 24, 0.88);
+        .top-nav > * { pointer-events: auto; }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
-            padding: 8px 20px; border-radius: 40px;
-            border: 1px solid rgba(255, 105, 180, 0.45);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75);
-            max-width: 95vw;
-        }
-        .btn {
-            background: linear-gradient(135deg, #ff2a70 0%, #ba1254 100%);
-            border: none; color: #fff; padding: 9px 18px; border-radius: 30px;
-            font-family: 'Quicksand', sans-serif; font-size: 0.85rem; font-weight: 700;
-            display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 42, 112, 0.45);
-            transition: all 0.2s; white-space: nowrap;
-        }
-        .btn:active { transform: scale(0.94); }
-        .btn.secondary {
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: none; border: 1px solid rgba(255, 255, 255, 0.18);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            border-radius: 30px;
+            padding: 8px 22px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #ffe4f3;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Bộ chọn số lượng ảnh (1 đến 5) */
-        .count-picker {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px; padding: 3px 8px;
-            border: 1px solid rgba(255, 105, 180, 0.25);
+        .top-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            color: #ff94c2;
+            font-size: 1.15rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: all 0.25s ease;
         }
-        .count-picker span { font-size: 0.74rem; color: #f9a8d4; margin-right: 2px; }
+
+        .top-btn:active, .top-btn:hover {
+            transform: scale(1.08);
+            background: rgba(255, 105, 180, 0.25);
+            color: #fff;
+        }
+
+        /* Webcam HUD (Chỉ hiển thị khi bấm Bật Camera) */
+        .webcam-hud {
+            position: absolute;
+            top: 76px; right: 24px;
+            width: 140px; height: 105px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(255, 105, 180, 0.5);
+            border-radius: 14px;
+            overflow: hidden;
+            display: none;
+            z-index: 95;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+        }
+
+        .webcam-hud video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .webcam-hud .hud-badge {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(20, 5, 25, 0.85);
+            font-size: 0.72rem;
+            color: #ff94c2;
+            text-align: center;
+            padding: 3px 0;
+            font-weight: 600;
+        }
+
+        /* Bottom Glassmorphic Dock */
+        .bottom-dock {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            background: rgba(20, 5, 25, 0.72);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 105, 180, 0.35);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.65), 0 0 25px rgba(255, 42, 112, 0.2);
+            z-index: 100;
+            align-items: center;
+            max-width: 95vw;
+            overflow-x: auto;
+        }
+
+        .dock-btn {
+            background: linear-gradient(135deg, #ff2a70 0%, #d81b60 100%);
+            border: none;
+            color: #ffffff;
+            padding: 9px 18px;
+            border-radius: 30px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 15px rgba(255, 42, 112, 0.35);
+        }
+
+        .dock-btn:active, .dock-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 42, 112, 0.65);
+        }
+
+        .dock-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: none;
+            color: #ffe4f3;
+        }
+
+        .dock-btn.secondary:hover, .dock-btn.secondary:active {
+            background: rgba(255, 105, 180, 0.25);
+            border-color: rgba(255, 105, 180, 0.6);
+        }
+
+        .count-picker {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .count-picker span {
+            font-size: 0.78rem;
+            color: #f9a8d4;
+            font-weight: 600;
+            margin-right: 3px;
+        }
+
         .cnt-btn {
-            background: transparent; border: none; color: #ffb8da;
-            width: 26px; height: 26px; border-radius: 50%;
-            cursor: pointer; font-size: 0.82rem; font-weight: 700;
-            display: inline-flex; align-items: center; justify-content: center;
+            background: transparent;
+            border: none;
+            color: #ffe4f3;
+            width: 25px; height: 25px;
+            border-radius: 50%;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
             transition: all 0.2s;
         }
-        .cnt-btn.active, .cnt-btn:active {
-            background: #ff2a70; color: #fff;
+
+        .cnt-btn.active {
+            background: #ff2a70;
+            color: #fff;
             box-shadow: 0 0 10px #ff2a70;
         }
 
-        /* =============================================================
-           "ANH YÊU EM" TOÀN MÀN HÌNH - KHÔNG BỊ CHE, KHÔNG NÚT THỪA
-        ============================================================= */
-        .love-confession-overlay {
-            position: fixed; inset: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle at center, rgba(35, 2, 25, 0.94) 0%, rgba(8, 0, 12, 0.98) 100%);
-            backdrop-filter: blur(16px);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* "ANH YÊU EM" Fullscreen Neon Confession Modal */
+        .confession-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(10, 2, 14, 0.88);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             z-index: 999999;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
             cursor: pointer;
         }
-        .love-confession-overlay.active {
-            opacity: 1; pointer-events: auto;
+
+        .confession-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
-        .love-card-center {
-            text-align: center; padding: 25px;
-            transform: scale(0.92);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 90vw;
-        }
-        .love-confession-overlay.active .love-card-center {
-            transform: scale(1);
-        }
-        .love-neon-title {
+
+        .confession-neon-title {
             font-family: 'Great Vibes', 'Dancing Script', cursive;
-            font-size: 6.2rem; line-height: 1.15;
+            font-size: 6.8rem;
+            line-height: 1.15;
             color: #ffffff;
+            text-align: center;
             text-shadow: 
                 0 0 10px #ff69b4,
                 0 0 25px #ff1493,
                 0 0 50px #ff007f,
-                0 0 80px #ff0055,
-                0 0 120px #ff0055,
-                0 0 160px #ff007f;
+                0 0 85px #ff0055,
+                0 0 130px #ff0055;
             margin-bottom: 15px;
-            animation: pulseNeonTitle 2.5s infinite ease-in-out;
+            animation: pulseNeon 2.6s infinite ease-in-out;
         }
-        @keyframes pulseNeonTitle {
+
+        @keyframes pulseNeon {
             0%, 100% {
                 transform: scale(1);
-                text-shadow: 0 0 10px #ff69b4, 0 0 25px #ff1493, 0 0 50px #ff007f, 0 0 80px #ff0055;
+                text-shadow: 0 0 10px #ff69b4, 0 0 25px #ff1493, 0 0 50px #ff007f, 0 0 85px #ff0055;
             }
             50% {
-                transform: scale(1.04);
-                text-shadow: 0 0 15px #fff, 0 0 35px #ff69b4, 0 0 65px #ff1493, 0 0 95px #ff0055;
+                transform: scale(1.05);
+                text-shadow: 0 0 15px #fff, 0 0 35px #ff69b4, 0 0 65px #ff1493, 0 0 110px #ff0055;
             }
         }
-        .love-neon-sub {
-            font-size: 1.45rem; color: #ffe4f3;
-            letter-spacing: 4px; text-transform: uppercase;
+
+        .confession-neon-sub {
+            font-size: 1.5rem;
+            color: #ffe4f3;
+            letter-spacing: 5px;
+            text-transform: uppercase;
             font-weight: 700;
             text-shadow: 0 0 15px rgba(255, 105, 180, 0.9);
-            margin-bottom: 20px;
+            text-align: center;
         }
-        /* Pháo hoa tim bay lượn */
+
+        /* Pháo hoa trái tim bay lượn */
         .sparkle-heart {
-            position: fixed; pointer-events: none; z-index: 1000000;
-            animation: flyUpAndFade 2.4s ease-out forwards;
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000000;
+            animation: flyUpFade 2.5s ease-out forwards;
         }
-        @keyframes flyUpAndFade {
-            0% { transform: translate(0, 0) scale(0.4) rotate(0deg); opacity: 1; }
+        @keyframes flyUpFade {
+            0% { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(1.6) rotate(var(--rot)); opacity: 0; }
         }
 
         #photoMultiInput, #audioInput { display: none; }
 
-        @media (max-width: 900px) and (orientation: portrait) {
-            .love-neon-title { font-size: 4.2rem; }
-            .bottom-dock { padding: 6px 14px; gap: 6px; bottom: 16px; }
-            .btn { padding: 8px 14px; font-size: 0.78rem; }
-            .gesture-pill-dock { bottom: 74px; }
+        @media (max-width: 768px) {
+            .confession-neon-title { font-size: 4.5rem; }
+            .confession-neon-sub { font-size: 1.1rem; letter-spacing: 3px; }
+            .bottom-dock { padding: 6px 12px; gap: 5px; bottom: 16px; }
+            .dock-btn { padding: 7px 12px; font-size: 0.78rem; }
+            .photo-card-item { width: 200px; height: 260px; margin-left: -100px; margin-top: -130px; }
+            .card-img-wrap { height: 205px; }
+            .card-caption-bar { height: 55px; }
+            .card-caption-bar span { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
-    <canvas id="webgl-canvas"></canvas>
+    <!-- Ambient Aurora Background -->
+    <div class="ambient-aurora aurora-1"></div>
+    <div class="ambient-aurora aurora-2"></div>
+
+    <!-- 2D Canvas cho Trái Tim Hạt Tình Yêu (120 FPS Siêu Mượt) -->
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- Khung Ảnh Nghệ Thuật (HTML5 Hardware CSS) -->
+    <div id="photosContainer"></div>
 
     <!-- Top Action Bar -->
-    <div class="top-bar">
-        <button class="icon-btn" onclick="toggleMusic()" title="Bật/Tắt Nhạc">
+    <div class="top-nav">
+        <button class="top-btn" onclick="toggleMusic()" title="Bật/Tắt Nhạc">
             <i class="fa-solid fa-music" id="topMusicIcon"></i>
         </button>
-        <div class="status-badge" id="statusBadge">
-            ✊ Trái Tim 3D (Chạm màn hình để bung ảnh)
+        <div class="status-pill" id="statusBadge">
+            <i class="fa-solid fa-heart" style="color:#ff2a70;"></i>
+            <span>Trái Tim Tình Yêu (Chạm để bung ảnh)</span>
         </div>
-        <button class="icon-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
+        <button class="top-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
             <i class="fa-solid fa-expand" id="fsIcon"></i>
         </button>
     </div>
 
-    <!-- Quick Touch Mode Bar (Chạm trực tiếp trên màn hình Tab S8+) -->
-    <div class="gesture-pill-dock">
-        <button class="pill-btn active" id="pill-fist" onclick="triggerPill('FIST')">✊ Gom tim</button>
-        <button class="pill-btn" id="pill-open" onclick="triggerPill('OPEN_PALM')">🖐️ Bung ảnh</button>
-        <button class="pill-btn" id="pill-one" onclick="triggerPill('ONE_FINGER')">☝️ Zoom ảnh</button>
-        <button class="pill-btn" id="pill-two" onclick="triggerPill('TWO_FINGERS')">✌️ Tỏ tình</button>
+    <!-- Webcam HUD (Bật khi kích hoạt camera cử chỉ) -->
+    <div class="webcam-hud" id="webcamHud">
+        <video id="webcamVideo" autoplay playsinline muted></video>
+        <div class="hud-badge" id="hudStatus">Đang tìm tay...</div>
     </div>
 
     <!-- Bottom Dock -->
     <div class="bottom-dock">
-        <button class="btn" onclick="document.getElementById('photoMultiInput').click()">
+        <button class="dock-btn" onclick="document.getElementById('photoMultiInput').click()">
             <i class="fa-solid fa-images"></i> Thay Ảnh
         </button>
 
@@ -235,32 +470,37 @@
             <button class="cnt-btn active" onclick="setPhotoCount(5)">5</button>
         </div>
 
-        <button class="btn secondary" id="musicBtn" onclick="toggleMusic()">
-            <i class="fa-solid fa-music"></i> <span id="musicText">Nhạc</span>
+        <button class="dock-btn secondary" onclick="toggleBungMode()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="bungText">Bung Tim</span>
         </button>
-        <button class="btn secondary" onclick="document.getElementById('audioInput').click()">
-            <i class="fa-solid fa-file-audio"></i> MP3
-        </button>
-        <button class="btn secondary" onclick="toggleBungMode()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="bungBtnText">Bung Tim</span>
-        </button>
-        <button class="btn secondary" onclick="triggerLoveConfession()">
+
+        <button class="dock-btn secondary" onclick="triggerLoveConfession()">
             <i class="fa-solid fa-heart" style="color:#ff2a70;"></i> Tỏ Tình
         </button>
+
+        <button class="dock-btn secondary" id="cameraToggleBtn" onclick="toggleCameraTracking()">
+            <i class="fa-solid fa-camera"></i> <span id="cameraBtnText">Camera AI</span>
+        </button>
+
+        <button class="dock-btn secondary" onclick="toggleMusic()">
+            <i class="fa-solid fa-music"></i> <span id="musicText">Nhạc</span>
+        </button>
+        <button class="dock-btn secondary" onclick="document.getElementById('audioInput').click()">
+            <i class="fa-solid fa-file-audio"></i> MP3
+        </button>
     </div>
 
-    <!-- "ANH YÊU EM" Fullscreen Overlay -->
-    <div class="love-confession-overlay" id="loveModal" onclick="closeLoveModal()">
-        <div class="love-card-center">
-            <h1 class="love-neon-title" id="loveMainText" onclick="event.stopPropagation(); editLoveText();">
-                Anh Yêu Em ❤️
-            </h1>
-            <p class="love-neon-sub" id="loveSubText">
-                Mãi Mãi Một Tình Yêu • Hạnh Phúc Trọn Đời
-            </p>
-        </div>
+    <!-- Fullscreen Neon Love Confession Modal -->
+    <div class="confession-overlay" id="loveModal" onclick="closeLoveModal()">
+        <h1 class="confession-neon-title" id="loveMainText" onclick="event.stopPropagation(); editLoveText();">
+            Anh Yêu Em ❤️
+        </h1>
+        <p class="confession-neon-sub" id="loveSubText">
+            Mãi Mãi Một Tình Yêu • Hạnh Phúc Trọn Đời
+        </p>
     </div>
 
+    <!-- Inputs & Background Audio -->
     <input type="file" id="photoMultiInput" accept="image/*" multiple>
     <input type="file" id="audioInput" accept="audio/*">
     <audio id="bgMusic" loop>
@@ -269,358 +509,580 @@
 
     <script>
         /* -------------------------------------------------------------
-           1. THREE.JS TỐI ƯU HÓA HOÀN HẢO CHO SAMSUNG GALAXY TAB S8+
-           - Màn hình 120Hz Super AMOLED (2800 x 1752)
-           - Chạy độc lập 100%, KHÔNG PHỤ THUỘC VÀO CAMERA NÊN KHÔNG BAO GIỜ BỊ CRASH
-           - Cảm ứng đa điểm, vuốt lướt 120 FPS mượt mà
+           1. CANVAS 2D PARTICLE HEART ENGINE (SIÊU NHẸ - 120 FPS TUYỆT ĐỐI)
         ------------------------------------------------------------- */
-        const canvas = document.getElementById('webgl-canvas');
-        const scene = new THREE.Scene();
-        const camera3D = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera3D.position.z = 88;
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
 
-        const renderer = new THREE.WebGLRenderer({
-            canvas,
-            antialias: false,
-            alpha: true,
-            powerPreference: "high-performance"
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        // Khóa pixelRatio ở 1.0 để đảm bảo 120 FPS mượt mà tuyệt đối trên Tab S8+ và điện thoại
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0));
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
-        function createGlowSprite() {
-            const c = document.createElement('canvas');
-            c.width = 64; c.height = 64;
-            const ctx = c.getContext('2d');
-            const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-            grad.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            grad.addColorStop(0.3, 'rgba(255, 105, 180, 0.85)');
-            grad.addColorStop(0.7, 'rgba(255, 20, 147, 0.25)');
-            grad.addColorStop(1, 'rgba(255, 0, 100, 0)');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 64, 64);
-            return new THREE.CanvasTexture(c);
-        }
-
-        const PARTICLE_COUNT = 1500;
-        const heartPositions = new Float32Array(PARTICLE_COUNT * 3);
-        const galaxyPositions = new Float32Array(PARTICLE_COUNT * 3);
-        const currentPositions = new Float32Array(PARTICLE_COUNT * 3);
-        const colors = new Float32Array(PARTICLE_COUNT * 3);
-
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            const t = Math.PI * 2 * Math.random();
-            const x = 16 * Math.pow(Math.sin(t), 3);
-            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
-            const z = (Math.random() - 0.5) * 14 * Math.sin(t);
-            const scale = 2.15 + (Math.random() - 0.5) * 0.4;
-
-            heartPositions[i * 3] = x * scale;
-            heartPositions[i * 3 + 1] = y * scale;
-            heartPositions[i * 3 + 2] = z * scale;
-
-            const radius = Math.random() * 92 + 15;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = (Math.random() - 0.5) * Math.PI * 0.85;
-            galaxyPositions[i * 3] = radius * Math.cos(theta) * Math.cos(phi);
-            galaxyPositions[i * 3 + 1] = radius * Math.sin(theta) * Math.cos(phi);
-            galaxyPositions[i * 3 + 2] = radius * Math.sin(phi);
-
-            // ⭐ MẶC ĐỊNH KHI MỞ: BẮT ĐẦU Ở TRÁI TIM CHƯA BUNG ⭐
-            currentPositions[i * 3] = heartPositions[i * 3];
-            currentPositions[i * 3 + 1] = heartPositions[i * 3 + 1];
-            currentPositions[i * 3 + 2] = heartPositions[i * 3 + 2];
-
-            const cRatio = Math.random();
-            colors[i * 3] = 1.0;
-            colors[i * 3 + 1] = 0.2 + cRatio * 0.45;
-            colors[i * 3 + 2] = 0.55 + cRatio * 0.45;
-        }
-
-        const particleGeometry = new THREE.BufferGeometry();
-        particleGeometry.setAttribute('position', new THREE.BufferAttribute(currentPositions, 3));
-        particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-        const particleMaterial = new THREE.PointsMaterial({
-            size: 3.5,
-            map: createGlowSprite(),
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            transparent: true,
-            opacity: 0.92,
-            depthWrite: false,
-            depthTest: false
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            calculateBasePositions();
         });
 
-        const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
-        scene.add(particleSystem);
-
-        /* -------------------------------------------------------------
-           2. 3D 1-5 PHOTO SYSTEM (TỰ TẠO ẢNH NGHỆ THUẬT KHÔNG LO MẤT MẠNG)
-        ------------------------------------------------------------- */
-        let userCustomPhotos = [];
-        let currentPhotoCount = 5;
-
-        // ⭐ Mặc định: Chưa bung (isBung = false) ⭐
+        const PARTICLE_COUNT = 750;
+        const particles = [];
         let isBung = false;
         let isZoomed = false;
         let currentPhotoIndex = 0;
-        let smoothCarouselPos = 0.0;
+        let currentPhotoCount = 5;
 
-        const photosGroup = new THREE.Group();
-        scene.add(photosGroup);
+        // Trạng thái chuyển đổi bung/gom tim (0.0: Tim, 1.0: Ngân hà)
+        let morphState = 0.0;
+        let targetMorph = 0.0;
 
-        let photoMeshes = [];
-        const sharedGeo = new THREE.PlaneGeometry(16, 20);
+        class HeartParticle {
+            constructor(index) {
+                this.index = index;
+                this.t = Math.PI * 2 * Math.random();
+                this.speed = 0.015 + Math.random() * 0.02;
+                this.radiusVar = 0.85 + Math.random() * 0.3;
+                this.size = 1.6 + Math.random() * 2.2;
+                this.alpha = 0.4 + Math.random() * 0.6;
+                this.sparklePhase = Math.random() * Math.PI * 2;
 
-        // Vẽ 5 bức tranh nghệ thuật tình yêu tuyệt đẹp (100% không phụ thuộc internet)
-        function createRomanticCardCanvas(index, customImgSrc = null, callback) {
-            const c = document.createElement('canvas');
-            c.width = 400; c.height = 480;
-            const ctx = c.getContext('2d');
-
-            function finishCard() {
-                // Viền Polaroid trắng sang trọng
-                ctx.strokeStyle = '#ff69b4';
-                ctx.lineWidth = 6;
-                ctx.stroke();
-
-                ctx.font = 'bold 24px "Dancing Script", cursive';
-                ctx.fillStyle = '#ff2a70';
-                ctx.textAlign = 'center';
-                const captions = [
-                    'Our Love Story ❤️',
-                    'Together Forever 💕',
-                    'Sweet Memories 🌹',
-                    'Destiny Of Life ✨',
-                    'Forever With You 💖'
+                // Màu hạt tình yêu: Hồng neon, đỏ ruby, hồng phấn, trắng kim cương
+                const colors = [
+                    '#ff2a70', '#ff007f', '#ff69b4', '#ffb6c1', '#ffffff', '#ff1493'
                 ];
-                ctx.fillText(captions[index % captions.length], 200, 442);
+                this.color = colors[Math.floor(Math.random() * colors.length)];
 
-                const texture = new THREE.CanvasTexture(c);
-                texture.generateMipmaps = false;
-                texture.minFilter = THREE.LinearFilter;
-                callback(texture);
+                // Tọa độ
+                this.hx = 0; this.hy = 0; // Tọa độ trên hình Trái tim
+                this.gx = 0; this.gy = 0; // Tọa độ trong Dải ngân hà
+                this.x = 0;  this.y = 0;  // Tọa độ hiện tại
             }
 
-            // Nền thẻ trắng ngà sang trọng
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.98)';
-            ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(8, 8, 384, 464, 20);
-            else ctx.rect(8, 8, 384, 464);
-            ctx.fill();
+            computeCoords(centerX, centerY, baseScale) {
+                // Công thức tham số Trái Tim Tình Yêu (Parametric Cardioid)
+                const t = this.t;
+                const heartX = 16 * Math.pow(Math.sin(t), 3);
+                const heartY = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                
+                this.hx = centerX + heartX * baseScale * this.radiusVar;
+                this.hy = centerY + heartY * baseScale * this.radiusVar;
 
-            // Nếu người dùng tải ảnh từ máy tính bảng:
-            if (customImgSrc) {
-                const img = new Image();
-                img.onload = () => {
-                    ctx.save();
-                    ctx.beginPath();
-                    if (ctx.roundRect) ctx.roundRect(18, 18, 364, 380, 14);
-                    else ctx.rect(18, 18, 364, 380);
-                    ctx.clip();
-
-                    const hRatio = 364 / img.width;
-                    const vRatio = 380 / img.height;
-                    const ratio = Math.max(hRatio, vRatio);
-                    const centerShift_x = 18 + (364 - img.width * ratio) / 2;
-                    const centerShift_y = 18 + (380 - img.height * ratio) / 2;
-                    ctx.drawImage(img, centerShift_x, centerShift_y, img.width * ratio, img.height * ratio);
-                    ctx.restore();
-
-                    finishCard();
-                };
-                img.onerror = () => {
-                    drawArtDefault(ctx, index);
-                    finishCard();
-                };
-                img.src = customImgSrc;
-            } else {
-                drawArtDefault(ctx, index);
-                finishCard();
+                // Dải ngân hà sao bung nở
+                const angle = this.t;
+                const galaxyR = (Math.min(width, height) * 0.28) + (Math.random() - 0.5) * 80;
+                this.gx = centerX + Math.cos(angle) * galaxyR * this.radiusVar;
+                this.gy = centerY + Math.sin(angle) * (galaxyR * 0.72) * this.radiusVar;
             }
         }
 
-        // Tự vẽ ảnh nghệ thuật lung linh sẵn sàng 100% offline
-        function drawArtDefault(ctx, index) {
-            const palettes = [
-                ['#ff5858', '#f857a6'],
-                ['#ee0979', '#ff6a00'],
-                ['#7f00ff', '#e100ff'],
-                ['#fa709a', '#fee140'],
-                ['#f093fb', '#f5576c']
-            ];
-            const p = palettes[index % palettes.length];
-            const grad = ctx.createLinearGradient(18, 18, 382, 398);
-            grad.addColorStop(0, p[0]);
-            grad.addColorStop(1, p[1]);
+        function calculateBasePositions() {
+            const centerX = width / 2;
+            const centerY = height / 2 - 10;
+            // Tỷ lệ trái tim theo kích thước màn hình
+            const baseScale = Math.min(width, height) / 38;
 
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(18, 18, 364, 380, 14);
-            else ctx.rect(18, 18, 364, 380);
-            ctx.fill();
-
-            // Biểu tượng trái tim nghệ thuật
-            ctx.font = '85px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            const icons = ['❤️', '💖', '🌹', '💕', '🥰'];
-            ctx.fillText(icons[index % icons.length], 200, 185);
-
-            ctx.font = 'bold 24px "Quicksand", sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = 'rgba(0,0,0,0.4)';
-            ctx.shadowBlur = 8;
-            const titles = ['Kỷ Niệm Ngày Đầu', 'Nụ Cười Của Em', 'Hạnh Phúc Giản Đơn', 'Ánh Sao Đêm', 'Mãi Mãi Yêu Em'];
-            ctx.fillText(titles[index % titles.length], 200, 275);
-            ctx.shadowBlur = 0;
+            particles.forEach(p => p.computeCoords(centerX, centerY, baseScale));
         }
 
-        function buildPhotoMeshes() {
-            while (photosGroup.children.length > 0) {
-                const child = photosGroup.children[0];
-                if (child.material) {
-                    if (child.material.map) child.material.map.dispose();
-                    child.material.dispose();
-                }
-                photosGroup.remove(child);
-            }
-            photoMeshes = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new HeartParticle(i));
+        }
+        calculateBasePositions();
+
+        // Khởi tạo vị trí ban đầu
+        particles.forEach(p => {
+            p.x = p.hx;
+            p.y = p.hy;
+        });
+
+        /* -------------------------------------------------------------
+           2. KHUNG ẢNH NGHỆ THUẬT (1 - 5 ẢNH VỚI CSS GPU COMPOSITING)
+        ------------------------------------------------------------- */
+        const photosContainer = document.getElementById('photosContainer');
+        let userPhotos = []; // Danh sách ảnh người dùng tải lên
+        let cardElements = [];
+
+        const defaultArtCards = [
+            { icon: '❤️', title: 'Kỷ Niệm Ngày Đầu', caption: 'Our Love Story ❤️', grad: 'linear-gradient(135deg, #ff416c, #ff4b2b)' },
+            { icon: '💕', title: 'Nụ Cười Của Em', caption: 'Together Forever 💕', grad: 'linear-gradient(135deg, #ee0979, #ff6a00)' },
+            { icon: '🌹', title: 'Hạnh Phúc Giản Đơn', caption: 'Sweet Memories 🌹', grad: 'linear-gradient(135deg, #f857a6, #ff5858)' },
+            { icon: '✨', title: 'Ánh Sao Trong Đêm', caption: 'Destiny Of Life ✨', grad: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)' },
+            { icon: '💖', title: 'Mãi Mãi Bên Nhau', caption: 'Forever With You 💖', grad: 'linear-gradient(135deg, #f093fb, #f5576c)' }
+        ];
+
+        function renderPhotoCardsDOM() {
+            photosContainer.innerHTML = '';
+            cardElements = [];
 
             const count = currentPhotoCount;
             for (let i = 0; i < count; i++) {
-                const mat = new THREE.MeshBasicMaterial({
-                    transparent: true,
-                    opacity: 0,
-                    side: THREE.DoubleSide
+                const card = document.createElement('div');
+                card.className = 'photo-card-item';
+                card.dataset.index = i;
+
+                const customSrc = userPhotos.length > 0 ? userPhotos[i % userPhotos.length] : null;
+                const def = defaultArtCards[i % defaultArtCards.length];
+
+                let imgContentHtml = '';
+                if (customSrc) {
+                    imgContentHtml = `<img src="${customSrc}" alt="Love Memory">`;
+                } else {
+                    imgContentHtml = `
+                        <div class="card-default-art" style="background: ${def.grad}">
+                            <div class="card-default-icon">${def.icon}</div>
+                            <div class="card-default-msg">${def.title}</div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-img-wrap">
+                        ${imgContentHtml}
+                    </div>
+                    <div class="card-caption-bar">
+                        <span>${def.caption}</span>
+                    </div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!isZoomed || currentPhotoIndex !== i) {
+                        currentPhotoIndex = i;
+                        isZoomed = true;
+                        isBung = true;
+                        targetMorph = 1.0;
+                        document.getElementById('bungText').innerText = "Gom Tim";
+                        updateStatus(`☝️ Đang zoom ảnh ${i + 1}/${count} (Vuốt để đổi)`);
+                        playChimeSound();
+                    } else {
+                        // Nếu chạm vào ảnh đang zoom -> Thu về vòng tròn
+                        isZoomed = false;
+                        updateStatus(`🖐️ Đã thu về vòng ảnh (${count} ảnh)`);
+                    }
+                    updateCardTransforms();
                 });
 
-                const mesh = new THREE.Mesh(sharedGeo, mat);
-                mesh.scale.set(0, 0, 0);
-                mesh.userData = { index: i };
-
-                mesh.callback = () => {
-                    currentPhotoIndex = i;
-                    isZoomed = true;
-                    isBung = true;
-                    updatePillUI('ONE_FINGER');
-                    updateStatusBadge(`☝️ Đang zoom ảnh ${i + 1}/${count} (Vuốt để đổi)`);
-                    playChimeSound();
-                };
-
-                photosGroup.add(mesh);
-                photoMeshes.push(mesh);
-
-                const customSrc = userCustomPhotos.length > 0 ? userCustomPhotos[i % userCustomPhotos.length] : null;
-                createRomanticCardCanvas(i, customSrc, (tex) => {
-                    mat.map = tex;
-                    mat.needsUpdate = true;
-                });
+                photosContainer.appendChild(card);
+                cardElements.push(card);
             }
+
+            updateCardTransforms();
         }
 
-        buildPhotoMeshes();
+        renderPhotoCardsDOM();
 
-        // Tải ảnh từ thư viện ảnh máy tính bảng Android
+        // Cập nhật vị trí các khung ảnh bằng CSS transform 3D GPU siêu mượt
+        function updateCardTransforms() {
+            const count = cardElements.length;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radiusX = Math.min(width, height) * 0.42;
+            const radiusY = Math.min(width, height) * 0.28;
+
+            cardElements.forEach((card, i) => {
+                if (!isBung) {
+                    // 1. CHƯA BUNG: Ẩn hoàn toàn ở tâm (scale = 0)
+                    card.style.transform = `translate3d(0, 0, 0) scale(0)`;
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    card.classList.remove('zoomed');
+                } 
+                else if (isZoomed) {
+                    // 2. KHI ZOOM: Ảnh được chọn phóng to giữa màn hình, các ảnh khác dạt sang hai bên
+                    const rel = i - currentPhotoIndex;
+                    card.style.pointerEvents = 'auto';
+
+                    if (rel === 0) {
+                        // Ảnh chính giữa
+                        card.style.transform = `translate3d(0, -10px, 0) scale(1.22)`;
+                        card.style.opacity = '1';
+                        card.style.zIndex = '50';
+                        card.classList.add('zoomed');
+                    } else {
+                        // Các ảnh khác xếp thành carousel phía sau
+                        const shiftX = rel * (width < 768 ? 160 : 220);
+                        const scale = Math.max(0.65, 0.88 - Math.abs(rel) * 0.15);
+                        const opacity = Math.max(0.2, 0.65 - Math.abs(rel) * 0.25);
+                        card.style.transform = `translate3d(${shiftX}px, 20px, 0) scale(${scale})`;
+                        card.style.opacity = opacity.toString();
+                        card.style.zIndex = (30 - Math.abs(rel)).toString();
+                        card.classList.remove('zoomed');
+                    }
+                } 
+                else {
+                    // 3. KHI BUNG: Các ảnh xếp vòng tròn quanh tâm dải ngân hà
+                    card.style.pointerEvents = 'auto';
+                    card.classList.remove('zoomed');
+                    card.style.zIndex = '20';
+
+                    let tx = 0, ty = 0, rot = 0;
+                    if (count === 1) {
+                        tx = 0; ty = 0; rot = 0;
+                    } else {
+                        const angle = (i * (Math.PI * 2) / count) - Math.PI / 2;
+                        tx = Math.cos(angle) * radiusX;
+                        ty = Math.sin(angle) * radiusY;
+                        rot = Math.cos(angle) * 8; // Nghiêng nhẹ tự nhiên
+                    }
+
+                    card.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(0.92) rotate(${rot}deg)`;
+                    card.style.opacity = '1';
+                }
+            });
+        }
+
+        // Tải ảnh từ thư viện
         document.getElementById('photoMultiInput').addEventListener('change', (e) => {
             const files = Array.from(e.target.files).slice(0, 5);
             if (files.length > 0) {
-                userCustomPhotos = files.map(file => URL.createObjectURL(file));
+                userPhotos = files.map(f => URL.createObjectURL(f));
                 currentPhotoCount = files.length;
                 currentPhotoIndex = 0;
-                smoothCarouselPos = 0;
-                updateCountButtonsUI(currentPhotoCount);
-                buildPhotoMeshes();
-                updateStatusBadge(`Đã nạp ${files.length} ảnh của bạn ❤️ (Chạm để xem)`);
+                updateCountUI(currentPhotoCount);
+                renderPhotoCardsDOM();
+                updateStatus(`Đã nạp ${files.length} ảnh của bạn ❤️ (Chạm để xem)`);
             }
         });
 
         function setPhotoCount(cnt) {
             currentPhotoCount = Math.min(Math.max(1, cnt), 5);
             currentPhotoIndex = Math.min(currentPhotoIndex, currentPhotoCount - 1);
-            updateCountButtonsUI(currentPhotoCount);
-            buildPhotoMeshes();
-            updateStatusBadge(`Đang chọn hiển thị ${currentPhotoCount} ảnh`);
+            updateCountUI(currentPhotoCount);
+            renderPhotoCardsDOM();
+            updateStatus(`Đang chọn hiển thị ${currentPhotoCount} ảnh`);
         }
 
-        function updateCountButtonsUI(cnt) {
+        function updateCountUI(cnt) {
             document.querySelectorAll('.cnt-btn').forEach((b, idx) => {
                 b.classList.toggle('active', (idx + 1) === cnt);
             });
         }
 
-        function updateStatusBadge(text) {
-            const b = document.getElementById('statusBadge');
-            b.innerText = text;
-        }
-
-        function updatePillUI(gesture) {
-            document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
-            if (gesture === 'FIST') document.getElementById('pill-fist').classList.add('active');
-            if (gesture === 'OPEN_PALM') document.getElementById('pill-open').classList.add('active');
-            if (gesture === 'ONE_FINGER') document.getElementById('pill-one').classList.add('active');
-            if (gesture === 'TWO_FINGERS') document.getElementById('pill-two').classList.add('active');
+        function updateStatus(text) {
+            document.getElementById('statusBadge').innerHTML = `
+                <i class="fa-solid fa-heart" style="color:#ff2a70;"></i>
+                <span>${text}</span>
+            `;
         }
 
         function toggleBungMode() {
             if (!isBung) {
                 isBung = true;
                 isZoomed = false;
-                document.getElementById('bungBtnText').innerText = "Gom Tim";
-                updatePillUI('OPEN_PALM');
-                updateStatusBadge(`🖐️ Trái tim bung & ${currentPhotoCount} ảnh quanh tâm`);
+                targetMorph = 1.0;
+                document.getElementById('bungText').innerText = "Gom Tim";
+                updateStatus(`🖐️ Trái tim bung & ${currentPhotoCount} ảnh nghệ thuật`);
             } else {
                 isBung = false;
                 isZoomed = false;
-                document.getElementById('bungBtnText').innerText = "Bung Tim";
-                updatePillUI('FIST');
-                updateStatusBadge("✊ Trái Tim 3D (Chạm màn hình để bung)");
+                targetMorph = 0.0;
+                document.getElementById('bungText').innerText = "Bung Tim";
+                updateStatus("✊ Trái Tim Tình Yêu (Chạm để bung ảnh)");
             }
+            updateCardTransforms();
         }
 
-        function triggerPill(gesture) {
-            updatePillUI(gesture);
-            if (gesture === 'FIST') {
-                isBung = false;
-                isZoomed = false;
-                closeLoveModal();
-                document.getElementById('bungBtnText').innerText = "Bung Tim";
-                updateStatusBadge("✊ Nắm tay: Gom Trái Tim 3D");
-            } else if (gesture === 'OPEN_PALM') {
-                isBung = true;
-                isZoomed = false;
-                closeLoveModal();
-                document.getElementById('bungBtnText').innerText = "Gom Tim";
-                updateStatusBadge(`🖐️ Xòe tay: Bung Trái Tim & ${currentPhotoCount} ảnh`);
-            } else if (gesture === 'ONE_FINGER') {
-                isBung = true;
-                isZoomed = true;
-                closeLoveModal();
-                updateStatusBadge(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} ở giữa`);
-                playChimeSound();
-            } else if (gesture === 'TWO_FINGERS') {
-                updateStatusBadge("✌️ 2 Ngón tay: ANH YÊU EM ❤️");
+        /* -------------------------------------------------------------
+           3. VÒNG LẶP CANVAS 2D ANIMATION (120 FPS SUPREME SMOOTH)
+        ------------------------------------------------------------- */
+        let lastTime = performance.now();
+        let beatTime = 0;
+
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+            beatTime += dt;
+
+            // Xóa canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Cập nhật hệ số chuyển đổi morphing (tim <-> ngân hà)
+            morphState += (targetMorph - morphState) * 0.09;
+
+            // Hiệu ứng nhịp đập trái tim tình yêu (thump-thump)
+            let pulseScale = 1.0;
+            if (!isBung) {
+                const beatCycle = (beatTime * 1.8) % 1.0;
+                if (beatCycle < 0.15) {
+                    pulseScale = 1.0 + Math.sin(beatCycle / 0.15 * Math.PI) * 0.08;
+                } else if (beatCycle >= 0.22 && beatCycle < 0.35) {
+                    pulseScale = 1.0 + Math.sin((beatCycle - 0.22) / 0.13 * Math.PI) * 0.04;
+                }
+            }
+
+            const centerX = width / 2;
+            const centerY = height / 2 - 10;
+
+            // Vẽ toàn bộ các hạt tình yêu
+            const len = particles.length;
+            for (let i = 0; i < len; i++) {
+                const p = particles[i];
+
+                // Nội suy vị trí từ Tim sang Ngân hà
+                const targetX = p.hx + (p.gx - p.hx) * morphState;
+                const targetY = p.hy + (p.gy - p.hy) * morphState;
+
+                p.x += (targetX - p.x) * 0.1;
+                p.y += (targetY - p.y) * 0.1;
+
+                // Áp dụng nhịp đập khi ở dạng tim
+                let renderX = p.x;
+                let renderY = p.y;
+                if (!isBung && pulseScale !== 1.0) {
+                    renderX = centerX + (p.x - centerX) * pulseScale;
+                    renderY = centerY + (p.y - centerY) * pulseScale;
+                }
+
+                // Lấp lánh lung linh
+                const sparkle = 0.7 + Math.sin(now * 0.005 + p.sparklePhase) * 0.3;
+                const curSize = p.size * sparkle;
+
+                ctx.beginPath();
+                ctx.arc(renderX, renderY, curSize, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha * sparkle;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+
+        requestAnimationFrame(animate);
+
+        /* -------------------------------------------------------------
+           4. ĐIỀU KHIỂN CẢM ỨNG 120HZ (CHẠM, VUỐT CAROUSEL, DOUBLE-TAP)
+        ------------------------------------------------------------- */
+        let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+        let lastTapTime = 0;
+
+        window.addEventListener('pointerdown', (e) => {
+            touchStartX = e.clientX;
+            touchStartY = e.clientY;
+            touchStartTime = Date.now();
+
+            // Double tap kích hoạt tỏ tình
+            const curTime = Date.now();
+            if (curTime - lastTapTime < 320) {
                 triggerLoveConfession();
             }
+            lastTapTime = curTime;
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            const diffX = e.clientX - touchStartX;
+            const diffY = e.clientY - touchStartY;
+            const duration = Date.now() - touchStartTime;
+
+            // Vuốt ngang lướt xem ảnh (Swipe Carousel)
+            if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) && duration < 450) {
+                if (!isBung) {
+                    isBung = true;
+                    targetMorph = 1.0;
+                    document.getElementById('bungText').innerText = "Gom Tim";
+                }
+                isZoomed = true;
+
+                if (diffX < 0) {
+                    // Vuốt sang trái -> Ảnh tiếp theo
+                    currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
+                } else {
+                    // Vuốt sang phải -> Ảnh trước
+                    currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
+                }
+                playChimeSound();
+                updateStatus(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} (Vuốt để đổi)`);
+                updateCardTransforms();
+            } 
+            else if (Math.abs(diffX) < 12 && Math.abs(diffY) < 12 && duration < 300) {
+                // Chạm nhẹ (Tap) vào màn hình trống
+                const elem = document.elementFromPoint(e.clientX, e.clientY);
+                if (elem && (elem.closest('.bottom-dock') || elem.closest('.top-nav') || elem.closest('.photo-card-item') || elem.closest('.confession-overlay') || elem.closest('.webcam-hud'))) {
+                    return;
+                }
+
+                if (!isBung) {
+                    toggleBungMode();
+                } else if (isZoomed) {
+                    isZoomed = false;
+                    updateStatus(`🖐️ Đã thu về vòng ảnh (${currentPhotoCount} ảnh)`);
+                    updateCardTransforms();
+                }
+            }
+        });
+
+        /* -------------------------------------------------------------
+           5. MEDIAPIPE AI CAMERA CỬ CHỈ TAY (BẬT/TẮT TÙY CHỌN - 100% MƯỢT)
+        ------------------------------------------------------------- */
+        let isCameraActive = false;
+        let cameraInstance = null;
+        let handsInstance = null;
+        let lastDetectedGesture = '';
+        let gestureHoldFrames = 0;
+        let lastHandX = 0.5;
+
+        function toggleCameraTracking() {
+            const btn = document.getElementById('cameraToggleBtn');
+            const btnText = document.getElementById('cameraBtnText');
+            const hud = document.getElementById('webcamHud');
+
+            if (!isCameraActive) {
+                btnText.innerText = "Đang kết nối...";
+                startMediaPipeCamera().then(() => {
+                    isCameraActive = true;
+                    hud.style.display = 'block';
+                    btnText.innerText = "Tắt Camera";
+                    btn.classList.remove('secondary');
+                    updateStatus("📷 Camera AI sẵn sàng! Dùng cử chỉ tay từ xa");
+                }).catch((err) => {
+                    btnText.innerText = "Camera AI";
+                    alert("Không thể mở camera. Bạn có thể sử dụng cảm ứng chạm/vuốt 120Hz siêu mượt trên màn hình!");
+                });
+            } else {
+                stopMediaPipeCamera();
+                isCameraActive = false;
+                hud.style.display = 'none';
+                btnText.innerText = "Camera AI";
+                btn.classList.add('secondary');
+                updateStatus("Đã tắt Camera, tiếp tục dùng cảm ứng chạm");
+            }
         }
 
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {});
-                document.getElementById('fsIcon').className = 'fa-solid fa-compress';
-            } else {
-                document.exitFullscreen().catch(() => {});
-                document.getElementById('fsIcon').className = 'fa-solid fa-expand';
+        async function startMediaPipeCamera() {
+            const video = document.getElementById('webcamVideo');
+            const hudStatus = document.getElementById('hudStatus');
+
+            if (!handsInstance) {
+                handsInstance = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+                handsInstance.setOptions({
+                    maxNumHands: 1,
+                    modelComplexity: 0,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                handsInstance.onResults((res) => {
+                    if (!res.multiHandLandmarks || res.multiHandLandmarks.length === 0) {
+                        hudStatus.innerText = "Đang tìm tay...";
+                        return;
+                    }
+
+                    const lm = res.multiHandLandmarks[0];
+                    const handX = 1 - lm[9].x;
+
+                    // Nhận diện ngón tay
+                    const isIndex = Math.hypot(lm[8].x - lm[0].x, lm[8].y - lm[0].y) > Math.hypot(lm[6].x - lm[0].x, lm[6].y - lm[0].y) * 1.15;
+                    const isMiddle = Math.hypot(lm[12].x - lm[0].x, lm[12].y - lm[0].y) > Math.hypot(lm[10].x - lm[0].x, lm[10].y - lm[0].y) * 1.15;
+                    const isRing = Math.hypot(lm[16].x - lm[0].x, lm[16].y - lm[0].y) > Math.hypot(lm[14].x - lm[0].x, lm[14].y - lm[0].y) * 1.15;
+                    const isPinky = Math.hypot(lm[20].x - lm[0].x, lm[20].y - lm[0].y) > Math.hypot(lm[18].x - lm[0].x, lm[18].y - lm[0].y) * 1.15;
+
+                    let detected = '';
+                    if (isIndex && isMiddle && !isRing && !isPinky) {
+                        detected = 'TWO_FINGERS';
+                        hudStatus.innerText = "✌️ 2 Ngón: Tỏ tình";
+                    } else if (isIndex && !isMiddle && !isRing && !isPinky) {
+                        detected = 'ONE_FINGER';
+                        hudStatus.innerText = "☝️ 1 Ngón: Zoom ảnh";
+                    } else if (isIndex && isMiddle && isRing && isPinky) {
+                        detected = 'OPEN_PALM';
+                        hudStatus.innerText = "🖐️ Xòe tay: Bung tim";
+                    } else if (!isIndex && !isMiddle && !isRing && !isPinky) {
+                        detected = 'FIST';
+                        hudStatus.innerText = "✊ Nắm tay: Gom tim";
+                    }
+
+                    // Vuốt tay trong không khí để đổi ảnh khi zoom
+                    if (isZoomed) {
+                        const deltaX = handX - lastHandX;
+                        if (Math.abs(deltaX) > 0.05) {
+                            if (deltaX > 0.05) {
+                                currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
+                            } else {
+                                currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
+                            }
+                            playChimeSound();
+                            updateCardTransforms();
+                            lastHandX = handX;
+                        }
+                    }
+                    lastHandX = handX;
+
+                    if (detected) {
+                        if (detected === lastDetectedGesture) {
+                            gestureHoldFrames++;
+                            if (gestureHoldFrames === 3) {
+                                if (detected === 'FIST') {
+                                    isBung = false; isZoomed = false; targetMorph = 0.0;
+                                    closeLoveModal();
+                                    document.getElementById('bungText').innerText = "Bung Tim";
+                                    updateStatus("✊ Nắm tay: Gom Trái Tim");
+                                    updateCardTransforms();
+                                } else if (detected === 'OPEN_PALM') {
+                                    isBung = true; isZoomed = false; targetMorph = 1.0;
+                                    closeLoveModal();
+                                    document.getElementById('bungText').innerText = "Gom Tim";
+                                    updateStatus(`🖐️ Xòe tay: Bung Trái Tim & ${currentPhotoCount} ảnh`);
+                                    updateCardTransforms();
+                                } else if (detected === 'ONE_FINGER') {
+                                    isBung = true; isZoomed = true; targetMorph = 1.0;
+                                    closeLoveModal();
+                                    updateStatus(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount}`);
+                                    playChimeSound();
+                                    updateCardTransforms();
+                                } else if (detected === 'TWO_FINGERS') {
+                                    updateStatus("✌️ 2 Ngón tay: ANH YÊU EM ❤️");
+                                    triggerLoveConfession();
+                                }
+                            }
+                        } else {
+                            lastDetectedGesture = detected;
+                            gestureHoldFrames = 0;
+                        }
+                    }
+                });
+            }
+
+            let isProcessing = false;
+            let lastProcessTime = 0;
+
+            cameraInstance = new Camera(video, {
+                onFrame: async () => {
+                    const now = performance.now();
+                    // 12 FPS AI inference cực nhẹ không lo nóng máy
+                    if (!isProcessing && (now - lastProcessTime > 80)) {
+                        isProcessing = true;
+                        lastProcessTime = now;
+                        try {
+                            await handsInstance.send({ image: video });
+                        } catch (e) {}
+                        isProcessing = false;
+                    }
+                },
+                width: 240, height: 180
+            });
+
+            await cameraInstance.start();
+        }
+
+        function stopMediaPipeCamera() {
+            if (cameraInstance) {
+                try {
+                    const video = document.getElementById('webcamVideo');
+                    if (video.srcObject) {
+                        video.srcObject.getTracks().forEach(t => t.stop());
+                    }
+                } catch(e) {}
             }
         }
 
         /* -------------------------------------------------------------
-           3. AUDIO & TỎ TÌNH
+           6. ÂM THANH & TỎ TÌNH LÃNG MẠN
         ------------------------------------------------------------- */
         const bgMusic = document.getElementById('bgMusic');
         const musicText = document.getElementById('musicText');
+
         function toggleMusic() {
             if (bgMusic.paused) {
                 bgMusic.play().then(() => {
@@ -633,6 +1095,7 @@
                 document.getElementById('topMusicIcon').style.color = '#ff94c2';
             }
         }
+
         document.getElementById('audioInput').addEventListener('change', (e) => {
             if (e.target.files[0]) {
                 bgMusic.src = URL.createObjectURL(e.target.files[0]);
@@ -641,11 +1104,6 @@
                 document.getElementById('topMusicIcon').style.color = '#ff2a70';
             }
         });
-
-        function editLoveText() {
-            const val = prompt("Nhập lời tỏ tình / yêu thương:", document.getElementById('loveMainText').innerText);
-            if (val) document.getElementById('loveMainText').innerText = val;
-        }
 
         let audioCtx = null;
         function playChimeSound() {
@@ -657,14 +1115,14 @@
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.07);
-                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.07);
-                    gain.gain.exponentialRampToValueAtTime(0.1, audioCtx.currentTime + idx * 0.07 + 0.02);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.07 + 0.45);
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.065);
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.065);
+                    gain.gain.exponentialRampToValueAtTime(0.09, audioCtx.currentTime + idx * 0.065 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.065 + 0.42);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
-                    osc.start(audioCtx.currentTime + idx * 0.07);
-                    osc.stop(audioCtx.currentTime + idx * 0.07 + 0.5);
+                    osc.start(audioCtx.currentTime + idx * 0.065);
+                    osc.stop(audioCtx.currentTime + idx * 0.065 + 0.45);
                 });
             } catch (err) {}
         }
@@ -677,6 +1135,11 @@
 
         function closeLoveModal() {
             document.getElementById('loveModal').classList.remove('active');
+        }
+
+        function editLoveText() {
+            const val = prompt("Nhập lời tỏ tình yêu thương:", document.getElementById('loveMainText').innerText);
+            if (val) document.getElementById('loveMainText').innerText = val;
         }
 
         function spawnHeartsExplosion() {
@@ -693,232 +1156,19 @@
                     h.style.setProperty('--ty', `${-Math.random() * 550 - 120}px`);
                     h.style.setProperty('--rot', `${(Math.random() - 0.5) * 120}deg`);
                     document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 2200);
+                    setTimeout(() => h.remove(), 2400);
                 }, i * 35);
             }
         }
 
-        /* -------------------------------------------------------------
-           4. RENDER LOOP (120 FPS SUPREME SMOOTH TRÊN SAMSUNG TAB S8+)
-        ------------------------------------------------------------- */
-        let targetRotX = 0, targetRotY = 0;
-        let clock = new THREE.Clock();
-        let currentMorph = 0.0; // 0.0: Heart, 1.0: Galaxy
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            const elapsedTime = clock.getElapsedTime();
-            const targetMorph = isBung ? 1.0 : 0.0;
-            const morphDiff = Math.abs(targetMorph - currentMorph);
-
-            // ⭐ SIÊU TỐI ƯU HÓA: CHỈ cập nhật buffer đỉnh khi đang chuyển đổi bung/gom ⭐
-            // Giúp giải phóng 98% tải CPU và GPU, giữ trọn 120 FPS không giật lag!
-            if (morphDiff > 0.001) {
-                currentMorph += (targetMorph - currentMorph) * 0.08;
-                const positions = particleGeometry.attributes.position.array;
-                const len = PARTICLE_COUNT * 3;
-                for (let i = 0; i < len; i += 3) {
-                    positions[i] = heartPositions[i] + (galaxyPositions[i] - heartPositions[i]) * currentMorph;
-                    positions[i + 1] = heartPositions[i + 1] + (galaxyPositions[i + 1] - heartPositions[i + 1]) * currentMorph;
-                    positions[i + 2] = heartPositions[i + 2] + (galaxyPositions[i + 2] - heartPositions[i + 2]) * currentMorph;
-                }
-                particleGeometry.attributes.position.needsUpdate = true;
-            }
-
-            // Nhịp tim đập 3D thực thi 100% bằng ma trận GPU (Zero CPU buffer upload):
-            if (!isBung) {
-                const beatScale = 1 + 0.06 * Math.sin(elapsedTime * 6) + 0.03 * Math.sin(elapsedTime * 12);
-                particleSystem.scale.set(beatScale, beatScale, beatScale);
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-compress';
             } else {
-                particleSystem.scale.set(1, 1, 1);
+                document.exitFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-expand';
             }
-
-            // Xoay nhẹ tự nhiên + phản hồi cảm ứng
-            particleSystem.rotation.x += (targetRotX - particleSystem.rotation.x) * 0.06;
-            particleSystem.rotation.y += (targetRotY - particleSystem.rotation.y) * 0.06 + 0.0015;
-
-            if (isZoomed) {
-                photosGroup.rotation.x += (targetRotX * 0.12 - photosGroup.rotation.x) * 0.08;
-                photosGroup.rotation.y += (targetRotY * 0.12 - photosGroup.rotation.y) * 0.08;
-                smoothCarouselPos += (currentPhotoIndex - smoothCarouselPos) * 0.12;
-            } else {
-                photosGroup.rotation.x = particleSystem.rotation.x;
-                photosGroup.rotation.y = particleSystem.rotation.y;
-            }
-
-            const count = photoMeshes.length;
-
-            photoMeshes.forEach((mesh, i) => {
-                let tx = 0, ty = 0, tz = 0, trotY = 0, ts = 1, topa = 1;
-
-                if (!isBung) {
-                    // MẶC ĐỊNH CHƯA BUNG: ẢNH GIẤU HOÀN TOÀN Ở TÂM, SCALE = 0
-                    tx = 0; ty = 0; tz = 0; trotY = 0; ts = 0; topa = 0;
-                } 
-                else if (isZoomed) {
-                    // KHI ZOOM: ẢNH PHÓNG TO GIỮ NGUYÊN GIỮA MÀN HÌNH
-                    const rel = i - smoothCarouselPos;
-                    tx = rel * 34;
-                    tz = 44 - Math.min(Math.abs(rel), 3.0) * 22;
-                    ty = -Math.pow(rel, 2) * 1.0;
-                    trotY = -Math.tanh(rel) * 0.55;
-                    ts = Math.max(0.35, 1.68 - Math.abs(rel) * 0.52);
-                    topa = Math.max(0.18, 1.0 - Math.abs(rel) * 0.42);
-                } 
-                else {
-                    // KHI BUNG TRÁI TIM: BỐ CỤC NHƯ CŨ (TẤT CẢ ẢNH NẰM TRONG VÒNG QUỸ ĐẠO, KHÔNG DI CHUYỂN)
-                    if (count === 1) {
-                        tx = 0; ty = 0; tz = 8; ts = 1.15; trotY = 0; topa = 1;
-                    } else if (count === 2) {
-                        tx = (i === 0 ? -24 : 24); ty = 0; tz = 4;
-                        ts = 0.95; trotY = (i === 0 ? 0.25 : -0.25); topa = 1;
-                    } else if (count === 3) {
-                        const angle = (i * (Math.PI * 2) / 3) - Math.PI / 2;
-                        tx = Math.cos(angle) * 32; ty = Math.sin(angle) * 22; tz = 0;
-                        ts = 0.85; trotY = Math.atan2(Math.cos(angle), 3) * 0.5; topa = 1;
-                    } else if (count === 4) {
-                        const angles = [-Math.PI * 0.75, -Math.PI * 0.25, Math.PI * 0.25, Math.PI * 0.75];
-                        const a = angles[i];
-                        tx = Math.cos(a) * 36; ty = Math.sin(a) * 24; tz = (i % 2 === 0 ? 5 : -5);
-                        ts = 0.82; trotY = Math.cos(a) * 0.3; topa = 1;
-                    } else {
-                        const angle = (i * (Math.PI * 2) / 5) - Math.PI / 2;
-                        tx = Math.cos(angle) * 38; ty = Math.sin(angle) * 26; tz = Math.sin(i * 2) * 5;
-                        ts = 0.82; trotY = Math.cos(angle) * 0.35; topa = 1;
-                    }
-                    ty += Math.sin(elapsedTime * 2 + i) * 0.4;
-                }
-
-                mesh.position.x += (tx - mesh.position.x) * 0.1;
-                mesh.position.y += (ty - mesh.position.y) * 0.1;
-                mesh.position.z += (tz - mesh.position.z) * 0.1;
-
-                const curS = mesh.scale.x + (ts - mesh.scale.x) * 0.1;
-                mesh.scale.set(curS, curS, curS);
-
-                mesh.rotation.y += (trotY - mesh.rotation.y) * 0.1;
-                mesh.material.opacity += (topa - mesh.material.opacity) * 0.1;
-            });
-
-            renderer.render(scene, camera3D);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera3D.aspect = window.innerWidth / window.innerHeight;
-            camera3D.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        /* -------------------------------------------------------------
-           5. ĐIỀU KHIỂN CẢM ỨNG CHẠM & VUỐT SIÊU NHẠY CHO TAB S8+
-        ------------------------------------------------------------- */
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchStartTime = 0;
-        let lastTapTime = 0;
-        let isTouching = false;
-
-        window.addEventListener('pointerdown', (e) => {
-            touchStartX = e.clientX;
-            touchStartY = e.clientY;
-            touchStartTime = Date.now();
-            isTouching = true;
-
-            // Double tap kích hoạt Tỏ tình
-            const currentTime = Date.now();
-            if (currentTime - lastTapTime < 300) {
-                triggerLoveConfession();
-            }
-            lastTapTime = currentTime;
-        });
-
-        window.addEventListener('pointermove', (e) => {
-            if (!isTouching) return;
-            const diffX = e.clientX - touchStartX;
-            const diffY = e.clientY - touchStartY;
-
-            if (!isZoomed && isBung) {
-                targetRotY = (diffX / window.innerWidth) * 2.5;
-                targetRotX = (diffY / window.innerHeight) * 1.5;
-            }
-        });
-
-        window.addEventListener('pointerup', (e) => {
-            if (!isTouching) return;
-            isTouching = false;
-            const diffX = e.clientX - touchStartX;
-            const diffY = e.clientY - touchStartY;
-            const duration = Date.now() - touchStartTime;
-
-            // Nếu vuốt ngang dứt khoát (> 35px)
-            if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY) && duration < 500) {
-                if (!isBung) {
-                    isBung = true;
-                    document.getElementById('bungBtnText').innerText = "Gom Tim";
-                }
-                isZoomed = true;
-                updatePillUI('ONE_FINGER');
-
-                if (diffX < 0) {
-                    // Vuốt sang trái -> Ảnh tiếp theo
-                    currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
-                } else {
-                    // Vuốt sang phải -> Ảnh trước
-                    currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
-                }
-                playChimeSound();
-                updateStatusBadge(`☝️ Zoom ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} (Vuốt để đổi)`);
-            } else if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10 && duration < 300) {
-                // Chạm nhẹ (Tap) vào màn hình
-                handleScreenTap(e.clientX, e.clientY);
-            }
-        });
-
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        function handleScreenTap(clientX, clientY) {
-            // Kiểm tra click vào nút UI
-            const elem = document.elementFromPoint(clientX, clientY);
-            if (elem && (elem.closest('.bottom-dock') || elem.closest('.love-confession-overlay') || elem.closest('.top-bar') || elem.closest('.gesture-pill-dock'))) {
-                return;
-            }
-
-            // Raycaster kiểm tra chạm vào ảnh 3D
-            mouse.x = (clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera3D);
-            const intersects = raycaster.intersectObjects(photoMeshes);
-
-            if (intersects.length > 0) {
-                const clickedMesh = intersects[0].object;
-                if (clickedMesh.callback) clickedMesh.callback();
-            } else {
-                if (!isBung) {
-                    // Nếu đang ở Trái Tim: Chạm là Bung Tim!
-                    toggleBungMode();
-                } else if (isZoomed) {
-                    // Nếu đang Zoom: Chạm ra ngoài là thu ảnh về lại vòng tròn
-                    isZoomed = false;
-                    updatePillUI('OPEN_PALM');
-                    updateStatusBadge(`🖐️ Trái tim bung & ${currentPhotoCount} ảnh`);
-                }
-            }
-        }
-
-        /* -------------------------------------------------------------
-           6. CẢM BIẾN NGHIÊNG CON QUAY HỒI CHUYỂN (GYROSCOPE HOLOGRAM)
-        ------------------------------------------------------------- */
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (e) => {
-                if (!isZoomed && isBung && e.gamma !== null && e.beta !== null) {
-                    // Nghiêng máy tính bảng để xoay góc nhìn 3D Hologram sống động
-                    targetRotY = (e.gamma / 45) * 1.5;
-                    targetRotX = ((e.beta - 45) / 45) * 1.0;
-                }
-            }, true);
         }
     </script>
 </body>
