@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0d0214">
+    <title>Love Gallery - iOS Liquid Glass Edition</title>
+
+    <!-- Apple SF Pro Inspired & Romantic Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- MediaPipe AI Hands CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --ios-glass-bg: rgba(255, 255, 255, 0.08);
+            --ios-glass-border: rgba(255, 255, 255, 0.22);
+            --ios-glass-shadow: 0 20px 45px rgba(0, 0, 0, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+            --ios-pink-accent: #ff2d60;
+            --ios-spring: cubic-bezier(0.32, 0.72, 0, 1);
+            --ios-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.25);
+        }
+
+        * {
+            box-sizing: border-box; margin: 0; padding: 0;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: none;
+        }
+
+        body {
+            background: #09010e;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #ffffff;
+            position: relative;
+        }
+
+        /* iOS Fluid Liquid Nebula Background */
+        .liquid-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            opacity: 0.45;
+            z-index: 1;
+            will-change: transform;
+            animation: orbFloat 12s infinite alternate ease-in-out;
+        }
+        .orb-1 {
+            width: 60vw; height: 60vw;
+            top: -10vw; left: -10vw;
+            background: radial-gradient(circle, #ff1493 0%, rgba(255, 20, 147, 0) 70%);
+        }
+        .orb-2 {
+            width: 65vw; height: 65vw;
+            bottom: -15vw; right: -10vw;
+            background: radial-gradient(circle, #7b1fa2 0%, rgba(123, 31, 162, 0) 70%);
+            animation-delay: -6s;
+        }
+        .orb-3 {
+            width: 45vw; height: 45vw;
+            top: 35%; left: 30%;
+            background: radial-gradient(circle, #ff007f 0%, rgba(255, 0, 127, 0) 70%);
+            opacity: 0.25;
+            animation-duration: 9s;
+        }
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(0.95); }
+            100% { transform: translate(40px, 30px) scale(1.12); }
+        }
+
+        /* 2D Liquid Canvas */
+        #liquidCanvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 2;
+        }
+
+        /* iOS Dynamic Island Status Bar */
+        .dynamic-island-wrap {
+            position: absolute;
+            top: 18px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .dynamic-island {
+            background: rgba(18, 5, 25, 0.78);
+            backdrop-filter: blur(35px) saturate(190%);
+            -webkit-backdrop-filter: blur(35px) saturate(190%);
+            border: 1px solid var(--ios-glass-border);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+            border-radius: 35px;
+            padding: 8px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: #fff;
+            pointer-events: auto;
+            transition: all 0.45s var(--ios-spring);
+        }
+
+        .dynamic-island-icon {
+            color: var(--ios-pink-accent);
+            font-size: 1.15rem;
+            animation: pulseMiniHeart 1.6s infinite ease-in-out;
+        }
+        @keyframes pulseMiniHeart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.28); }
+        }
+
+        .dynamic-island-text {
+            color: #ffe6f2;
+            letter-spacing: 0.3px;
+        }
+
+        .music-sound-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 16px;
+        }
+        .music-bar {
+            width: 3px; height: 100%;
+            background: #ff5e94;
+            border-radius: 3px;
+            animation: waveBounce 1.2s infinite ease-in-out;
+        }
+        .music-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+        .music-bar:nth-child(3) { animation-delay: 0.4s; height: 80%; }
+        .music-bar:nth-child(4) { animation-delay: 0.1s; height: 40%; }
+        @keyframes waveBounce {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* Top Bar Floating Buttons (Apple Glass Pill) */
+        .top-action-bar {
+            position: absolute;
+            top: 18px; left: 0; right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            z-index: 90;
+            pointer-events: none;
+        }
+        .top-action-bar > * { pointer-events: auto; }
+
+        .glass-circle-btn {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--ios-glass-border);
+            border-radius: 50%;
+            width: 44px; height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff99c8;
+            font-size: 1.15rem;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+            transition: all 0.25s var(--ios-spring);
+        }
+        .glass-circle-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 45, 96, 0.3);
+            color: #fff;
+        }
+
+        /* iOS FaceTime-style PiP Camera Preview */
+        .facetime-hud {
+            position: absolute;
+            top: 76px; right: 24px;
+            width: 146px; height: 110px;
+            background: rgba(15, 3, 20, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1.5px solid rgba(255, 105, 180, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            display: none;
+            z-index: 95;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.4);
+            animation: pipPop 0.4s var(--ios-spring);
+        }
+        @keyframes pipPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .facetime-hud video {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+        .facetime-badge {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(10, 0, 15, 0.8);
+            font-size: 0.72rem;
+            color: #ff99c8;
+            text-align: center;
+            padding: 4px 0;
+            font-weight: 600;
+        }
+
+        /* Container cho 1 - 5 Khung Ảnh Liquid Glass */
+        #photosContainer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Apple Liquid Glass Photo Card */
+        .liquid-card {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 250px; height: 330px;
+            margin-left: -125px; margin-top: -165px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.7),
+                0 0 35px rgba(255, 45, 96, 0.35),
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.55);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            pointer-events: auto;
+            cursor: pointer;
+            will-change: transform, opacity;
+            transition: transform 0.6s var(--ios-spring), opacity 0.55s ease, box-shadow 0.4s ease;
+            transform-origin: center center;
+        }
+
+        .liquid-card.zoomed {
+            border-color: #ff2d60;
+            box-shadow: 
+                0 35px 80px rgba(0, 0, 0, 0.9),
+                0 0 60px rgba(255, 45, 96, 0.85),
+                inset 0 2px 3px rgba(255, 255, 255, 0.8);
+        }
+
+        .card-inner-photo {
+            width: 100%;
+            height: 255px;
+            padding: 10px 10px 0 10px;
+            overflow: hidden;
+        }
+
+        .card-inner-photo .photo-canvas-frame {
+            width: 100%; height: 100%;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #14021a;
+            position: relative;
+        }
+
+        .photo-canvas-frame img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .card-default-gradient {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 16px;
+        }
+        .default-icon {
+            font-size: 4.2rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.7));
+            animation: floatIcon 3.5s infinite ease-in-out alternate;
+        }
+        @keyframes floatIcon {
+            0% { transform: translateY(-3px); }
+            100% { transform: translateY(5px); }
+        }
+        .default-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .card-inner-caption {
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
+            text-align: center;
+        }
+        .card-inner-caption span {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 12px rgba(255, 45, 96, 0.9);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* iOS 18 Glass Floating Bottom Dock */
+        .ios-dock-wrap {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            max-width: 96vw;
+        }
+
+        .ios-dock {
+            background: rgba(22, 5, 30, 0.72);
+            backdrop-filter: blur(40px) saturate(210%);
+            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            border: 1px solid var(--ios-glass-border);
+            border-radius: 42px;
+            padding: 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.75),
+                0 0 30px rgba(255, 45, 96, 0.25),
+                inset 0 1px 1.5px rgba(255, 255, 255, 0.45);
+            overflow-x: auto;
+        }
+
+        .dock-pill-btn {
+            background: linear-gradient(135deg, #ff2d60 0%, #d81b60 100%);
+            border: none;
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+            box-shadow: 0 4px 18px rgba(255, 45, 96, 0.45);
+            transition: all 0.25s var(--ios-spring);
+        }
+        .dock-pill-btn:active {
+            transform: scale(0.93);
+            box-shadow: 0 2px 10px rgba(255, 45, 96, 0.3);
+        }
+
+        .dock-pill-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: none;
+            color: #ffe6f2;
+        }
+        .dock-pill-btn.secondary:active {
+            background: rgba(255, 45, 96, 0.3);
+            border-color: rgba(255, 45, 96, 0.7);
+        }
+
+        /* iOS Segmented Count Picker */
+        .ios-segmented {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 22px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .ios-segmented span {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #ff99c8;
+            margin: 0 6px 0 4px;
+        }
+        .seg-btn {
+            background: transparent;
+            border: none;
+            color: #ffe6f2;
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s var(--ios-spring);
+        }
+        .seg-btn.active {
+            background: #ff2d60;
+            color: #fff;
+            box-shadow: 0 0 12px #ff2d60;
+            transform: scale(1.08);
+        }
+
+        /* iOS VisionOS Fullscreen Confession Modal ("Anh Yêu Em ❤️") */
+        .ios-confession-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(10, 1, 16, 0.88);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s var(--ios-spring);
+            cursor: pointer;
+        }
+        .ios-confession-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .confession-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px;
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: 
+                0 40px 100px rgba(0, 0, 0, 0.85),
+                0 0 60px rgba(255, 45, 96, 0.4),
+                inset 0 2px 2px rgba(255, 255, 255, 0.6);
+            transform: scale(0.9);
+            transition: transform 0.5s var(--ios-bounce);
+        }
+        .ios-confession-modal.active .confession-card {
+            transform: scale(1);
+        }
+
+        .neon-title-ios {
+            font-family: 'Great Vibes', 'Dancing Script', cursive;
+            font-size: 7.2rem;
+            line-height: 1.15;
+            color: #ffffff;
+            text-shadow: 
+                0 0 10px #ff69b4,
+                0 0 25px #ff1493,
+                0 0 55px #ff007f,
+                0 0 95px #ff0055,
+                0 0 140px #ff0055;
+            margin-bottom: 12px;
+            animation: pulseNeonTitle 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseNeonTitle {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 10px #ff69b4, 0 0 25px #ff1493, 0 0 55px #ff007f, 0 0 95px #ff0055;
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 0 0 15px #fff, 0 0 35px #ff69b4, 0 0 70px #ff1493, 0 0 120px #ff0055;
+            }
+        }
+
+        .neon-sub-ios {
+            font-size: 1.6rem;
+            color: #ffe6f2;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.9);
+        }
+
+        /* Sparkle Hearts Fireworks */
+        .sparkle-heart-bubble {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000000;
+            animation: bubbleUp 2.6s ease-out forwards;
+        }
+        @keyframes bubbleUp {
+            0% { transform: translate(0, 0) scale(0.3) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.8) rotate(var(--rot)); opacity: 0; }
+        }
+
+        #photoFileInput, #audioFileInput { display: none; }
+
+        @media (max-width: 768px) {
+            .neon-title-ios { font-size: 4.6rem; }
+            .neon-sub-ios { font-size: 1.15rem; letter-spacing: 3px; }
+            .confession-card { padding: 30px 25px; }
+            .ios-dock { padding: 6px 12px; gap: 6px; }
+            .dock-pill-btn { padding: 8px 13px; font-size: 0.78rem; }
+            .liquid-card { width: 210px; height: 280px; margin-left: -105px; margin-top: -140px; }
+            .card-inner-photo { height: 215px; }
+            .card-inner-caption { height: 55px; }
+            .card-inner-caption span { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS Ambient Fluid Aurora Orbs -->
+    <div class="liquid-orb orb-1"></div>
+    <div class="liquid-orb orb-2"></div>
+    <div class="liquid-orb orb-3"></div>
+
+    <!-- 2D Canvas cho Trái Tim Tình Yêu (Khóa Cứng 120 FPS Siêu Mượt) -->
+    <canvas id="liquidCanvas"></canvas>
+
+    <!-- 1 - 5 Khung Ảnh Liquid Glass iOS -->
+    <div id="photosContainer"></div>
+
+    <!-- Dynamic Island Widget -->
+    <div class="dynamic-island-wrap">
+        <div class="dynamic-island" id="dynamicIsland">
+            <i class="fa-solid fa-heart dynamic-island-icon"></i>
+            <span class="dynamic-island-text" id="islandStatus">Trái Tim Tình Yêu (Chạm để bung ảnh)</span>
+            <div class="music-sound-wave" id="islandWave" style="display:none;">
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+                <div class="music-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Action Bar -->
+    <div class="top-action-bar">
+        <button class="glass-circle-btn" onclick="toggleMusic()" title="Bật/Tắt Nhạc">
+            <i class="fa-solid fa-music" id="topMusicIcon"></i>
+        </button>
+        <button class="glass-circle-btn" onclick="toggleFullscreen()" title="Toàn màn hình">
+            <i class="fa-solid fa-expand" id="fsIcon"></i>
+        </button>
+    </div>
+
+    <!-- FaceTime PiP Camera HUD -->
+    <div class="facetime-hud" id="facetimeHud">
+        <video id="facetimeVideo" autoplay playsinline muted></video>
+        <div class="facetime-badge" id="facetimeBadge">Đang tìm tay...</div>
+    </div>
+
+    <!-- iOS 18 Glass Floating Bottom Dock -->
+    <div class="ios-dock-wrap">
+        <div class="ios-dock">
+            <button class="dock-pill-btn" onclick="document.getElementById('photoFileInput').click()">
+                <i class="fa-solid fa-images"></i> Thay Ảnh
+            </button>
+
+            <!-- Segmented Count Picker [1|2|3|4|5] -->
+            <div class="ios-segmented">
+                <span>Số ảnh:</span>
+                <button class="seg-btn" onclick="setPhotoCount(1)">1</button>
+                <button class="seg-btn" onclick="setPhotoCount(2)">2</button>
+                <button class="seg-btn" onclick="setPhotoCount(3)">3</button>
+                <button class="seg-btn" onclick="setPhotoCount(4)">4</button>
+                <button class="seg-btn active" onclick="setPhotoCount(5)">5</button>
+            </div>
+
+            <button class="dock-pill-btn secondary" id="bungActionBtn" onclick="toggleBungMode()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="bungBtnText">Bung Tim</span>
+            </button>
+
+            <button class="dock-pill-btn secondary" onclick="triggerLoveConfession()">
+                <i class="fa-solid fa-heart" style="color:#ff2d60;"></i> Tỏ Tình
+            </button>
+
+            <button class="dock-pill-btn secondary" id="cameraPillBtn" onclick="toggleCameraTracking()">
+                <i class="fa-solid fa-camera"></i> <span id="cameraPillText">Camera AI</span>
+            </button>
+
+            <button class="dock-pill-btn secondary" onclick="toggleMusic()">
+                <i class="fa-solid fa-music"></i> <span id="musicBtnText">Nhạc</span>
+            </button>
+            <button class="dock-pill-btn secondary" onclick="document.getElementById('audioFileInput').click()">
+                <i class="fa-solid fa-file-audio"></i> MP3
+            </button>
+        </div>
+    </div>
+
+    <!-- iOS VisionOS Fullscreen Confession Modal ("Anh Yêu Em ❤️") -->
+    <div class="ios-confession-modal" id="confessionModal" onclick="closeLoveModal()">
+        <div class="confession-card" onclick="event.stopPropagation()">
+            <h1 class="neon-title-ios" id="loveNeonText" onclick="editLoveText()">
+                Anh Yêu Em ❤️
+            </h1>
+            <p class="neon-sub-ios" id="loveSubNeonText">
+                Mãi Mãi Một Tình Yêu • Hạnh Phúc Trọn Đời
+            </p>
+        </div>
+    </div>
+
+    <input type="file" id="photoFileInput" accept="image/*" multiple>
+    <input type="file" id="audioFileInput" accept="audio/*">
+    <audio id="bgMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-moment-2964.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. LIQUID 2D CANVAS ENGINE (SIÊU NHẸ - 120 FPS TUYỆT ĐỐI)
+        ------------------------------------------------------------- */
+        const canvas = document.getElementById('liquidCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            calculateHeartCoordinates();
+            updateCardTransforms();
+        });
+
+        const PARTICLE_COUNT = 650;
+        const particles = [];
+        let isBung = false;
+        let isZoomed = false;
+        let currentPhotoIndex = 0;
+        let currentPhotoCount = 5;
+
+        // Trạng thái chuyển đổi Morphing (0.0: Tim, 1.0: Ngân hà)
+        let morphFactor = 0.0;
+        let targetMorph = 0.0;
+
+        class LiquidParticle {
+            constructor(index) {
+                this.index = index;
+                this.t = Math.PI * 2 * Math.random();
+                this.radiusVar = 0.85 + Math.random() * 0.3;
+                this.size = 1.8 + Math.random() * 2.5;
+                this.alpha = 0.45 + Math.random() * 0.55;
+                this.sparklePhase = Math.random() * Math.PI * 2;
+
+                // Màu hạt tình yêu pha lê
+                const colors = [
+                    '#ff2d60', '#ff007f', '#ff69b4', '#ffb6c1', '#ffffff', '#ff1493'
+                ];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+
+                this.hx = 0; this.hy = 0; // Tọa độ trái tim
+                this.gx = 0; this.gy = 0; // Tọa độ ngân hà
+                this.x = 0;  this.y = 0;
+            }
+
+            compute(centerX, centerY, scale) {
+                const t = this.t;
+                // Công thức Cardioid trái tim toán học
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                this.hx = centerX + x * scale * this.radiusVar;
+                this.hy = centerY + y * scale * this.radiusVar;
+
+                // Dải ngân hà sao
+                const angle = this.t;
+                const galaxyR = (Math.min(width, height) * 0.28) + (Math.random() - 0.5) * 85;
+                this.gx = centerX + Math.cos(angle) * galaxyR * this.radiusVar;
+                this.gy = centerY + Math.sin(angle) * (galaxyR * 0.7) * this.radiusVar;
+            }
+        }
+
+        function calculateHeartCoordinates() {
+            const centerX = width / 2;
+            const centerY = height / 2 - 12;
+            const scale = Math.min(width, height) / 38;
+            particles.forEach(p => p.compute(centerX, centerY, scale));
+        }
+
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push(new LiquidParticle(i));
+        }
+        calculateHeartCoordinates();
+        particles.forEach(p => { p.x = p.hx; p.y = p.hy; });
+
+        /* -------------------------------------------------------------
+           2. 1 - 5 KHUNG ẢNH LIQUID GLASS (APPLE VISIONOS STYLE)
+        ------------------------------------------------------------- */
+        const photosContainer = document.getElementById('photosContainer');
+        let userPhotos = [];
+        let cardElements = [];
+
+        const defaultArtAlbums = [
+            { icon: '❤️', title: 'Kỷ Niệm Ngày Đầu', caption: 'Our Love Story ❤️', bg: 'linear-gradient(135deg, #ff416c, #ff4b2b)' },
+            { icon: '💕', title: 'Nụ Cười Của Em', caption: 'Together Forever 💕', bg: 'linear-gradient(135deg, #ee0979, #ff6a00)' },
+            { icon: '🌹', title: 'Hạnh Phúc Giản Đơn', caption: 'Sweet Memories 🌹', bg: 'linear-gradient(135deg, #f857a6, #ff5858)' },
+            { icon: '✨', title: 'Ánh Sao Trong Đêm', caption: 'Destiny Of Life ✨', bg: 'linear-gradient(135deg, #8a2387, #e94057, #f27121)' },
+            { icon: '💖', title: 'Mãi Mãi Bên Nhau', caption: 'Forever With You 💖', bg: 'linear-gradient(135deg, #f093fb, #f5576c)' }
+        ];
+
+        function buildPhotoCardsDOM() {
+            photosContainer.innerHTML = '';
+            cardElements = [];
+
+            const count = currentPhotoCount;
+            for (let i = 0; i < count; i++) {
+                const card = document.createElement('div');
+                card.className = 'liquid-card';
+                card.dataset.index = i;
+
+                const customSrc = userPhotos.length > 0 ? userPhotos[i % userPhotos.length] : null;
+                const def = defaultArtAlbums[i % defaultArtAlbums.length];
+
+                let innerHtml = '';
+                if (customSrc) {
+                    innerHtml = `<img src="${customSrc}" alt="Love Photo">`;
+                } else {
+                    innerHtml = `
+                        <div class="card-default-gradient" style="background: ${def.bg}">
+                            <div class="default-icon">${def.icon}</div>
+                            <div class="default-title">${def.title}</div>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="card-inner-photo">
+                        <div class="photo-canvas-frame">
+                            ${innerHtml}
+                        </div>
+                    </div>
+                    <div class="card-inner-caption">
+                        <span>${def.caption}</span>
+                    </div>
+                `;
+
+                card.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (!isZoomed || currentPhotoIndex !== i) {
+                        currentPhotoIndex = i;
+                        isZoomed = true;
+                        isBung = true;
+                        targetMorph = 1.0;
+                        document.getElementById('bungBtnText').innerText = "Gom Tim";
+                        updateIsland(`☝️ Phóng to ảnh ${i + 1}/${count} (Vuốt để đổi)`);
+                        playChimeSound();
+                    } else {
+                        isZoomed = false;
+                        updateIsland(`🖐️ Đã thu về vòng ảnh (${count} ảnh)`);
+                    }
+                    updateCardTransforms();
+                });
+
+                photosContainer.appendChild(card);
+                cardElements.push(card);
+            }
+
+            updateCardTransforms();
+        }
+
+        buildPhotoCardsDOM();
+
+        // Định vị vị trí các khung ảnh bằng CSS GPU Hardware Compositing 120 FPS
+        function updateCardTransforms() {
+            const count = cardElements.length;
+            const radiusX = Math.min(width, height) * 0.42;
+            const radiusY = Math.min(width, height) * 0.28;
+
+            cardElements.forEach((card, i) => {
+                if (!isBung) {
+                    // MẶC ĐỊNH CHƯA BUNG: Ẩn hoàn toàn ở tâm (scale = 0)
+                    card.style.transform = `translate3d(0, 0, 0) scale(0)`;
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    card.classList.remove('zoomed');
+                } 
+                else if (isZoomed) {
+                    // KHI ZOOM: Ảnh được chọn phóng to giữa màn hình, các ảnh khác xếp carousel
+                    const rel = i - currentPhotoIndex;
+                    card.style.pointerEvents = 'auto';
+
+                    if (rel === 0) {
+                        card.style.transform = `translate3d(0, -12px, 0) scale(1.24)`;
+                        card.style.opacity = '1';
+                        card.style.zIndex = '50';
+                        card.classList.add('zoomed');
+                    } else {
+                        const shiftX = rel * (width < 768 ? 165 : 225);
+                        const scale = Math.max(0.65, 0.88 - Math.abs(rel) * 0.15);
+                        const opacity = Math.max(0.2, 0.65 - Math.abs(rel) * 0.25);
+                        card.style.transform = `translate3d(${shiftX}px, 20px, 0) scale(${scale})`;
+                        card.style.opacity = opacity.toString();
+                        card.style.zIndex = (30 - Math.abs(rel)).toString();
+                        card.classList.remove('zoomed');
+                    }
+                } 
+                else {
+                    // KHI BUNG TRÁI TIM: Các ảnh xếp vòng tròn quanh dải ngân hà
+                    card.style.pointerEvents = 'auto';
+                    card.classList.remove('zoomed');
+                    card.style.zIndex = '20';
+
+                    let tx = 0, ty = 0, rot = 0;
+                    if (count === 1) {
+                        tx = 0; ty = 0; rot = 0;
+                    } else {
+                        const angle = (i * (Math.PI * 2) / count) - Math.PI / 2;
+                        tx = Math.cos(angle) * radiusX;
+                        ty = Math.sin(angle) * radiusY;
+                        rot = Math.cos(angle) * 7.5;
+                    }
+
+                    card.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(0.92) rotate(${rot}deg)`;
+                    card.style.opacity = '1';
+                }
+            });
+        }
+
+        // Tải ảnh từ thư viện
+        document.getElementById('photoFileInput').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files).slice(0, 5);
+            if (files.length > 0) {
+                userPhotos = files.map(f => URL.createObjectURL(f));
+                currentPhotoCount = files.length;
+                currentPhotoIndex = 0;
+                updateSegmentedUI(currentPhotoCount);
+                buildPhotoCardsDOM();
+                updateIsland(`Đã nạp ${files.length} ảnh của bạn ❤️ (Chạm để xem)`);
+            }
+        });
+
+        function setPhotoCount(cnt) {
+            currentPhotoCount = Math.min(Math.max(1, cnt), 5);
+            currentPhotoIndex = Math.min(currentPhotoIndex, currentPhotoCount - 1);
+            updateSegmentedUI(currentPhotoCount);
+            buildPhotoCardsDOM();
+            updateIsland(`Đang chọn hiển thị ${currentPhotoCount} ảnh`);
+        }
+
+        function updateSegmentedUI(cnt) {
+            document.querySelectorAll('.seg-btn').forEach((b, idx) => {
+                b.classList.toggle('active', (idx + 1) === cnt);
+            });
+        }
+
+        function updateIsland(text) {
+            document.getElementById('islandStatus').innerText = text;
+        }
+
+        function toggleBungMode() {
+            if (!isBung) {
+                isBung = true;
+                isZoomed = false;
+                targetMorph = 1.0;
+                document.getElementById('bungBtnText').innerText = "Gom Tim";
+                updateIsland(`🖐️ Bung tim & ${currentPhotoCount} ảnh nghệ thuật`);
+            } else {
+                isBung = false;
+                isZoomed = false;
+                targetMorph = 0.0;
+                document.getElementById('bungBtnText').innerText = "Bung Tim";
+                updateIsland("✊ Trái Tim Tình Yêu (Chạm để bung ảnh)");
+            }
+            updateCardTransforms();
+        }
+
+        /* -------------------------------------------------------------
+           3. CANVAS 2D RENDER LOOP (120 FPS SUPREME SMOOTH)
+        ------------------------------------------------------------- */
+        let lastTimestamp = performance.now();
+        let heartTimer = 0;
+
+        function animate(now) {
+            requestAnimationFrame(animate);
+
+            const dt = (now - lastTimestamp) / 1000;
+            lastTimestamp = now;
+            heartTimer += dt;
+
+            ctx.clearRect(0, 0, width, height);
+
+            // Cập nhật hệ số chuyển đổi morphing
+            morphFactor += (targetMorph - morphFactor) * 0.09;
+
+            // Nhịp đập EKG sinh học chân thực
+            let scalePulse = 1.0;
+            if (!isBung) {
+                const cycle = (heartTimer * 1.8) % 1.0;
+                if (cycle < 0.15) {
+                    scalePulse = 1.0 + Math.sin(cycle / 0.15 * Math.PI) * 0.085;
+                } else if (cycle >= 0.22 && cycle < 0.35) {
+                    scalePulse = 1.0 + Math.sin((cycle - 0.22) / 0.13 * Math.PI) * 0.042;
+                }
+            }
+
+            const centerX = width / 2;
+            const centerY = height / 2 - 12;
+
+            const len = particles.length;
+            for (let i = 0; i < len; i++) {
+                const p = particles[i];
+
+                const tx = p.hx + (p.gx - p.hx) * morphFactor;
+                const ty = p.hy + (p.gy - p.hy) * morphFactor;
+
+                p.x += (tx - p.x) * 0.1;
+                p.y += (ty - p.y) * 0.1;
+
+                let drawX = p.x;
+                let drawY = p.y;
+                if (!isBung && scalePulse !== 1.0) {
+                    drawX = centerX + (p.x - centerX) * scalePulse;
+                    drawY = centerY + (p.y - centerY) * scalePulse;
+                }
+
+                const sparkle = 0.72 + Math.sin(now * 0.005 + p.sparklePhase) * 0.28;
+                const curSize = p.size * sparkle;
+
+                ctx.beginPath();
+                ctx.arc(drawX, drawY, curSize, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha * sparkle;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = p.color;
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1.0;
+            ctx.shadowBlur = 0;
+        }
+
+        requestAnimationFrame(animate);
+
+        /* -------------------------------------------------------------
+           4. ĐIỀU KHIỂN CẢM ỨNG 120HZ (VUỐT CAROUSEL & CHẠM ĐÚP)
+        ------------------------------------------------------------- */
+        let touchX = 0, touchY = 0, touchTime = 0;
+        let lastTap = 0;
+
+        window.addEventListener('pointerdown', (e) => {
+            touchX = e.clientX;
+            touchY = e.clientY;
+            touchTime = Date.now();
+
+            const curTime = Date.now();
+            if (curTime - lastTap < 320) {
+                triggerLoveConfession();
+            }
+            lastTap = curTime;
+        });
+
+        window.addEventListener('pointerup', (e) => {
+            const dx = e.clientX - touchX;
+            const dy = e.clientY - touchY;
+            const dur = Date.now() - touchTime;
+
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) && dur < 450) {
+                if (!isBung) {
+                    isBung = true;
+                    targetMorph = 1.0;
+                    document.getElementById('bungBtnText').innerText = "Gom Tim";
+                }
+                isZoomed = true;
+
+                if (dx < 0) {
+                    currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
+                } else {
+                    currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
+                }
+                playChimeSound();
+                updateIsland(`☝️ Phóng to ảnh ${currentPhotoIndex + 1}/${currentPhotoCount} (Vuốt để đổi)`);
+                updateCardTransforms();
+            } 
+            else if (Math.abs(dx) < 12 && Math.abs(dy) < 12 && dur < 300) {
+                const elem = document.elementFromPoint(e.clientX, e.clientY);
+                if (elem && (elem.closest('.ios-dock') || elem.closest('.top-action-bar') || elem.closest('.liquid-card') || elem.closest('.ios-confession-modal') || elem.closest('.facetime-hud') || elem.closest('.dynamic-island'))) {
+                    return;
+                }
+
+                if (!isBung) {
+                    toggleBungMode();
+                } else if (isZoomed) {
+                    isZoomed = false;
+                    updateIsland(`🖐️ Đã thu về vòng ảnh (${currentPhotoCount} ảnh)`);
+                    updateCardTransforms();
+                }
+            }
+        });
+
+        /* -------------------------------------------------------------
+           5. MEDIAPIPE AI CỬ CHỈ BÀN TAY (PHONG CÁCH FACETIME PIP)
+        ------------------------------------------------------------- */
+        let isCameraRunning = false;
+        let cameraObj = null;
+        let handsObj = null;
+        let lastGestureName = '';
+        let gestureCounter = 0;
+        let lastHandNormX = 0.5;
+
+        function toggleCameraTracking() {
+            const pillBtn = document.getElementById('cameraPillBtn');
+            const pillText = document.getElementById('cameraPillText');
+            const hud = document.getElementById('facetimeHud');
+
+            if (!isCameraRunning) {
+                pillText.innerText = "Đang kết nối...";
+                startFaceTimeCamera().then(() => {
+                    isCameraRunning = true;
+                    hud.style.display = 'block';
+                    pillText.innerText = "Tắt Camera";
+                    pillBtn.classList.remove('secondary');
+                    updateIsland("📷 Camera AI sẵn sàng! Nhận diện cử chỉ tay từ xa");
+                }).catch((err) => {
+                    pillText.innerText = "Camera AI";
+                    alert("Không thể mở camera. Bạn có thể sử dụng cảm ứng chạm/vuốt 120Hz siêu mượt trên màn hình!");
+                });
+            } else {
+                stopFaceTimeCamera();
+                isCameraRunning = false;
+                hud.style.display = 'none';
+                pillText.innerText = "Camera AI";
+                pillBtn.classList.add('secondary');
+                updateIsland("Đã tắt Camera, tiếp tục dùng cảm ứng chạm");
+            }
+        }
+
+        async function startFaceTimeCamera() {
+            const video = document.getElementById('facetimeVideo');
+            const badge = document.getElementById('facetimeBadge');
+
+            if (!handsObj) {
+                handsObj = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+                handsObj.setOptions({
+                    maxNumHands: 1,
+                    modelComplexity: 0,
+                    minDetectionConfidence: 0.5,
+                    minTrackingConfidence: 0.5
+                });
+
+                handsObj.onResults((res) => {
+                    if (!res.multiHandLandmarks || res.multiHandLandmarks.length === 0) {
+                        badge.innerText = "Đang tìm tay...";
+                        return;
+                    }
+
+                    const lm = res.multiHandLandmarks[0];
+                    const handX = 1 - lm[9].x;
+
+                    const isIndex = Math.hypot(lm[8].x - lm[0].x, lm[8].y - lm[0].y) > Math.hypot(lm[6].x - lm[0].x, lm[6].y - lm[0].y) * 1.15;
+                    const isMiddle = Math.hypot(lm[12].x - lm[0].x, lm[12].y - lm[0].y) > Math.hypot(lm[10].x - lm[0].x, lm[10].y - lm[0].y) * 1.15;
+                    const isRing = Math.hypot(lm[16].x - lm[0].x, lm[16].y - lm[0].y) > Math.hypot(lm[14].x - lm[0].x, lm[14].y - lm[0].y) * 1.15;
+                    const isPinky = Math.hypot(lm[20].x - lm[0].x, lm[20].y - lm[0].y) > Math.hypot(lm[18].x - lm[0].x, lm[18].y - lm[0].y) * 1.15;
+
+                    let gesture = '';
+                    if (isIndex && isMiddle && !isRing && !isPinky) {
+                        gesture = 'TWO_FINGERS';
+                        badge.innerText = "✌️ 2 Ngón: Tỏ tình";
+                    } else if (isIndex && !isMiddle && !isRing && !isPinky) {
+                        gesture = 'ONE_FINGER';
+                        badge.innerText = "☝️ 1 Ngón: Zoom ảnh";
+                    } else if (isIndex && isMiddle && isRing && isPinky) {
+                        gesture = 'OPEN_PALM';
+                        badge.innerText = "🖐️ Xòe tay: Bung tim";
+                    } else if (!isIndex && !isMiddle && !isRing && !isPinky) {
+                        gesture = 'FIST';
+                        badge.innerText = "✊ Nắm tay: Gom tim";
+                    }
+
+                    if (isZoomed) {
+                        const delta = handX - lastHandNormX;
+                        if (Math.abs(delta) > 0.05) {
+                            if (delta > 0.05) {
+                                currentPhotoIndex = (currentPhotoIndex + 1) % currentPhotoCount;
+                            } else {
+                                currentPhotoIndex = (currentPhotoIndex - 1 + currentPhotoCount) % currentPhotoCount;
+                            }
+                            playChimeSound();
+                            updateCardTransforms();
+                            lastHandNormX = handX;
+                        }
+                    }
+                    lastHandNormX = handX;
+
+                    if (gesture) {
+                        if (gesture === lastGestureName) {
+                            gestureCounter++;
+                            if (gestureCounter === 3) {
+                                if (gesture === 'FIST') {
+                                    isBung = false; isZoomed = false; targetMorph = 0.0;
+                                    closeLoveModal();
+                                    document.getElementById('bungBtnText').innerText = "Bung Tim";
+                                    updateIsland("✊ Nắm tay: Gom Trái Tim");
+                                    updateCardTransforms();
+                                } else if (gesture === 'OPEN_PALM') {
+                                    isBung = true; isZoomed = false; targetMorph = 1.0;
+                                    closeLoveModal();
+                                    document.getElementById('bungBtnText').innerText = "Gom Tim";
+                                    updateIsland(`🖐️ Xòe tay: Bung Trái Tim & ${currentPhotoCount} ảnh`);
+                                    updateCardTransforms();
+                                } else if (gesture === 'ONE_FINGER') {
+                                    isBung = true; isZoomed = true; targetMorph = 1.0;
+                                    closeLoveModal();
+                                    updateIsland(`☝️ Phóng to ảnh ${currentPhotoIndex + 1}/${currentPhotoCount}`);
+                                    playChimeSound();
+                                    updateCardTransforms();
+                                } else if (gesture === 'TWO_FINGERS') {
+                                    updateIsland("✌️ 2 Ngón tay: ANH YÊU EM ❤️");
+                                    triggerLoveConfession();
+                                }
+                            }
+                        } else {
+                            lastGestureName = gesture;
+                            gestureCounter = 0;
+                        }
+                    }
+                });
+            }
+
+            let processingFrame = false;
+            let lastProc = 0;
+
+            cameraObj = new Camera(video, {
+                onFrame: async () => {
+                    const now = performance.now();
+                    if (!processingFrame && (now - lastProc > 80)) {
+                        processingFrame = true;
+                        lastProc = now;
+                        try {
+                            await handsObj.send({ image: video });
+                        } catch(e) {}
+                        processingFrame = false;
+                    }
+                },
+                width: 240, height: 180
+            });
+
+            await cameraObj.start();
+        }
+
+        function stopFaceTimeCamera() {
+            if (cameraObj) {
+                try {
+                    const video = document.getElementById('facetimeVideo');
+                    if (video.srcObject) {
+                        video.srcObject.getTracks().forEach(t => t.stop());
+                    }
+                } catch(e) {}
+            }
+        }
+
+        /* -------------------------------------------------------------
+           6. ÂM THANH & TỎ TÌNH LÃNG MẠN
+        ------------------------------------------------------------- */
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtnText = document.getElementById('musicBtnText');
+        const islandWave = document.getElementById('islandWave');
+
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    musicBtnText.innerText = "Tắt Nhạc";
+                    document.getElementById('topMusicIcon').style.color = '#ff2d60';
+                    islandWave.style.display = 'flex';
+                }).catch(() => {});
+            } else {
+                bgMusic.pause();
+                musicBtnText.innerText = "Nhạc";
+                document.getElementById('topMusicIcon').style.color = '#ff99c8';
+                islandWave.style.display = 'none';
+            }
+        }
+
+        document.getElementById('audioFileInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                bgMusic.src = URL.createObjectURL(e.target.files[0]);
+                bgMusic.play();
+                musicBtnText.innerText = "Tắt Nhạc";
+                document.getElementById('topMusicIcon').style.color = '#ff2d60';
+                islandWave.style.display = 'flex';
+            }
+        });
+
+        let audioCtx = null;
+        function playChimeSound() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.065);
+                    gain.gain.setValueAtTime(0.001, audioCtx.currentTime + idx * 0.065);
+                    gain.gain.exponentialRampToValueAtTime(0.09, audioCtx.currentTime + idx * 0.065 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.065 + 0.42);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.065);
+                    osc.stop(audioCtx.currentTime + idx * 0.065 + 0.45);
+                });
+            } catch (err) {}
+        }
+
+        function triggerLoveConfession() {
+            document.getElementById('confessionModal').classList.add('active');
+            playChimeSound();
+            spawnHearts();
+        }
+
+        function closeLoveModal() {
+            document.getElementById('confessionModal').classList.remove('active');
+        }
+
+        function editLoveText() {
+            const val = prompt("Nhập lời tỏ tình yêu thương:", document.getElementById('loveNeonText').innerText);
+            if (val) document.getElementById('loveNeonText').innerText = val;
+        }
+
+        function spawnHearts() {
+            const emojis = ['💖', '💕', '❤️', '✨', '🌹', '🥰', '💘'];
+            for (let i = 0; i < 32; i++) {
+                setTimeout(() => {
+                    const b = document.createElement('div');
+                    b.className = 'sparkle-heart-bubble';
+                    b.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                    b.style.left = (window.innerWidth / 2 + (Math.random() - 0.5) * 350) + 'px';
+                    b.style.top = (window.innerHeight / 2 + (Math.random() - 0.5) * 180) + 'px';
+                    b.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    b.style.setProperty('--tx', `${(Math.random() - 0.5) * 650}px`);
+                    b.style.setProperty('--ty', `${-Math.random() * 550 - 120}px`);
+                    b.style.setProperty('--rot', `${(Math.random() - 0.5) * 120}deg`);
+                    document.body.appendChild(b);
+                    setTimeout(() => b.remove(), 2600);
+                }, i * 35);
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-compress';
+            } else {
+                document.exitFullscreen().catch(() => {});
+                document.getElementById('fsIcon').className = 'fa-solid fa-expand';
+            }
+        }
+    </script>
+</body>
+</html>
