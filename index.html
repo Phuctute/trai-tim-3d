@@ -1162,6 +1162,362 @@
             .arrow-next { right: -16px; }
             .camera-corner-bubble { display: none; }
         }
+    
+        /* ====================================================
+           GORGEOUS DECORATIONS FOR ALL 4 PAGES
+           ==================================================== */
+
+        /* Universal Sweet Banner Pill */
+        .sweet-banner-pill {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #FFCCD6;
+            border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #FF5376;
+            margin-top: 14px;
+            box-shadow: 0 4px 14px rgba(255, 101, 132, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            max-width: 90vw;
+            text-align: center;
+            user-select: none;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .sweet-banner-pill:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 20px rgba(255, 101, 132, 0.22);
+        }
+
+        /* --- STATE 2: 🖐️ PALM FLORAL DECORATIONS --- */
+        .palm-decor-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            position: relative;
+        }
+
+        .decor-badge-flank {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+        }
+
+        .decor-badge-flank:hover {
+            transform: scale(1.1);
+        }
+
+        .flank-icon-bob {
+            font-size: 26px;
+            margin-bottom: -6px;
+            filter: drop-shadow(0 4px 8px rgba(255, 101, 132, 0.25));
+            animation: balloonWobble 2.5s infinite ease-in-out;
+        }
+
+        .flank-card-cute {
+            background: #FFFFFF;
+            border: 2px solid #FFCCD6;
+            border-radius: 18px;
+            padding: 6px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 6px 16px rgba(255, 101, 132, 0.14);
+        }
+
+        .flank-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #FF4D73;
+            white-space: nowrap;
+        }
+
+        .flank-sub {
+            font-size: 9px;
+            font-weight: 600;
+            color: #FFA5B6;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .butterfly-fx {
+            position: absolute;
+            font-size: 22px;
+            filter: drop-shadow(0 2px 6px rgba(255, 101, 132, 0.3));
+            animation: butterflyFlutter 4s infinite ease-in-out;
+        }
+
+        @keyframes butterflyFlutter {
+            0%, 100% { transform: translate(0, 0) rotate(6deg) scale(1); }
+            35% { transform: translate(12px, -14px) rotate(-10deg) scale(1.1); }
+            70% { transform: translate(-8px, -20px) rotate(8deg) scale(0.95); }
+        }
+
+        /* --- STATE 3: ☝️ POINT / ALBUM FAIRY LIGHTS & CORNER STICKERS --- */
+        .fairy-lights-garland {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            user-select: none;
+        }
+
+        .bulb-item {
+            font-size: 18px;
+            filter: drop-shadow(0 2px 6px rgba(255, 180, 0, 0.4));
+            animation: bulbTwinkle 2s infinite ease-in-out;
+        }
+
+        .bulb-item:nth-child(2) { animation-delay: 0.4s; }
+        .bulb-item:nth-child(4) { animation-delay: 0.8s; }
+        .bulb-item:nth-child(6) { animation-delay: 1.2s; }
+
+        @keyframes bulbTwinkle {
+            0%, 100% { opacity: 0.7; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.15) rotate(4deg); }
+        }
+
+        .washi-tape-sticker {
+            position: absolute;
+            top: -8px;
+            left: 24px;
+            background: rgba(255, 182, 193, 0.9);
+            border: 1px dashed rgba(255, 105, 140, 0.6);
+            padding: 3px 12px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            color: #FF4D73;
+            transform: rotate(-5deg);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+        }
+
+        .corner-stamp-sticker {
+            position: absolute;
+            bottom: 8px;
+            right: 14px;
+            background: #FFF0F4;
+            border: 1.5px solid #FFCCD6;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #FF5376;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 6px rgba(255, 101, 132, 0.15);
+            z-index: 10;
+        }
+
+        .album-cat-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            position: relative;
+            margin-top: 4px;
+        }
+
+        .album-flank-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #FFFFFF;
+            border: 2px solid #FFDDE4;
+            border-radius: 16px;
+            padding: 6px 12px;
+            box-shadow: 0 4px 12px rgba(255, 101, 132, 0.12);
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .album-flank-box:hover {
+            transform: scale(1.08);
+        }
+
+        .album-flank-icon {
+            font-size: 20px;
+        }
+
+        .album-flank-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: #FF5376;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        /* --- STATE 4: ✌️ PEACE / CONFESSION & LOVE METER --- */
+        .confession-decor-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            position: relative;
+        }
+
+        .love-side-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .love-side-badge:hover {
+            transform: scale(1.12);
+        }
+
+        .floating-letter-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 4px 10px rgba(255, 101, 132, 0.3));
+            animation: balloonWobble 2.6s infinite ease-in-out;
+        }
+
+        .love-badge-card {
+            background: #FFFFFF;
+            border: 2px solid #FFCCD6;
+            border-radius: 14px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #FF4D73;
+            box-shadow: 0 4px 12px rgba(255, 101, 132, 0.14);
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        /* Interactive Love Meter Widget */
+        .love-meter-box {
+            background: #FFFFFF;
+            border: 2.5px solid #FFB8C6;
+            border-radius: 20px;
+            padding: 8px 18px;
+            box-shadow: 0 8px 22px rgba(255, 101, 132, 0.18), 0 0 0 3px #FFF0F4;
+            max-width: 320px;
+            width: 86vw;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+            user-select: none;
+        }
+
+        .love-meter-box:hover {
+            transform: scale(1.04);
+            box-shadow: 0 12px 28px rgba(255, 101, 132, 0.28), 0 0 0 3px #FF8DA1;
+        }
+
+        .love-meter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: #FF4D73;
+            margin-bottom: 5px;
+        }
+
+        .love-meter-val {
+            color: #FF2E5B;
+            font-size: 13px;
+        }
+
+        .love-meter-track {
+            width: 100%;
+            height: 12px;
+            background: #FFE8ED;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .love-meter-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #FF8DA1, #FF5376, #FF2E5B);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 4px;
+            animation: loveGlowPulse 2s infinite ease-in-out;
+            transition: width 0.4s ease;
+        }
+
+        @keyframes loveGlowPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.15) drop-shadow(0 0 8px #FF6584); }
+        }
+
+        .love-meter-note {
+            margin-top: 5px;
+            font-size: 9px;
+            text-align: center;
+            color: #FF7B95;
+            font-weight: 700;
+            font-family: var(--font-sub);
+        }
+
+        /* Screen Ripple Sparkle on View Transition */
+        .transition-sparkle-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .trans-particle {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            animation: transParticleFly 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes transParticleFly {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.6) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.4) rotate(var(--rot)); }
+        }
+
+        /* Mobile Adjustments for decorations */
+        @media (max-width: 600px) {
+            .palm-decor-row { gap: 12px; }
+            .flank-card-cute { padding: 4px 8px; border-radius: 14px; }
+            .flank-title { font-size: 10px; }
+            .flank-sub { font-size: 8px; }
+            .flank-icon-bob { font-size: 20px; }
+
+            .album-cat-row { gap: 10px; }
+            .album-flank-box { padding: 4px 8px; border-radius: 12px; }
+            .album-flank-text { font-size: 8px; }
+            .album-flank-icon { font-size: 16px; }
+
+            .confession-decor-row { gap: 12px; }
+            .floating-letter-icon { font-size: 22px; }
+            .love-badge-card { font-size: 9px; padding: 3px 8px; border-radius: 10px; }
+
+            .sweet-banner-pill { font-size: 10px; padding: 5px 12px; margin-top: 8px; }
+            .love-meter-box { padding: 6px 14px; max-width: 290px; }
+            .love-meter-header { font-size: 11px; }
+        }
+
     </style>
 </head>
 <body>
@@ -1301,14 +1657,43 @@
         <!-- STATE 2: 🖐️ OPEN PALM - BUNG NHÂN VẬT CẦM HOA -->
         <section class="stage-view" id="viewPalm">
             <div class="cat-flower-container">
-                <div class="speech-bubble-cute">
+                <div class="speech-bubble-cute" onclick="squishCat(this, 'flower')">
                     Cho nèee~ 🌸
                 </div>
 
-                <div class="cat-character-card" onclick="squishCat(this)">
-                    <span class="flower-sparkle-fx fx-1">✨</span>
-                    <span class="flower-sparkle-fx fx-2">💖</span>
-                    <img class="cat-image-render" id="catFlowerImg" src="assets/cat_flower.jpg" alt="Mèo cầm hoa">
+                <div class="palm-decor-row">
+                    <!-- Left Floral Badge -->
+                    <div class="decor-badge-flank flank-left" onclick="burstPetalShower()" title="Chạm để tung cánh hoa!">
+                        <div class="flank-icon-bob">🌷</div>
+                        <div class="flank-card-cute">
+                            <span class="flank-title">Vườn Hoa</span>
+                            <span class="flank-sub">Nở vì em 🌸</span>
+                        </div>
+                    </div>
+
+                    <!-- Center Cat Holding Flower -->
+                    <div class="cat-character-card" onclick="squishCat(this, 'flower')" title="Bé Mèo Cầm Hoa">
+                        <span class="flower-sparkle-fx fx-1">✨</span>
+                        <span class="flower-sparkle-fx fx-2">💖</span>
+                        <span class="butterfly-fx" style="top: -14px; right: -12px;">🦋</span>
+                        <img class="cat-image-render" id="catFlowerImg" src="assets/cat_flower.jpg" alt="Mèo cầm hoa">
+                    </div>
+
+                    <!-- Right Floral Badge -->
+                    <div class="decor-badge-flank flank-right" onclick="burstPetalShower()" title="Chạm để tưới yêu thương!">
+                        <div class="flank-icon-bob">🪴</div>
+                        <div class="flank-card-cute">
+                            <span class="flank-title">Yêu Thương</span>
+                            <span class="flank-sub">Mỗi ngày 💕</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sweet Banner at Bottom -->
+                <div class="sweet-banner-pill" onclick="burstPetalShower()">
+                    <span>💐</span>
+                    <span>Bông hoa xinh đẹp nhất trần đời gửi tặng người anh thương nè~</span>
+                    <span>✨</span>
                 </div>
             </div>
         </section>
@@ -1316,12 +1701,27 @@
         <!-- STATE 3: ☝️ 1 NGÓN TAY - ALBUM 5 ẢNH & MÈO CẦM ĐIỆN THOẠI -->
         <section class="stage-view" id="viewPoint">
             <div class="album-flow-container">
+                
+                <!-- Fairy Lights Garland -->
+                <div class="fairy-lights-garland">
+                    <span class="bulb-item">💡</span>
+                    <span class="bulb-item" style="font-size: 14px;">✨</span>
+                    <span class="bulb-item">💡</span>
+                    <span class="bulb-item" style="font-size: 14px;">🎀</span>
+                    <span class="bulb-item">💡</span>
+                    <span class="bulb-item" style="font-size: 14px;">✨</span>
+                    <span class="bulb-item">💡</span>
+                </div>
+
                 <div style="position: relative;">
                     <button class="photo-nav-arrow arrow-prev" onclick="prevPhoto()">‹</button>
                     <button class="photo-nav-arrow arrow-next" onclick="nextPhoto()">›</button>
 
                     <div class="photo-card-frame" id="photoFrame">
+                        <!-- Washi Tape Sticker & Corner Stamp -->
+                        <div class="washi-tape-sticker">Sweet ♡</div>
                         <div class="photo-pin-cute">🌸</div>
+                        <div class="corner-stamp-sticker"><span>🍓</span><span>Memory</span></div>
                         
                         <!-- Smooth Hardware-Accelerated Sliding Viewport -->
                         <div class="photo-carousel-viewport" id="carouselViewport">
@@ -1343,12 +1743,30 @@
                     <div class="step-dot" onclick="goToPhoto(4)"></div>
                 </div>
 
-                <!-- Cat holding phone: CŨNG ĐƯỢC BO GÓC MỀM MẠI, KHÔNG VUÔNG NHỌN! -->
-                <div class="cat-phone-section">
-                    <div class="cat-phone-card-box" onclick="squishCat(this)">
-                        <div class="camera-flash-fx" id="cameraFlash"></div>
-                        <img class="cat-phone-img" id="catPhoneImg" src="assets/cat_phone.jpg" alt="Mèo cầm điện thoại">
+                <!-- Cat holding phone with Flanking Companions -->
+                <div class="album-cat-row">
+                    <div class="album-flank-box">
+                        <span class="album-flank-icon">📸</span>
+                        <span class="album-flank-text">Cười lên nè!</span>
                     </div>
+
+                    <div class="cat-phone-section">
+                        <div class="cat-phone-card-box" onclick="squishCat(this, 'phone')" title="Bé Mèo Chụp Ảnh">
+                            <div class="camera-flash-fx" id="cameraFlash"></div>
+                            <img class="cat-phone-img" id="catPhoneImg" src="assets/cat_phone.jpg" alt="Mèo cầm điện thoại">
+                        </div>
+                    </div>
+
+                    <div class="album-flank-box">
+                        <span class="album-flank-icon">✨</span>
+                        <span class="album-flank-text">Xinh xỉu luôn!</span>
+                    </div>
+                </div>
+
+                <!-- Album Ribbon Tip -->
+                <div class="sweet-banner-pill" style="margin-top: 10px;">
+                    <span>🎀</span>
+                    <span>Vẩy ngón tay trong không khí hoặc vuốt để lật trang kỷ niệm ✨</span>
                 </div>
             </div>
         </section>
@@ -1356,10 +1774,26 @@
         <!-- STATE 4: ✌️ 2 NGÓN TAY - ANH THÍCH EM LẮM NHA (BO GÓC MỀM MẠI, NỀN TRẮNG CHUẨN GỐC) -->
         <section class="stage-view" id="viewPeace">
             <div class="confession-love-container">
-                <div class="cat-standing-card-box" onclick="squishCat(this)">
-                    <span class="flower-sparkle-fx fx-1">✨</span>
-                    <span class="flower-sparkle-fx fx-2">💖</span>
-                    <img class="cat-standing-img-render" id="catStandingImg" src="assets/cat_standing.jpg" alt="Mèo đứng dễ thương">
+                
+                <div class="confession-decor-row">
+                    <!-- Left Love Badge: Love Letter -->
+                    <div class="love-side-badge" onclick="boostLoveMeter()" title="Thư tình cho em!">
+                        <div class="floating-letter-icon">💌</div>
+                        <div class="love-badge-card">Thư Tình ✉️</div>
+                    </div>
+
+                    <!-- Center Cat Standing Card -->
+                    <div class="cat-standing-card-box" onclick="squishCat(this, 'standing')" title="Bé Mèo Tỏ Tình">
+                        <span class="flower-sparkle-fx fx-1">✨</span>
+                        <span class="flower-sparkle-fx fx-2">💖</span>
+                        <img class="cat-standing-img-render" id="catStandingImg" src="assets/cat_standing.jpg" alt="Mèo đứng dễ thương">
+                    </div>
+
+                    <!-- Right Love Badge: Sweet Gift -->
+                    <div class="love-side-badge" onclick="boostLoveMeter()" title="Hộp quà ngọt ngào!">
+                        <div class="floating-letter-icon">🎁</div>
+                        <div class="love-badge-card">Quà Tặng 🎀</div>
+                    </div>
                 </div>
 
                 <h1 class="headline-love-bouncy">
@@ -1368,6 +1802,29 @@
                 <p class="subline-love-cute">
                     Mỗi ngày trôi qua đều thích em nhiều hơn một chút ✨
                 </p>
+
+                <!-- Interactive Love Meter Widget -->
+                <div class="love-meter-box" onclick="boostLoveMeter()">
+                    <div class="love-meter-header">
+                        <span>💖 Chỉ Số Rung Động Trái Tim</span>
+                        <span class="love-meter-val" id="loveMeterVal">1000% ♡</span>
+                    </div>
+                    <div class="love-meter-track">
+                        <div class="love-meter-fill" id="loveMeterFill">
+                            <span style="font-size: 10px;">✨💖✨</span>
+                        </div>
+                    </div>
+                    <div class="love-meter-note">
+                        🌸 Chạm vào đây để nạp thêm tình yêu nè! (Tung bão tim bay) 🌸
+                    </div>
+                </div>
+
+                <!-- Sweet Vow Banner -->
+                <div class="sweet-banner-pill" onclick="boostLoveMeter()" style="margin-top: 10px;">
+                    <span>✨</span>
+                    <span>Cảm ơn vì đã xuất hiện và làm cho thế giới của anh ngọt ngào hơn mỗi ngày</span>
+                    <span>✨</span>
+                </div>
             </div>
         </section>
 
@@ -1487,7 +1944,26 @@
                     osc.stop(now + 0.08);
                 } catch(e){}
             }
-            playSquish() {
+            playChime() {
+        if (!this.ctx) return;
+        try {
+            const now = this.ctx.currentTime;
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now + i * 0.06);
+                gain.gain.setValueAtTime(0.08, now + i * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.28);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now + i * 0.06);
+                osc.stop(now + i * 0.06 + 0.3);
+            });
+        } catch(e){}
+    }
+
+    playSquish() {
                 try {
                     this.init();
                     const now = this.ctx.currentTime;
@@ -1812,7 +2288,68 @@
             peace: document.getElementById('viewPeace')
         };
 
-        function resetAllViews() {
+        
+    // Interactive Petal Shower for Floral State
+    function burstPetalShower() {
+        sfx.playChime();
+        const emojis = ['🌸', '🌷', '💮', '🌺', '✨', '💕'];
+        for (let i = 0; i < 16; i++) {
+            const el = document.createElement('div');
+            el.className = 'floating-heart-particle';
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.left = (Math.random() * 80 + 10) + 'vw';
+            el.style.top = (Math.random() * 40 + 20) + 'vh';
+            el.style.fontSize = (Math.random() * 16 + 18) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2600);
+        }
+    }
+
+    // Interactive Love Meter Booster
+    let currentLoveVal = 1000;
+    function boostLoveMeter() {
+        currentLoveVal += 500;
+        const valEl = document.getElementById('loveMeterVal');
+        const fillEl = document.getElementById('loveMeterFill');
+        if (valEl) valEl.textContent = currentLoveVal + '% ♡';
+        if (fillEl) {
+            fillEl.style.transform = 'scaleY(1.3)';
+            setTimeout(() => fillEl.style.transform = '', 200);
+        }
+        sfx.playChime();
+        burstFloatingHearts(15);
+    }
+
+    // Magical Page Transition Particle Sparkle FX
+    function triggerPageTransitionFx() {
+        sfx.playChime();
+        const emojis = ['✨', '🌸', '💖', '⭐', '🎀', '🍭'];
+        const overlay = document.createElement('div');
+        overlay.className = 'transition-sparkle-overlay';
+        document.body.appendChild(overlay);
+
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+
+        for (let i = 0; i < 14; i++) {
+            const p = document.createElement('div');
+            p.className = 'trans-particle';
+            p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            p.style.left = cx + 'px';
+            p.style.top = cy + 'px';
+            const angle = (i / 14) * 2 * Math.PI;
+            const dist = Math.random() * 140 + 120;
+            p.style.setProperty('--tx', (Math.cos(angle) * dist) + 'px');
+            p.style.setProperty('--ty', (Math.sin(angle) * dist) + 'px');
+            p.style.setProperty('--rot', ((Math.random() - 0.5) * 360) + 'deg');
+            overlay.appendChild(p);
+        }
+
+        setTimeout(() => overlay.remove(), 750);
+    }
+
+function resetAllViews() {
+    triggerPageTransitionFx();
             Object.values(views).forEach(v => v.classList.remove('active'));
         }
 
