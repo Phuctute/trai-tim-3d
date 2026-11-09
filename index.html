@@ -1566,19 +1566,18 @@
         }
 
 
-        /* PURE HEART INTRO: Khi vừa mở app, chỉ hiển thị duy nhất mỗi trái tim */
+        /* PURE HEART INTRO: Khi vừa mở app, chỉ hiển thị DUY NHẤT mỗi trái tim, KHÔNG CHỮ NÀO KHÁC */
         body.pure-heart-intro .cute-nav {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-80px);
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transform: translateY(-80px) !important;
             transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body.pure-heart-intro .gesture-dock {
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(90px);
-            transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         body.pure-heart-intro #fistSpeechBubble,
@@ -1599,88 +1598,71 @@
 
         body.pure-heart-intro .default-stage-decor-wrapper {
             gap: 0;
-            min-height: 290px;
+            min-height: 320px;
         }
 
         body.pure-heart-intro .gravity-core-wrap {
-            transform: scale(1.32);
+            transform: scale(1.35);
             transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Pure Heart Intro Hint: Nổi bật, đáng yêu, hướng dẫn giơ nắm tay hoặc chạm vào tim */
-        .pure-heart-intro-hint {
-            display: none;
-            margin-top: 32px;
-            background: rgba(255, 255, 255, 0.95);
-            border: 2.5px solid #FF8DA1;
-            border-radius: 32px;
-            padding: 12px 28px;
-            box-shadow: 0 16px 36px rgba(255, 101, 132, 0.28), 0 0 0 4px #FFE0E6;
-            cursor: pointer;
-            align-items: center;
-            gap: 16px;
-            animation: introHintBob 2.4s infinite ease-in-out;
-            transition: transform 0.25s, box-shadow 0.25s;
-            user-select: none;
-            z-index: 50;
-            max-width: 90vw;
-        }
-
-        body.pure-heart-intro .pure-heart-intro-hint {
+        /* GESTURE DOCK: Nổi bật, gọn gàng ở cạnh dưới màn hình */
+        .gesture-dock {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%) translateY(90px);
             display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(14px);
+            padding: 6px 14px;
+            border-radius: 36px;
+            border: 2.5px solid #FFD1DC;
+            box-shadow: 0 12px 32px rgba(255, 101, 132, 0.22);
+            z-index: 45;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            max-width: 95vw;
         }
 
-        .pure-heart-intro-hint:hover {
-            transform: scale(1.06);
-            box-shadow: 0 20px 42px rgba(255, 101, 132, 0.38), 0 0 0 5px #FF8DA1;
+        body.app-unlocked .gesture-dock {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
         }
 
-        .pure-heart-intro-hint:active {
-            transform: scale(0.96);
+        .dock-pill-btn {
+            background: rgba(255, 240, 243, 0.9);
+            border: 1.5px solid transparent;
+            color: #FF5376;
+            font-family: var(--font-main);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .intro-hint-fist-badge {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+        .dock-pill-btn:hover {
+            background: #FFE0E6;
+            transform: translateY(-2px);
+        }
+
+        .dock-pill-btn.active {
             background: linear-gradient(135deg, #FF6584, #FF8DA1);
             color: #FFFFFF;
-            font-size: 26px;
-            display: grid;
-            place-items: center;
-            box-shadow: 0 6px 16px rgba(255, 101, 132, 0.4);
-            animation: fistPulse 1.6s infinite ease-in-out;
-            flex-shrink: 0;
-        }
-
-        @keyframes fistPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15) rotate(-6deg); }
-        }
-
-        @keyframes introHintBob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .intro-hint-text-box {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .intro-hint-main {
-            font-size: 15px;
-            font-weight: 800;
-            color: #FF5376;
-            letter-spacing: -0.2px;
-        }
-
-        .intro-hint-sub {
-            font-size: 12px;
-            font-weight: 600;
-            color: #8C7A8F;
-            margin-top: 3px;
+            border-color: #FF8DA1;
+            box-shadow: 0 4px 12px rgba(255, 101, 132, 0.35);
+            transform: scale(1.05);
         }
 
         /* REVEAL TRANSITIONS: Hiện mượt mà khi giơ nắm tay hoặc chạm vào tim */
@@ -1689,13 +1671,6 @@
             pointer-events: auto;
             transform: translateY(0);
             transition: opacity 0.5s ease 0.1s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
-        }
-
-        body.app-unlocked .gesture-dock {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-            transition: opacity 0.5s ease 0.3s, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s;
         }
 
         body.app-unlocked .gravity-core-wrap {
@@ -1846,14 +1821,7 @@
 
             </div>
 
-            <!-- Pure Heart Intro Floating Hint -->
-            <div class="pure-heart-intro-hint" id="pureHeartIntroHint" onclick="unlockAppFromPureHeart()">
-                <div class="intro-hint-fist-badge">✊</div>
-                <div class="intro-hint-text-box">
-                    <div class="intro-hint-main">Giơ nắm tay để mở điều kỳ diệu ✨</div>
-                    <div class="intro-hint-sub">Hoặc chạm vào trái tim để đánh thức các bạn mèo ♡</div>
-                </div>
-            </div>
+
 
             <!-- Extra Cute Row: Cat Question, Cat Bouquet, Cat Sleep Cap -->
             <div class="default-extra-cats-row">
@@ -2064,6 +2032,22 @@
             </div>
         </section>
 
+
+    <!-- GESTURE DOCK (Hiển thị 4 chế độ cử chỉ: Nắm tay, Xòe tay, 1 Ngón, 2 Ngón) -->
+    <div class="gesture-dock" id="gestureDock">
+        <button class="dock-pill-btn active" id="btnDockFist" onclick="triggerFistMode()">
+            <span>✊</span> <span>Lõi Tim</span>
+        </button>
+        <button class="dock-pill-btn" id="btnDockPalm" onclick="triggerPalmMode()">
+            <span>🖐️</span> <span>Hoa Tươi</span>
+        </button>
+        <button class="dock-pill-btn" id="btnDockPoint" onclick="triggerPointMode()">
+            <span>☝️</span> <span>1 Ngón (Album)</span>
+        </button>
+        <button class="dock-pill-btn" id="btnDockPeace" onclick="triggerPeaceMode()">
+            <span>✌️</span> <span>2 Ngón (Tỏ Tình)</span>
+        </button>
+    </div>
     </main>
 
     <!-- MINI CAMERA HUD -->
@@ -2612,11 +2596,29 @@
             peace: document.getElementById('viewPeace')
         };
 
+        function updateDockActive(mode) {
+            const map = {
+                fist: 'btnDockFist',
+                palm: 'btnDockPalm',
+                point: 'btnDockPoint',
+                peace: 'btnDockPeace'
+            };
+            Object.values(map).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('active');
+            });
+            const cur = document.getElementById(map[mode]);
+            if (cur) cur.classList.add('active');
+        }
+
         let isIntroPureHeart = true;
+        let isCameraRunning = false;
+        let cameraInstance = null;
 
         window.handleHeartCoreClick = function() {
             if (isIntroPureHeart) {
                 unlockAppFromPureHeart();
+                triggerFistMode();
             } else {
                 triggerPalmMode();
             }
@@ -2636,8 +2638,6 @@
             document.body.classList.remove('pure-heart-intro');
             document.body.classList.add('app-unlocked');
 
-            views.fist.classList.add('active');
-
             const bubble = document.getElementById('fistSpeechBubble');
             if (bubble) {
                 bubble.textContent = 'Oa! Tụi mình đã xuất hiện rùi nèee~ 🌸✨';
@@ -2646,7 +2646,7 @@
                 }, 5000);
             }
 
-            if (!cameraActive) {
+            if (!isCameraRunning) {
                 initAiCamera();
             }
         };
@@ -2654,6 +2654,7 @@
         window.togglePureHeartMode = function() {
             if (isIntroPureHeart) {
                 unlockAppFromPureHeart();
+                triggerFistMode();
             } else {
                 isIntroPureHeart = true;
                 sfx.playPop();
@@ -2663,6 +2664,15 @@
                 views.fist.classList.add('active');
             }
         };
+
+        // Screen tap unlocks pure heart immediately
+        document.addEventListener('click', (e) => {
+            if (!isCameraRunning) initAiCamera();
+            if (isIntroPureHeart && !e.target.closest('.modal-cute-box') && !e.target.closest('#photosModal')) {
+                unlockAppFromPureHeart();
+                triggerFistMode();
+            }
+        });
 
         
     // Interactive Petal Shower for Floral State
@@ -2795,13 +2805,15 @@ function resetAllViews() {
         window.triggerFistMode = function() {
             resetAllViews();
             views.fist.classList.add('active');
+            updateDockActive('fist');
         };
 
         // 🖐️ OPEN PALM: MÈO CẦM HOA & PHÁT NHẠC
         window.triggerPalmMode = function() {
             resetAllViews();
             views.palm.classList.add('active');
-            playCuteMusic(); // Starts once from 26s, then keeps playing non-stop!
+            updateDockActive('palm');
+            playCuteMusic();
             burstFloatingHearts(12);
         };
 
@@ -2809,6 +2821,7 @@ function resetAllViews() {
         window.triggerPointMode = function() {
             resetAllViews();
             views.point.classList.add('active');
+            updateDockActive('point');
             swipeHistory.length = 0;
         };
 
@@ -2816,6 +2829,7 @@ function resetAllViews() {
         window.triggerPeaceMode = function() {
             resetAllViews();
             views.peace.classList.add('active');
+            updateDockActive('peace');
             burstFloatingHearts(25);
         };
 
@@ -2864,7 +2878,7 @@ function resetAllViews() {
     <!-- MEDIAPIPE AI CAMERA GESTURE RECOGNITION (TỐI ƯU CỰC KỲ MƯỢT MÀ, KHÔNG KHỰNG) -->
     <script>
         const videoElement = document.getElementById('cameraFeed');
-        let currentGesture = 'FIST';
+        let currentGesture = null;
         let gestureDebounce = 0;
         let swipeDebounce = 0;
         const swipeHistory = []; // rolling history of finger X for velocity flick detection
@@ -2878,7 +2892,7 @@ function resetAllViews() {
             const wrist = lm[0];
             const dTip = Math.hypot(lm[tipIdx].x - wrist.x, lm[tipIdx].y - wrist.y);
             const dPip = Math.hypot(lm[pipIdx].x - wrist.x, lm[pipIdx].y - wrist.y);
-            return dTip > dPip * 1.25;
+            return dTip > dPip * 1.15;
         }
 
         function onResults(results) {
@@ -2933,7 +2947,7 @@ function resetAllViews() {
 
             let winningGesture = null;
             for (const [g, count] of Object.entries(counts)) {
-                if (count >= 4) { // 4 out of 5 frames agreement required
+                if (count >= 3) { // 4 out of 5 frames agreement required
                     winningGesture = g;
                     break;
                 }
@@ -2971,27 +2985,24 @@ function resetAllViews() {
             }
 
             // Only transition if winning gesture is confirmed and debounced
-            if (winningGesture && winningGesture !== currentGesture && now - gestureDebounce > 500) {
+            if (winningGesture && (winningGesture !== currentGesture || isIntroPureHeart) && now - gestureDebounce > 350) {
                 currentGesture = winningGesture;
                 gestureDebounce = now;
 
                 if (isIntroPureHeart) {
                     unlockAppFromPureHeart();
-                    if (winningGesture === 'PEACE') triggerPeaceMode();
-                    else if (winningGesture === 'PALM') triggerPalmMode();
-                    else if (winningGesture === 'POINT') triggerPointMode();
-                    else triggerFistMode();
-                } else {
-                    if (winningGesture === 'PEACE') triggerPeaceMode();
-                    else if (winningGesture === 'PALM') triggerPalmMode();
-                    else if (winningGesture === 'POINT') triggerPointMode();
-                    else if (winningGesture === 'FIST') triggerFistMode();
                 }
+
+                if (winningGesture === 'PEACE') triggerPeaceMode();
+                else if (winningGesture === 'PALM') triggerPalmMode();
+                else if (winningGesture === 'POINT') triggerPointMode();
+                else if (winningGesture === 'FIST') triggerFistMode();
             }
         }
 
         // Initialize camera
         function initAiCamera() {
+            if (isCameraRunning) return;
             if (typeof Hands !== 'undefined' && typeof Camera !== 'undefined') {
                 try {
                     const hands = new Hands({
@@ -3001,13 +3012,13 @@ function resetAllViews() {
                     hands.setOptions({
                         maxNumHands: 1,
                         modelComplexity: 1,
-                        minDetectionConfidence: 0.7,
-                        minTrackingConfidence: 0.7
+                        minDetectionConfidence: 0.6,
+                        minTrackingConfidence: 0.6
                     });
 
                     hands.onResults(onResults);
 
-                    const camera = new Camera(videoElement, {
+                    cameraInstance = new Camera(videoElement, {
                         onFrame: async () => {
                             if (videoElement.videoWidth > 0) {
                                 await hands.send({ image: videoElement });
@@ -3017,8 +3028,13 @@ function resetAllViews() {
                         height: 240
                     });
 
-                    camera.start().catch((err) => {
-                        console.log('Camera start fallback:', err);
+                    cameraInstance.start().then(() => {
+                        isCameraRunning = true;
+                        const bubble = document.getElementById('cameraBubble');
+                        if (bubble) bubble.style.borderColor = '#4CAF50';
+                        console.log('AI Camera started successfully!');
+                    }).catch((err) => {
+                        console.log('Camera start error:', err);
                     });
                 } catch(e) {
                     console.log('MediaPipe init exception:', e);
@@ -3026,15 +3042,16 @@ function resetAllViews() {
             }
         }
 
+        // Start camera automatically without waiting for pre-granted state
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAiCamera);
+        } else {
+            initAiCamera();
+        }
+        setTimeout(initAiCamera, 400);
+
         // Click on camera bubble to toggle camera
         document.getElementById('cameraBubble').addEventListener('click', initAiCamera);
-
-        // Auto request camera after gentle delay
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.permissions && navigator.permissions.query({ name: 'camera' }).then(res => {
-                if (res.state === 'granted') initAiCamera();
-            }).catch(() => {});
-        }
     </script>
 </body>
 </html>
