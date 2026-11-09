@@ -105,6 +105,14 @@
         .cloud-2::before { width: 75px; height: 75px; top: -30px; left: 30px; }
         .cloud-2::after { width: 55px; height: 55px; top: -20px; left: 95px; }
 
+        .cloud-3 {
+            width: 155px; height: 56px; top: 40%; left: -180px;
+            animation-duration: 35s;
+            animation-delay: 20s;
+        }
+        .cloud-3::before { width: 68px; height: 68px; top: -28px; left: 26px; }
+        .cloud-3::after { width: 52px; height: 52px; top: -20px; left: 86px; }
+
         @keyframes floatCloud {
             0% { transform: translateX(0); }
             100% { transform: translateX(calc(100vw + 240px)); }
@@ -257,6 +265,13 @@
 
         .btn-icon-bubble:active {
             transform: scale(0.95);
+        }
+
+        .btn-icon-bubble.btn-pressing {
+            transform: scale(0.88) !important;
+            box-shadow: 0 2px 10px rgba(255, 101, 132, 0.45), 0 0 0 3px #FF8DA1 !important;
+            background: #FFE5EC !important;
+            transition: all 0.15s ease !important;
         }
 
         .btn-icon-bubble.playing {
@@ -1671,6 +1686,9 @@
         <div class="cloud cloud-2">
             <span class="cloud-face">(˘ω˘)</span>
         </div>
+        <div class="cloud cloud-3">
+            <span class="cloud-face">(◕‿◕✿)</span>
+        </div>
     </div>
 
     <!-- Cute floating stickers -->
@@ -1685,12 +1703,8 @@
 
     <!-- Top cute navigation: ONLY ICONS (No text) -->
     <nav class="cute-nav">
-        <button class="btn-icon-bubble" id="btnPureHeartToggle" onclick="togglePureHeartMode()" title="Chỉ hiển thị tim ♡">
-            💖
-        </button>
-
-        <button class="btn-icon-bubble" id="btnOpenPhotosModal" title="Ảnh của chúng mình">
-            🐾
+        <button class="btn-icon-bubble" id="btnOpenPhotosModal" title="Bấm 1 lần: Về trái tim | Giữ: Chọn ảnh">
+            🖼️
         </button>
 
         <button class="btn-icon-bubble" id="btnMusicToggle" title="Bật/Tắt Nhạc">
@@ -2523,15 +2537,20 @@
 
         // Modal Open / Close
         const modal = document.getElementById('photosModal');
-        document.getElementById('btnOpenPhotosModal').addEventListener('click', () => {
+        window.openPhotosModal = function() {
             renderPhotoSlots();
             modal.classList.add('open');
-        });
-        document.getElementById('btnCloseModal').addEventListener('click', () => {
+            if (window.sfx) sfx.playPop();
+            if (navigator.vibrate) {
+                try { navigator.vibrate(50); } catch (_) {}
+            }
+        };
+        window.closePhotosModal = function() {
             modal.classList.remove('open');
-        });
+        };
+        document.getElementById('btnCloseModal').addEventListener('click', window.closePhotosModal);
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('open');
+            if (e.target === modal) window.closePhotosModal();
         });
     </script>
 
@@ -2586,19 +2605,94 @@
             }
         };
 
+        window.returnToPureHeartMode = function() {
+            isIntroPureHeart = true;
+            if (window.sfx) sfx.playPop();
+            document.body.classList.remove('app-unlocked');
+            document.body.classList.add('pure-heart-intro');
+            resetAllViews();
+            views.fist.classList.add('active');
+        };
+
         window.togglePureHeartMode = function() {
             if (isIntroPureHeart) {
                 unlockAppFromPureHeart();
                 triggerFistMode();
             } else {
-                isIntroPureHeart = true;
-                sfx.playPop();
-                document.body.classList.remove('app-unlocked');
-                document.body.classList.add('pure-heart-intro');
-                resetAllViews();
-                views.fist.classList.add('active');
+                returnToPureHeartMode();
             }
         };
+
+        // SETUP PHOTO BUTTON (TAP = VỀ TRÁI TIM, HOLD = CHỌN ẢNH)
+        (function setupPhotoButtonInteraction() {
+            const btn = document.getElementById('btnOpenPhotosModal');
+            if (!btn) return;
+
+            let holdTimer = null;
+            let isLongPress = false;
+            let pressStartTime = 0;
+            const HOLD_DURATION = 420; // 420ms for comfortable hold recognition
+
+            function startPress(e) {
+                isLongPress = false;
+                pressStartTime = Date.now();
+                btn.classList.add('btn-pressing');
+
+                clearTimeout(holdTimer);
+                holdTimer = setTimeout(() => {
+                    isLongPress = true;
+                    btn.classList.remove('btn-pressing');
+                    window.openPhotosModal();
+                }, HOLD_DURATION);
+            }
+
+            function endPress(e) {
+                clearTimeout(holdTimer);
+                btn.classList.remove('btn-pressing');
+
+                if (isLongPress) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    return;
+                }
+
+                const elapsed = Date.now() - pressStartTime;
+                if (elapsed < HOLD_DURATION && elapsed > 20) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    window.returnToPureHeartMode();
+                }
+            }
+
+            function cancelPress() {
+                clearTimeout(holdTimer);
+                btn.classList.remove('btn-pressing');
+                isLongPress = false;
+            }
+
+            // Mouse events
+            btn.addEventListener('mousedown', startPress);
+            btn.addEventListener('mouseup', endPress);
+            btn.addEventListener('mouseleave', cancelPress);
+
+            // Touch events
+            btn.addEventListener('touchstart', startPress, { passive: false });
+            btn.addEventListener('touchend', endPress, { passive: false });
+            btn.addEventListener('touchcancel', cancelPress);
+
+            // Disable mobile long-press context menu
+            btn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            // Prevent default duplicate click handler
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        })();
 
 
 
