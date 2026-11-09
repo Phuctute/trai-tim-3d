@@ -1566,18 +1566,28 @@
         }
 
 
-        /* PURE HEART INTRO: Khi vừa mở app, chỉ hiển thị DUY NHẤT mỗi trái tim, KHÔNG CHỮ NÀO KHÁC */
+        /* ZERO BLACK SCREEN FULLSCREEN & BACKDROP FIX */
+        html, body, :fullscreen, ::backdrop, html:-webkit-full-screen, body:-webkit-full-screen {
+            background: linear-gradient(135deg, #FFF0F3 0%, #FFE5EC 45%, #FFF5EB 100%) !important;
+            background-color: #FFE5EC !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        ::backdrop {
+            background: linear-gradient(135deg, #FFF0F3 0%, #FFE5EC 45%, #FFF5EB 100%) !important;
+            background-color: #FFE5EC !important;
+            opacity: 1 !important;
+        }
+
+        /* PURE HEART INTRO: Khi vừa mở app, chỉ hiển thị DUY NHẤT mỗi trái tim, TUYỆT ĐỐI KHÔNG CHỮ, KHÔNG DOCK */
         body.pure-heart-intro .cute-nav {
             opacity: 0 !important;
             pointer-events: none !important;
             transform: translateY(-80px) !important;
             transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        body.pure-heart-intro .gesture-dock {
-            display: none !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
         }
 
         body.pure-heart-intro #fistSpeechBubble,
@@ -1604,65 +1614,6 @@
         body.pure-heart-intro .gravity-core-wrap {
             transform: scale(1.35);
             transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        /* GESTURE DOCK: Nổi bật, gọn gàng ở cạnh dưới màn hình */
-        .gesture-dock {
-            position: fixed;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%) translateY(90px);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.94);
-            backdrop-filter: blur(14px);
-            padding: 6px 14px;
-            border-radius: 36px;
-            border: 2.5px solid #FFD1DC;
-            box-shadow: 0 12px 32px rgba(255, 101, 132, 0.22);
-            z-index: 45;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            user-select: none;
-            max-width: 95vw;
-        }
-
-        body.app-unlocked .gesture-dock {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .dock-pill-btn {
-            background: rgba(255, 240, 243, 0.9);
-            border: 1.5px solid transparent;
-            color: #FF5376;
-            font-family: var(--font-main);
-            font-size: 12px;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .dock-pill-btn:hover {
-            background: #FFE0E6;
-            transform: translateY(-2px);
-        }
-
-        .dock-pill-btn.active {
-            background: linear-gradient(135deg, #FF6584, #FF8DA1);
-            color: #FFFFFF;
-            border-color: #FF8DA1;
-            box-shadow: 0 4px 12px rgba(255, 101, 132, 0.35);
-            transform: scale(1.05);
         }
 
         /* REVEAL TRANSITIONS: Hiện mượt mà khi giơ nắm tay hoặc chạm vào tim */
@@ -1752,7 +1703,7 @@
     </nav>
 
     <!-- Bottom-left Fullscreen Button -->
-    <button class="btn-fullscreen-bubble" id="btnFullscreenToggle" title="Toàn màn hình" onclick="toggleFullscreen()">
+    <button class="btn-fullscreen-bubble" id="btnFullscreenToggle" title="Toàn màn hình" onclick="toggleFullscreen(event)">
         ⛶
     </button>
 
@@ -2033,21 +1984,7 @@
         </section>
 
 
-    <!-- GESTURE DOCK (Hiển thị 4 chế độ cử chỉ: Nắm tay, Xòe tay, 1 Ngón, 2 Ngón) -->
-    <div class="gesture-dock" id="gestureDock">
-        <button class="dock-pill-btn active" id="btnDockFist" onclick="triggerFistMode()">
-            <span>✊</span> <span>Lõi Tim</span>
-        </button>
-        <button class="dock-pill-btn" id="btnDockPalm" onclick="triggerPalmMode()">
-            <span>🖐️</span> <span>Hoa Tươi</span>
-        </button>
-        <button class="dock-pill-btn" id="btnDockPoint" onclick="triggerPointMode()">
-            <span>☝️</span> <span>1 Ngón (Album)</span>
-        </button>
-        <button class="dock-pill-btn" id="btnDockPeace" onclick="triggerPeaceMode()">
-            <span>✌️</span> <span>2 Ngón (Tỏ Tình)</span>
-        </button>
-    </div>
+
     </main>
 
     <!-- MINI CAMERA HUD -->
@@ -2112,27 +2049,36 @@
         });
     </script>
 
-    <!-- FULLSCREEN TOGGLE -->
+    <!-- FULLSCREEN TOGGLE (Instant 0s Black Screen Fix & Stop Propagation) -->
     <script>
-        function toggleFullscreen() {
+        function toggleFullscreen(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const btn = document.getElementById('btnFullscreenToggle');
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().then(() => {
-                    btn.textContent = '✕';
-                }).catch(err => {
-                    console.log('Fullscreen error:', err);
-                });
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen().then(() => {
-                        btn.textContent = '⛶';
+                const el = document.documentElement;
+                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+                if (req) {
+                    req.call(el).then(() => {
+                        if (btn) btn.textContent = '✕';
+                    }).catch(err => {
+                        console.log('Fullscreen error:', err);
                     });
+                }
+            } else {
+                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+                if (exit) {
+                    exit.call(document).then(() => {
+                        if (btn) btn.textContent = '⛶';
+                    }).catch(() => {});
                 }
             }
         }
         document.addEventListener('fullscreenchange', () => {
             const btn = document.getElementById('btnFullscreenToggle');
-            btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+            if (btn) btn.textContent = document.fullscreenElement ? '✕' : '⛶';
         });
     </script>
 
@@ -2596,20 +2542,7 @@
             peace: document.getElementById('viewPeace')
         };
 
-        function updateDockActive(mode) {
-            const map = {
-                fist: 'btnDockFist',
-                palm: 'btnDockPalm',
-                point: 'btnDockPoint',
-                peace: 'btnDockPeace'
-            };
-            Object.values(map).forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.remove('active');
-            });
-            const cur = document.getElementById(map[mode]);
-            if (cur) cur.classList.add('active');
-        }
+
 
         let isIntroPureHeart = true;
         let isCameraRunning = false;
@@ -2665,14 +2598,7 @@
             }
         };
 
-        // Screen tap unlocks pure heart immediately
-        document.addEventListener('click', (e) => {
-            if (!isCameraRunning) initAiCamera();
-            if (isIntroPureHeart && !e.target.closest('.modal-cute-box') && !e.target.closest('#photosModal')) {
-                unlockAppFromPureHeart();
-                triggerFistMode();
-            }
-        });
+
 
         
     // Interactive Petal Shower for Floral State
@@ -2805,14 +2731,12 @@ function resetAllViews() {
         window.triggerFistMode = function() {
             resetAllViews();
             views.fist.classList.add('active');
-            updateDockActive('fist');
         };
 
         // 🖐️ OPEN PALM: MÈO CẦM HOA & PHÁT NHẠC
         window.triggerPalmMode = function() {
             resetAllViews();
             views.palm.classList.add('active');
-            updateDockActive('palm');
             playCuteMusic();
             burstFloatingHearts(12);
         };
@@ -2821,7 +2745,6 @@ function resetAllViews() {
         window.triggerPointMode = function() {
             resetAllViews();
             views.point.classList.add('active');
-            updateDockActive('point');
             swipeHistory.length = 0;
         };
 
@@ -2829,7 +2752,6 @@ function resetAllViews() {
         window.triggerPeaceMode = function() {
             resetAllViews();
             views.peace.classList.add('active');
-            updateDockActive('peace');
             burstFloatingHearts(25);
         };
 
