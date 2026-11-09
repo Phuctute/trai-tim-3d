@@ -1566,20 +1566,16 @@
         }
 
 
-        /* ZERO BLACK SCREEN FULLSCREEN & BACKDROP FIX */
-        html, body, :fullscreen, ::backdrop, html:-webkit-full-screen, body:-webkit-full-screen {
+        /* ZERO BLACK SCREEN FULLSCREEN & TRANSPARENT BACKDROP FIX */
+        :fullscreen, html:-webkit-full-screen, body:-webkit-full-screen {
             background: linear-gradient(135deg, #FFF0F3 0%, #FFE5EC 45%, #FFF5EB 100%) !important;
             background-color: #FFE5EC !important;
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
         }
 
         ::backdrop {
-            background: linear-gradient(135deg, #FFF0F3 0%, #FFE5EC 45%, #FFF5EB 100%) !important;
-            background-color: #FFE5EC !important;
-            opacity: 1 !important;
+            display: none !important;
+            background: transparent !important;
+            opacity: 0 !important;
         }
 
         /* PURE HEART INTRO: Khi vừa mở app, chỉ hiển thị DUY NHẤT mỗi trái tim, TUYỆT ĐỐI KHÔNG CHỮ, KHÔNG DOCK */
@@ -2051,15 +2047,19 @@
 
     <!-- FULLSCREEN TOGGLE (Instant 0s Black Screen Fix & Stop Propagation) -->
     <script>
+        function isCurrentlyFullscreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        }
+
         function toggleFullscreen(e) {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
             const btn = document.getElementById('btnFullscreenToggle');
-            if (!document.fullscreenElement) {
+            if (!isCurrentlyFullscreen()) {
                 const el = document.documentElement;
-                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+                const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
                 if (req) {
                     req.call(el).then(() => {
                         if (btn) btn.textContent = '✕';
@@ -2068,7 +2068,7 @@
                     });
                 }
             } else {
-                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+                const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
                 if (exit) {
                     exit.call(document).then(() => {
                         if (btn) btn.textContent = '⛶';
@@ -2076,9 +2076,11 @@
                 }
             }
         }
-        document.addEventListener('fullscreenchange', () => {
-            const btn = document.getElementById('btnFullscreenToggle');
-            if (btn) btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+        ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+            document.addEventListener(evt, () => {
+                const btn = document.getElementById('btnFullscreenToggle');
+                if (btn) btn.textContent = isCurrentlyFullscreen() ? '✕' : '⛶';
+            });
         });
     </script>
 
