@@ -1518,6 +1518,39 @@
             .love-meter-header { font-size: 11px; }
         }
 
+    
+        /* WILD HEART STORM (BÃO TIM BAY TỨ TUNG 360 ĐỘ) */
+        .heart-storm-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        .storm-heart-item {
+            position: absolute;
+            font-size: var(--sz);
+            pointer-events: none;
+            user-select: none;
+            filter: drop-shadow(0 4px 12px rgba(255, 46, 91, 0.45));
+            animation: stormFly var(--dur) cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+        }
+
+        @keyframes stormFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.3) rotate(0deg);
+            }
+            65% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--dx), var(--dy)) scale(var(--sc)) rotate(var(--rot));
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1777,7 +1810,7 @@
                 
                 <div class="confession-decor-row">
                     <!-- Left Love Badge: Love Letter -->
-                    <div class="love-side-badge" onclick="boostLoveMeter()" title="Thư tình cho em!">
+                    <div class="love-side-badge" onclick="boostLoveMeter(event)" title="Thư tình cho em!">
                         <div class="floating-letter-icon">💌</div>
                         <div class="love-badge-card">Thư Tình ✉️</div>
                     </div>
@@ -1790,7 +1823,7 @@
                     </div>
 
                     <!-- Right Love Badge: Sweet Gift -->
-                    <div class="love-side-badge" onclick="boostLoveMeter()" title="Hộp quà ngọt ngào!">
+                    <div class="love-side-badge" onclick="boostLoveMeter(event)" title="Hộp quà ngọt ngào!">
                         <div class="floating-letter-icon">🎁</div>
                         <div class="love-badge-card">Quà Tặng 🎀</div>
                     </div>
@@ -1804,7 +1837,7 @@
                 </p>
 
                 <!-- Interactive Love Meter Widget -->
-                <div class="love-meter-box" onclick="boostLoveMeter()">
+                <div class="love-meter-box" onclick="boostLoveMeter(event)">
                     <div class="love-meter-header">
                         <span>💖 Chỉ Số Rung Động Trái Tim</span>
                         <span class="love-meter-val" id="loveMeterVal">1000% ♡</span>
@@ -1815,16 +1848,11 @@
                         </div>
                     </div>
                     <div class="love-meter-note">
-                        🌸 Chạm vào đây để nạp thêm tình yêu nè! (Tung bão tim bay) 🌸
+                        🌸 Chạm vào để giải phóng BÃO TIM bay tứ tung nèee! 💖 🌸
                     </div>
                 </div>
 
-                <!-- Sweet Vow Banner -->
-                <div class="sweet-banner-pill" onclick="boostLoveMeter()" style="margin-top: 10px;">
-                    <span>✨</span>
-                    <span>Cảm ơn vì đã xuất hiện và làm cho thế giới của anh ngọt ngào hơn mỗi ngày</span>
-                    <span>✨</span>
-                </div>
+                
             </div>
         </section>
 
@@ -2305,19 +2333,81 @@
         }
     }
 
-    // Interactive Love Meter Booster
+    // Wild Heart Storm Generator (Bão Tim Bay Tứ Tung 360 Độ)
+    function triggerWildHeartStorm(clientX, clientY) {
+        sfx.playChime();
+        sfx.playPop();
+
+        const emojis = ['💖', '💕', '💓', '💗', '💘', '💝', '❤️', '💌', '🌸', '✨', '🥰', '🌹'];
+        const container = document.createElement('div');
+        container.className = 'heart-storm-container';
+        document.body.appendChild(container);
+
+        const originX = (typeof clientX === 'number' && clientX > 0) ? clientX : window.innerWidth / 2;
+        const originY = (typeof clientY === 'number' && clientY > 0) ? clientY : window.innerHeight / 2;
+
+        const count = 55; // 55 heart projectiles in all directions
+        for (let i = 0; i < count; i++) {
+            const h = document.createElement('div');
+            h.className = 'storm-heart-item';
+            h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            h.style.left = originX + 'px';
+            h.style.top = originY + 'px';
+
+            // 360-degree explosive radius
+            const angle = Math.random() * 2 * Math.PI;
+            const distance = Math.random() * (Math.max(window.innerWidth, window.innerHeight) * 0.85) + 160;
+            const dx = Math.cos(angle) * distance;
+            const dy = Math.sin(angle) * distance - (Math.random() * 140);
+            const rot = (Math.random() - 0.5) * 800;
+            const dur = (Math.random() * 0.9 + 1.2).toFixed(2) + 's';
+            const size = (Math.random() * 24 + 18) + 'px';
+            const scaleEnd = (Math.random() * 0.9 + 1.2).toFixed(2);
+
+            h.style.setProperty('--dx', dx + 'px');
+            h.style.setProperty('--dy', dy + 'px');
+            h.style.setProperty('--rot', rot + 'deg');
+            h.style.setProperty('--dur', dur);
+            h.style.setProperty('--sz', size);
+            h.style.setProperty('--sc', scaleEnd);
+
+            container.appendChild(h);
+        }
+
+        // Float extra ambient hearts from bottom
+        burstFloatingHearts(14);
+
+        setTimeout(() => container.remove(), 2500);
+    }
+
+    // Interactive Love Meter Booster with Wild Heart Storm
     let currentLoveVal = 1000;
-    function boostLoveMeter() {
-        currentLoveVal += 500;
+    function boostLoveMeter(e) {
+        currentLoveVal += 999;
         const valEl = document.getElementById('loveMeterVal');
         const fillEl = document.getElementById('loveMeterFill');
-        if (valEl) valEl.textContent = currentLoveVal + '% ♡';
-        if (fillEl) {
-            fillEl.style.transform = 'scaleY(1.3)';
-            setTimeout(() => fillEl.style.transform = '', 200);
+        const box = document.querySelector('.love-meter-box');
+        
+        if (valEl) {
+            valEl.textContent = currentLoveVal + '% ♡';
+            valEl.style.transform = 'scale(1.28)';
+            setTimeout(() => valEl.style.transform = '', 220);
         }
-        sfx.playChime();
-        burstFloatingHearts(15);
+        if (fillEl) {
+            fillEl.style.transform = 'scaleY(1.35)';
+            setTimeout(() => fillEl.style.transform = '', 220);
+        }
+        if (box) {
+            box.style.transform = 'scale(1.12, 0.88)';
+            setTimeout(() => {
+                box.style.transform = 'scale(0.94, 1.06)';
+                setTimeout(() => box.style.transform = '', 160);
+            }, 120);
+        }
+
+        const cx = (e && e.clientX) ? e.clientX : window.innerWidth / 2;
+        const cy = (e && e.clientY) ? e.clientY : window.innerHeight / 2;
+        triggerWildHeartStorm(cx, cy);
     }
 
     // Magical Page Transition Particle Sparkle FX
