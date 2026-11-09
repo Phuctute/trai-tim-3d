@@ -1551,6 +1551,18 @@
             }
         }
 
+    
+        /* Zoom adjustments for better visual balance */
+        #miniCatSleepCapImg {
+            transform: scale(2.15);
+            transform-origin: center;
+        }
+
+        #miniCatQuestionImg {
+            transform: scale(1.15);
+            transform-origin: center;
+        }
+
     </style>
 </head>
 <body>
@@ -1661,7 +1673,7 @@
                 <!-- Cat 3: Mèo Ngơ Ngác Dấu Hỏi -->
                 <div class="mini-companion companion-wave" onclick="squishCat(this, 'question')" title="Mèo Ngơ Ngác ❓ (Bấm để nghe nè!)">
                     <div class="mini-cat-card card-extra">
-                        <img src="assets/cat_question.jpg" alt="Mèo Ngơ Ngác" class="mini-cat-img" id="miniCatQuestionImg">
+                        <img src="assets/cat_question.jpg" alt="Mèo Ngơ Ngác" class="mini-cat-img" id="miniCatQuestionImg" style="transform: scale(1.15); transform-origin: center;">
                     </div>
                     <span class="companion-tag">Ngơ Ngác ❓</span>
                 </div>
@@ -1677,7 +1689,7 @@
                 <!-- Cat 5: Mèo Đội Mũ Ngủ Khò Khò -->
                 <div class="mini-companion companion-sleep" onclick="squishCat(this, 'sleep_cap')" title="Mèo Ngủ Ngoan 💤 (Bấm để nghe nè!)">
                     <div class="mini-cat-card card-extra">
-                        <img src="assets/cat_sleep_cap.jpg" alt="Mèo Đội Mũ Ngủ" class="mini-cat-img" id="miniCatSleepCapImg">
+                        <img src="assets/cat_sleep_cap.jpg" alt="Mèo Đội Mũ Ngủ" class="mini-cat-img" id="miniCatSleepCapImg" style="transform: scale(2.15); transform-origin: center;">
                     </div>
                     <span class="companion-tag">Khò Khò 💤</span>
                 </div>
