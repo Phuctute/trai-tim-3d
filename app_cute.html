@@ -299,11 +299,124 @@
             pointer-events: auto;
         }
 
-        /* STATE 1: MẶC ĐỊNH / ✊ FIST - LÕI TRỌNG LỰC TÌNH YÊU */
+        /* STATE 1: MẶC ĐỊNH / ✊ FIST - LÕI TRỌNG LỰC TÌNH YÊU & NHÂN VẬT TRANG TRÍ */
+        .default-stage-decor-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+            position: relative;
+        }
+
+        .heart-speech-bubble {
+            background: #FFFFFF;
+            border: 2.5px solid #FF8DA1;
+            border-radius: 22px;
+            padding: 8px 22px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #FF5376;
+            margin-bottom: 20px;
+            box-shadow: var(--bubbly-shadow);
+            animation: bounceBubble 1.8s infinite ease-in-out;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .heart-speech-bubble:hover {
+            transform: scale(1.06);
+        }
+
+        /* Cute companions on left and right */
+        .mini-companion {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 5;
+        }
+
+        .companion-left {
+            animation: floatLeft 3.6s infinite ease-in-out;
+        }
+
+        .companion-right {
+            animation: floatRight 3.4s infinite ease-in-out;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes floatLeft {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+        }
+
+        @keyframes floatRight {
+            0%, 100% { transform: translateY(0) rotate(4deg); }
+            50% { transform: translateY(-10px) rotate(-2deg); }
+        }
+
+        .balloon-string {
+            font-size: 28px;
+            margin-bottom: -8px;
+            filter: drop-shadow(0 4px 8px rgba(255, 101, 132, 0.3));
+            animation: balloonWobble 2s infinite ease-in-out;
+        }
+
+        @keyframes balloonWobble {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(8deg); }
+        }
+
+        .mini-cat-card {
+            width: 90px;
+            height: 90px;
+            background: #FFFFFF;
+            border-radius: 28px;
+            border: 3.5px solid #FFFFFF;
+            box-shadow: 0 12px 28px rgba(255, 101, 132, 0.22), 0 0 0 3px #FFE0E6;
+            overflow: hidden;
+            padding: 6px;
+            display: grid;
+            place-items: center;
+            transition: transform 0.2s;
+        }
+
+        .mini-cat-card:hover {
+            transform: scale(1.1);
+        }
+
+        .mini-cat-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 20px;
+            display: block;
+        }
+
+        .mini-sparkle-halo {
+            font-size: 22px;
+            margin-bottom: -6px;
+            animation: sparkleSpin 2s infinite ease-in-out;
+        }
+
+        .companion-tag {
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #FF6584;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3px 12px;
+            border-radius: 14px;
+            border: 1px solid #FFE0E6;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+            font-family: var(--font-sub);
+        }
+
         .gravity-core-wrap {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 260px;
+            height: 260px;
             display: grid;
             place-items: center;
         }
@@ -315,8 +428,8 @@
             animation: spinRing 12s linear infinite;
         }
 
-        .ring-1 { width: 220px; height: 220px; }
-        .ring-2 { width: 280px; height: 280px; animation-duration: 18s; animation-direction: reverse; }
+        .ring-1 { width: 210px; height: 210px; }
+        .ring-2 { width: 260px; height: 260px; animation-duration: 18s; animation-direction: reverse; }
 
         @keyframes spinRing {
             100% { transform: rotate(360deg); }
@@ -331,16 +444,16 @@
             filter: drop-shadow(0 2px 6px rgba(255, 101, 132, 0.4));
         }
 
-        .orbit-item:nth-child(1) { transform: rotate(0deg) translate(110px) rotate(0deg); }
-        .orbit-item:nth-child(2) { transform: rotate(72deg) translate(110px) rotate(-72deg); }
-        .orbit-item:nth-child(3) { transform: rotate(144deg) translate(110px) rotate(-144deg); }
-        .orbit-item:nth-child(4) { transform: rotate(216deg) translate(110px) rotate(-216deg); }
-        .orbit-item:nth-child(5) { transform: rotate(288deg) translate(110px) rotate(-288deg); }
+        .orbit-item:nth-child(1) { transform: rotate(0deg) translate(105px) rotate(0deg); }
+        .orbit-item:nth-child(2) { transform: rotate(72deg) translate(105px) rotate(-72deg); }
+        .orbit-item:nth-child(3) { transform: rotate(144deg) translate(105px) rotate(-144deg); }
+        .orbit-item:nth-child(4) { transform: rotate(216deg) translate(105px) rotate(-216deg); }
+        .orbit-item:nth-child(5) { transform: rotate(288deg) translate(105px) rotate(-288deg); }
 
         .chibi-heart-core {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 115px;
+            height: 115px;
             background: linear-gradient(135deg, #FF6584, #FF8DA1);
             border-radius: 35px;
             transform: rotate(-45deg);
@@ -352,30 +465,30 @@
         .chibi-heart-core::before, .chibi-heart-core::after {
             content: '';
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 115px;
+            height: 115px;
             background: inherit;
             border-radius: 50%;
         }
 
-        .chibi-heart-core::before { top: -60px; left: 0; }
-        .chibi-heart-core::after { left: 60px; top: 0; }
+        .chibi-heart-core::before { top: -58px; left: 0; }
+        .chibi-heart-core::after { left: 58px; top: 0; }
 
         .heart-face {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 14px;
+            left: 14px;
             transform: rotate(45deg);
             z-index: 5;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100px;
+            width: 95px;
         }
 
         .heart-eyes {
             display: flex;
-            gap: 28px;
+            gap: 26px;
             margin-top: 10px;
         }
 
@@ -401,7 +514,7 @@
 
         .heart-cheeks {
             display: flex;
-            gap: 40px;
+            gap: 38px;
             margin-top: -4px;
         }
 
@@ -431,7 +544,7 @@
         }
 
         .core-caption-pill {
-            margin-top: 36px;
+            margin-top: 30px;
             background: var(--card-bg);
             border: 2px solid rgba(255, 141, 161, 0.4);
             border-radius: 50px;
@@ -449,11 +562,26 @@
             50% { transform: translateY(-6px); }
         }
 
+        .bottom-peeking-mascot {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #8C7A8F;
+            background: rgba(255, 255, 255, 0.75);
+            padding: 5px 16px;
+            border-radius: 20px;
+            border: 1px solid #FFE4E9;
+            box-shadow: 0 4px 12px rgba(255, 101, 132, 0.1);
+        }
+
         /* CAT CARDS: BO GÓC MỀM MẠI CỰC ĐẸP (KHÔNG CÒN VUÔNG NHỌN!) */
         .cat-character-card {
             background: #FFFFFF;
             padding: 14px;
-            border-radius: 44px; /* Bo góc cực mềm mại */
+            border-radius: 44px;
             border: 5px solid #FFFFFF;
             box-shadow: 0 20px 48px rgba(255, 101, 132, 0.22), 0 0 0 4px #FFE0E6;
             position: relative;
@@ -476,7 +604,7 @@
             width: 270px;
             height: 270px;
             object-fit: contain;
-            border-radius: 34px; /* Bo ảnh đồng điệu */
+            border-radius: 34px;
             display: block;
             background: #FFFFFF;
         }
@@ -568,7 +696,7 @@
             position: relative;
             width: 320px;
             background: #FFFFFF;
-            border-radius: 42px; /* Bo góc cực mềm mại */
+            border-radius: 42px;
             padding: 16px 16px 42px;
             box-shadow: 0 24px 50px rgba(255, 101, 132, 0.22), 0 0 0 5px rgba(255, 255, 255, 0.85);
             border: 4px solid #FFE4E9;
@@ -677,7 +805,7 @@
         .cat-phone-card-box {
             background: #FFFFFF;
             padding: 8px;
-            border-radius: 36px; /* Bo góc mềm mại, không vuông nhọn */
+            border-radius: 36px;
             border: 4px solid #FFFFFF;
             box-shadow: 0 14px 35px rgba(255, 101, 132, 0.2), 0 0 0 3px #FFE0E6;
             position: relative;
@@ -775,7 +903,7 @@
         .cat-standing-card-box {
             background: #FFFFFF;
             padding: 14px;
-            border-radius: 44px; /* Bo góc cực mềm mại, KHÔNG VUÔNG NHỌN */
+            border-radius: 44px;
             border: 5px solid #FFFFFF;
             box-shadow: 0 20px 48px rgba(255, 101, 132, 0.25), 0 0 0 4px #FFE0E6;
             position: relative;
@@ -990,6 +1118,18 @@
 
         /* Mobile tweaks */
         @media (max-width: 600px) {
+            .default-stage-decor-wrapper { gap: 10px; }
+            .mini-cat-card { width: 68px; height: 68px; border-radius: 20px; }
+            .gravity-core-wrap { width: 210px; height: 210px; }
+            .ring-1 { width: 170px; height: 170px; }
+            .ring-2 { width: 210px; height: 210px; }
+            .chibi-heart-core { width: 90px; height: 90px; }
+            .chibi-heart-core::before, .chibi-heart-core::after { width: 90px; height: 90px; }
+            .chibi-heart-core::before { top: -45px; }
+            .chibi-heart-core::after { left: 45px; }
+            .heart-face { width: 75px; top: 10px; left: 10px; }
+            .heart-eyes { gap: 20px; }
+            .heart-cheeks { gap: 30px; }
             .headline-love-bouncy { font-size: 34px; }
             .cat-image-render, .cat-standing-img-render { width: 220px; height: 220px; }
             .photo-card-frame { width: 270px; border-radius: 34px; }
@@ -1041,35 +1181,76 @@
     <!-- MAIN INTERACTIVE STAGE -->
     <main id="stage">
 
-        <!-- STATE 1: MẶC ĐỊNH / ✊ FIST - LÕI TRỌNG LỰC TÌNH YÊU -->
+        <!-- STATE 1: MẶC ĐỊNH / ✊ FIST - LÕI TRỌNG LỰC TÌNH YÊU & CÁC BẠN NHỎ ĐÁNG YÊU -->
         <section class="stage-view active" id="viewFist">
-            <div class="gravity-core-wrap">
-                <div class="gravity-orbit-ring ring-1">
-                    <span class="orbit-item">💖</span>
-                    <span class="orbit-item">✨</span>
-                    <span class="orbit-item">🍬</span>
-                    <span class="orbit-item">🌸</span>
-                    <span class="orbit-item">⭐</span>
-                </div>
-                <div class="gravity-orbit-ring ring-2"></div>
+            
+            <!-- Sweet hint bubble -->
+            <div class="heart-speech-bubble" onclick="triggerPalmMode()">
+                Chạm vào tớ hoặc xòe tay ra nèee~ 🌸✨
+            </div>
 
-                <div class="chibi-heart-core" id="chibiHeartCoreBtn" onclick="triggerPalmMode()">
-                    <div class="heart-face">
-                        <div class="heart-eyes">
-                            <div class="heart-eye"></div>
-                            <div class="heart-eye"></div>
+            <!-- Central Decor Layout with Mini Cat Companions -->
+            <div class="default-stage-decor-wrapper">
+                
+                <!-- Left Companion: Mini Cat with Balloon -->
+                <div class="mini-companion companion-left" onclick="squishCat(this)" title="Chạm để nảy tưng tưng!">
+                    <div class="balloon-string">🎈</div>
+                    <div class="mini-cat-card">
+                        <img src="assets/cat_flower.jpg" alt="Bé Mèo Hoa" class="mini-cat-img" id="miniCatLeftImg">
+                    </div>
+                    <span class="companion-tag">Bé Mèo 🌸</span>
+                </div>
+
+                <!-- Central Gravity Core -->
+                <div class="gravity-core-wrap">
+                    <div class="gravity-orbit-ring ring-1">
+                        <span class="orbit-item">💖</span>
+                        <span class="orbit-item">✨</span>
+                        <span class="orbit-item">🍬</span>
+                        <span class="orbit-item">🌸</span>
+                        <span class="orbit-item">⭐</span>
+                    </div>
+                    <div class="gravity-orbit-ring ring-2">
+                        <span class="orbit-item" style="font-size: 16px;">🍓</span>
+                        <span class="orbit-item" style="font-size: 16px;">🎀</span>
+                        <span class="orbit-item" style="font-size: 16px;">🍭</span>
+                    </div>
+
+                    <div class="chibi-heart-core" id="chibiHeartCoreBtn" onclick="triggerPalmMode()">
+                        <div class="heart-face">
+                            <div class="heart-eyes">
+                                <div class="heart-eye"></div>
+                                <div class="heart-eye"></div>
+                            </div>
+                            <div class="heart-cheeks">
+                                <div class="heart-cheek"></div>
+                                <div class="heart-cheek"></div>
+                            </div>
+                            <div class="heart-mouth"></div>
                         </div>
-                        <div class="heart-cheeks">
-                            <div class="heart-cheek"></div>
-                            <div class="heart-cheek"></div>
-                        </div>
-                        <div class="heart-mouth"></div>
                     </div>
                 </div>
+
+                <!-- Right Companion: Mini Cat with Phone -->
+                <div class="mini-companion companion-right" onclick="squishCat(this)" title="Chạm để nảy tưng tưng!">
+                    <div class="mini-sparkle-halo">✨</div>
+                    <div class="mini-cat-card">
+                        <img src="assets/cat_phone.jpg" alt="Mèo Chụp Ảnh" class="mini-cat-img" id="miniCatRightImg">
+                    </div>
+                    <span class="companion-tag">Thợ Ảnh 📸</span>
+                </div>
+
             </div>
 
             <div class="core-caption-pill" onclick="triggerPalmMode()">
                 Lõi trọng lực tình yêu 💕
+            </div>
+
+            <!-- Bottom peeking mascots -->
+            <div class="bottom-peeking-mascot">
+                <span>🐾</span>
+                <span>Tụi mình ở đây chờ em nè~</span>
+                <span>🐾</span>
             </div>
         </section>
 
@@ -1181,12 +1362,18 @@
         document.getElementById('catFlowerImg').onerror = function() { this.src = CAT_FALLBACK.flower; };
         document.getElementById('catPhoneImg').onerror = function() { this.src = CAT_FALLBACK.phone; };
         document.getElementById('catStandingImg').onerror = function() { this.src = CAT_FALLBACK.standing; };
+        const mLeft = document.getElementById('miniCatLeftImg');
+        if (mLeft) mLeft.onerror = function() { this.src = CAT_FALLBACK.flower; };
+        const mRight = document.getElementById('miniCatRightImg');
+        if (mRight) mRight.onerror = function() { this.src = CAT_FALLBACK.phone; };
 
         // Test if file exists or load base64 directly
         fetch('assets/cat_standing.jpg').catch(() => {
             document.getElementById('catFlowerImg').src = CAT_FALLBACK.flower;
             document.getElementById('catPhoneImg').src = CAT_FALLBACK.phone;
             document.getElementById('catStandingImg').src = CAT_FALLBACK.standing;
+            if (mLeft) mLeft.src = CAT_FALLBACK.flower;
+            if (mRight) mRight.src = CAT_FALLBACK.phone;
         });
     </script>
 
@@ -1290,7 +1477,7 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         function onYouTubeIframeAPIReady() {
-            // Do NOT put 'start': 26 in playerVars to avoid YouTube internally restarting to 26!
+            // Clean parameters without 'start' in playerVars to prevent YouTube internally looping
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '1',
                 width: '1',
@@ -1559,7 +1746,7 @@
         window.triggerPalmMode = function() {
             resetAllViews();
             views.palm.classList.add('active');
-            playCuteMusic(); // Starts once from 26s, then keeps playing!
+            playCuteMusic(); // Starts once from 26s, then keeps playing non-stop!
             burstFloatingHearts(12);
         };
 
@@ -1567,7 +1754,7 @@
         window.triggerPointMode = function() {
             resetAllViews();
             views.point.classList.add('active');
-            swipeHistory.length = 0; // reset history buffer
+            swipeHistory.length = 0;
         };
 
         // ✌️ PEACE: ANH THÍCH EM LẮM NHA
