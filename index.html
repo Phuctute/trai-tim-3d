@@ -62,9 +62,8 @@
 
         .cloud {
             position: absolute;
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 50px;
-            filter: blur(1px);
             box-shadow: 0 10px 25px rgba(255, 182, 193, 0.25);
             animation: floatCloud 30s linear infinite;
             display: flex;
@@ -75,7 +74,7 @@
         .cloud::before, .cloud::after {
             content: '';
             position: absolute;
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             border-radius: 50%;
         }
 
@@ -450,17 +449,19 @@
             50% { transform: translateY(-6px); }
         }
 
-        /* CAT CHARACTER CARD BASE (Squishy & Adorable) */
+        /* CAT CARDS: BO GÓC MỀM MẠI CỰC ĐẸP (KHÔNG CÒN VUÔNG NHỌN!) */
         .cat-character-card {
             background: #FFFFFF;
-            padding: 16px;
-            border-radius: 36px;
-            border: 4px solid #FFE0E6;
-            box-shadow: 0 20px 48px rgba(255, 101, 132, 0.25);
+            padding: 14px;
+            border-radius: 44px; /* Bo góc cực mềm mại */
+            border: 5px solid #FFFFFF;
+            box-shadow: 0 20px 48px rgba(255, 101, 132, 0.22), 0 0 0 4px #FFE0E6;
             position: relative;
             animation: catFloating 2.8s infinite ease-in-out;
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            display: block;
         }
 
         .cat-character-card:hover {
@@ -475,7 +476,7 @@
             width: 270px;
             height: 270px;
             object-fit: contain;
-            border-radius: 24px;
+            border-radius: 34px; /* Bo ảnh đồng điệu */
             display: block;
             background: #FFFFFF;
         }
@@ -490,9 +491,10 @@
             position: absolute;
             font-size: 24px;
             animation: sparkleSpin 2s infinite ease-in-out;
+            z-index: 5;
         }
-        .fx-1 { top: -10px; right: -10px; }
-        .fx-2 { bottom: 10px; left: -15px; animation-delay: 1s; }
+        .fx-1 { top: 8px; right: 8px; }
+        .fx-2 { bottom: 8px; left: 8px; animation-delay: 1s; }
 
         @keyframes sparkleSpin {
             0%, 100% { transform: scale(0.8) rotate(0deg); opacity: 0.6; }
@@ -553,7 +555,7 @@
             50% { transform: translateY(-8px) scale(1.04); }
         }
 
-        /* STATE 3: ☝️ 1 NGÓN TAY - CAROUSEL ALBUM 5 ẢNH SIÊU MƯỢT & KHÔNG KHỰNG */
+        /* STATE 3: ☝️ 1 NGÓN TAY - CAROUSEL ALBUM 5 ẢNH SIÊU MƯỢT */
         .album-flow-container {
             display: flex;
             flex-direction: column;
@@ -566,7 +568,7 @@
             position: relative;
             width: 320px;
             background: #FFFFFF;
-            border-radius: 40px; /* Bo góc cực mềm mại */
+            border-radius: 42px; /* Bo góc cực mềm mại */
             padding: 16px 16px 42px;
             box-shadow: 0 24px 50px rgba(255, 101, 132, 0.22), 0 0 0 5px rgba(255, 255, 255, 0.85);
             border: 4px solid #FFE4E9;
@@ -574,17 +576,17 @@
             transition: transform 0.25s ease-out;
             cursor: pointer;
             overflow: hidden;
+            touch-action: pan-y;
         }
 
         .photo-card-frame:hover {
             transform: scale(1.02);
         }
 
-        /* Hardware-accelerated sliding carousel viewport */
         .photo-carousel-viewport {
             width: 100%;
             height: 270px;
-            border-radius: 30px;
+            border-radius: 32px;
             overflow: hidden;
             position: relative;
             background: #FFE8ED;
@@ -610,9 +612,9 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            pointer-events: none;
         }
 
-        /* Washi tape sticker */
         .photo-pin-cute {
             position: absolute;
             top: 4px;
@@ -663,20 +665,44 @@
             box-shadow: 0 0 10px rgba(255, 101, 132, 0.5);
         }
 
+        /* CAT HOLDING PHONE: CŨNG ĐƯỢC BO GÓC MỀM MẠI CỰC XINH! */
         .cat-phone-section {
-            margin-top: 10px;
+            margin-top: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
         }
 
+        .cat-phone-card-box {
+            background: #FFFFFF;
+            padding: 8px;
+            border-radius: 36px; /* Bo góc mềm mại, không vuông nhọn */
+            border: 4px solid #FFFFFF;
+            box-shadow: 0 14px 35px rgba(255, 101, 132, 0.2), 0 0 0 3px #FFE0E6;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+            overflow: hidden;
+            display: block;
+        }
+
+        .cat-phone-card-box:hover {
+            transform: scale(1.05);
+        }
+
+        .cat-phone-card-box:active {
+            transform: scale(0.92);
+        }
+
         .cat-phone-img {
             width: 130px;
             height: 130px;
             object-fit: contain;
+            border-radius: 28px;
+            display: block;
+            background: #FFFFFF;
             animation: phoneBob 2s infinite ease-in-out;
-            cursor: pointer;
         }
 
         @keyframes phoneBob {
@@ -695,6 +721,7 @@
             border-radius: 50%;
             opacity: 0;
             pointer-events: none;
+            z-index: 10;
         }
 
         .camera-flash-fx.flashing {
@@ -735,7 +762,7 @@
         .arrow-prev { left: -56px; }
         .arrow-next { right: -56px; }
 
-        /* STATE 4: ✌️ 2 NGÓN TAY - ANH THÍCH EM LẮM NHA (KHÔI PHỤC NỀN TRẮNG CHUẨN GỐC) */
+        /* STATE 4: ✌️ 2 NGÓN TAY - ANH THÍCH EM LẮM NHA (BO GÓC MỀM MẠI, NỀN TRẮNG CHUẨN GỐC) */
         .confession-love-container {
             display: flex;
             flex-direction: column;
@@ -747,15 +774,17 @@
 
         .cat-standing-card-box {
             background: #FFFFFF;
-            padding: 16px;
-            border-radius: 36px;
-            border: 4px solid #FFE0E6;
-            box-shadow: 0 20px 48px rgba(255, 101, 132, 0.25);
+            padding: 14px;
+            border-radius: 44px; /* Bo góc cực mềm mại, KHÔNG VUÔNG NHỌN */
+            border: 5px solid #FFFFFF;
+            box-shadow: 0 20px 48px rgba(255, 101, 132, 0.25), 0 0 0 4px #FFE0E6;
             position: relative;
             animation: catFloating 2.8s infinite ease-in-out;
             margin-bottom: 22px;
             cursor: pointer;
             transition: transform 0.2s;
+            overflow: hidden;
+            display: block;
         }
 
         .cat-standing-card-box:hover {
@@ -770,7 +799,7 @@
             width: 270px;
             height: 270px;
             object-fit: contain;
-            border-radius: 24px;
+            border-radius: 34px;
             display: block;
             background: #FFFFFF;
         }
@@ -1066,11 +1095,11 @@
                     <button class="photo-nav-arrow arrow-prev" onclick="prevPhoto()">‹</button>
                     <button class="photo-nav-arrow arrow-next" onclick="nextPhoto()">›</button>
 
-                    <div class="photo-card-frame" id="photoFrame" onclick="nextPhoto()">
+                    <div class="photo-card-frame" id="photoFrame">
                         <div class="photo-pin-cute">🌸</div>
                         
                         <!-- Smooth Hardware-Accelerated Sliding Viewport -->
-                        <div class="photo-carousel-viewport">
+                        <div class="photo-carousel-viewport" id="carouselViewport">
                             <div class="photo-carousel-track" id="photoCarouselTrack">
                                 <!-- Generated by JS for 120fps smooth slide -->
                             </div>
@@ -1089,15 +1118,17 @@
                     <div class="step-dot" onclick="goToPhoto(4)"></div>
                 </div>
 
-                <!-- Cat holding phone taking picture -->
-                <div class="cat-phone-section" onclick="squishCat(this)">
-                    <div class="camera-flash-fx" id="cameraFlash"></div>
-                    <img class="cat-phone-img" id="catPhoneImg" src="assets/cat_phone.jpg" alt="Mèo cầm điện thoại">
+                <!-- Cat holding phone: CŨNG ĐƯỢC BO GÓC MỀM MẠI, KHÔNG VUÔNG NHỌN! -->
+                <div class="cat-phone-section">
+                    <div class="cat-phone-card-box" onclick="squishCat(this)">
+                        <div class="camera-flash-fx" id="cameraFlash"></div>
+                        <img class="cat-phone-img" id="catPhoneImg" src="assets/cat_phone.jpg" alt="Mèo cầm điện thoại">
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- STATE 4: ✌️ 2 NGÓN TAY - ANH THÍCH EM LẮM NHA (KHÔI PHỤC NỀN TRẮNG CHUẨN ĐẸP) -->
+        <!-- STATE 4: ✌️ 2 NGÓN TAY - ANH THÍCH EM LẮM NHA (BO GÓC MỀM MẠI, NỀN TRẮNG CHUẨN GỐC) -->
         <section class="stage-view" id="viewPeace">
             <div class="confession-love-container">
                 <div class="cat-standing-card-box" onclick="squishCat(this)">
@@ -1246,12 +1277,12 @@
         }
     </script>
 
-    <!-- YOUTUBE API LOADER & CONTINUOUS NON-STOP PLAYBACK -->
+    <!-- YOUTUBE API LOADER & CONTINUOUS NON-STOP PLAYBACK (KHÔNG BAO GIỜ BỊ LẶP LẠI TỪ ĐẦU!) -->
     <script>
         let ytPlayer = null;
         let isYtReady = false;
         let isMusicPlaying = false;
-        let musicHasStarted = false; // Flag to prevent repeating from 26s over and over!
+        let persistentMusicStarted = false; // Flag to guarantee seeking to 26s happens ONLY ONCE!
 
         const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -1259,17 +1290,16 @@
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         function onYouTubeIframeAPIReady() {
+            // Do NOT put 'start': 26 in playerVars to avoid YouTube internally restarting to 26!
             ytPlayer = new YT.Player('ytPlayer', {
                 height: '1',
                 width: '1',
                 videoId: 'JSNx1YnMbDk',
                 playerVars: {
-                    'start': 26,
                     'autoplay': 0,
                     'controls': 0,
-                    'loop': 1,
-                    'playlist': 'JSNx1YnMbDk',
-                    'playsinline': 1
+                    'playsinline': 1,
+                    'rel': 0
                 },
                 events: {
                     'onReady': onPlayerReady,
@@ -1288,8 +1318,8 @@
                 isMusicPlaying = true;
                 updateMusicButtonUI(true);
             } else if (event.data === YT.PlayerState.ENDED) {
-                // Non-stop continuous loop
-                if (ytPlayer && ytPlayer.playVideo) {
+                // When the full song finishes, loop continuously from the beginning without stopping
+                if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
                     ytPlayer.seekTo(0, true);
                     ytPlayer.playVideo();
                 }
@@ -1299,19 +1329,21 @@
             }
         }
 
-        // Start once from second 26, then let it play CONTINUOUSLY without restarting!
+        // Starts once from second 26, then lets it play NON-STOP without resetting or restarting!
         function playCuteMusic() {
             if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
                 try {
-                    if (!musicHasStarted) {
-                        musicHasStarted = true;
+                    if (!persistentMusicStarted) {
+                        persistentMusicStarted = true;
                         ytPlayer.seekTo(26, true);
                     }
-                    ytPlayer.playVideo();
+                    if (ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) {
+                        ytPlayer.playVideo();
+                    }
                     isMusicPlaying = true;
                     updateMusicButtonUI(true);
                 } catch(e) {
-                    console.log('YT play blocked:', e);
+                    console.log('YT play error:', e);
                 }
             }
         }
@@ -1323,8 +1355,8 @@
                 isMusicPlaying = false;
                 updateMusicButtonUI(false);
             } else {
-                if (!musicHasStarted) {
-                    musicHasStarted = true;
+                if (!persistentMusicStarted) {
+                    persistentMusicStarted = true;
                     ytPlayer.seekTo(26, true);
                 }
                 ytPlayer.playVideo();
@@ -1357,7 +1389,7 @@
         }, 1200);
     </script>
 
-    <!-- PHOTO ALBUM & SMOOTH CAROUSEL MANAGEMENT -->
+    <!-- PHOTO ALBUM & 120FPS SILKY SMOOTH SLIDING (CỬ CHỈ 1 NGÓN CỰC NHẠY, KHÔNG KHỰNG) -->
     <script>
         const DEFAULT_PHOTOS = [
             "https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=900&auto=format&fit=crop",
@@ -1386,7 +1418,7 @@
             userPhotos.forEach((src, idx) => {
                 const slide = document.createElement('div');
                 slide.className = 'photo-slide-item';
-                slide.innerHTML = `<img src="${src}" alt="Ảnh ${idx + 1}" id="carouselSlideImg_${idx}">`;
+                slide.innerHTML = `<img src="${src}" alt="Ảnh ${idx + 1}" id="carouselSlideImg_${idx}" loading="eager">`;
                 carouselTrack.appendChild(slide);
             });
         }
@@ -1426,6 +1458,31 @@
             currentPhotoIdx = idx;
             updatePhotoDisplay();
         }
+
+        // Tap on left/right half of photo frame to easily change photo
+        const photoFrame = document.getElementById('photoFrame');
+        photoFrame.addEventListener('click', (e) => {
+            const rect = photoFrame.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            if (clickX > rect.width / 2) {
+                nextPhoto();
+            } else {
+                prevPhoto();
+            }
+        });
+
+        // Touch swipe support on photo frame
+        let touchStartX = 0;
+        photoFrame.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        photoFrame.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diffX = touchEndX - touchStartX;
+            if (diffX > 40) prevPhoto();
+            else if (diffX < -40) nextPhoto();
+        }, { passive: true });
 
         // Render Photo Slots in Modal
         const slotsContainer = document.getElementById('photoSlotsContainer');
@@ -1510,7 +1567,7 @@
         window.triggerPointMode = function() {
             resetAllViews();
             views.point.classList.add('active');
-            swipeAnchorX = null; // reset anchor
+            swipeHistory.length = 0; // reset history buffer
         };
 
         // ✌️ PEACE: ANH THÍCH EM LẮM NHA
@@ -1562,13 +1619,13 @@
         });
     </script>
 
-    <!-- MEDIAPIPE AI CAMERA GESTURE RECOGNITION (TỐI ƯU CỰC KỲ MƯỢT MÀ) -->
+    <!-- MEDIAPIPE AI CAMERA GESTURE RECOGNITION (TỐI ƯU CỰC KỲ MƯỢT MÀ, KHÔNG KHỰNG) -->
     <script>
         const videoElement = document.getElementById('cameraFeed');
         let currentGesture = 'FIST';
         let gestureDebounce = 0;
-        let swipeAnchorX = null;
         let swipeDebounce = 0;
+        const swipeHistory = []; // rolling history of finger X for velocity flick detection
 
         // Sliding buffer for temporal smoothing (vote over last 5 frames)
         const voteBuffer = [];
@@ -1584,7 +1641,7 @@
 
         function onResults(results) {
             if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
-                swipeAnchorX = null;
+                swipeHistory.length = 0;
                 voteBuffer.length = 0;
                 return;
             }
@@ -1642,26 +1699,33 @@
 
             const now = Date.now();
 
-            // Intuitive gentle swipe in Point mode (Anchor-based tracking)
+            // Smooth flick / wave detection in Point mode
             if (winningGesture === 'POINT' && views.point.classList.contains('active')) {
                 const currentX = 1 - indexTip.x; // mirrored
+                swipeHistory.push({ x: currentX, time: now });
 
-                if (swipeAnchorX === null) {
-                    swipeAnchorX = currentX;
-                } else {
-                    const deltaX = currentX - swipeAnchorX;
-                    if (Math.abs(deltaX) > 0.08 && now - swipeDebounce > 400) {
-                        if (deltaX > 0.08) {
-                            nextPhoto(); // Swipe right -> Next
-                        } else {
-                            prevPhoto(); // Swipe left -> Prev
-                        }
-                        swipeAnchorX = currentX;
+                // Keep only samples within last 280ms
+                while (swipeHistory.length > 0 && now - swipeHistory[0].time > 280) {
+                    swipeHistory.shift();
+                }
+
+                if (swipeHistory.length >= 3 && now - swipeDebounce > 450) {
+                    const startX = swipeHistory[0].x;
+                    const deltaX = currentX - startX;
+
+                    // If hand waved / moved clearly to right (> 0.08)
+                    if (deltaX > 0.08) {
+                        nextPhoto();
+                        swipeHistory.length = 0;
+                        swipeDebounce = now;
+                    } else if (deltaX < -0.08) { // Hand waved to left (< -0.08)
+                        prevPhoto();
+                        swipeHistory.length = 0;
                         swipeDebounce = now;
                     }
                 }
             } else {
-                swipeAnchorX = null;
+                swipeHistory.length = 0;
             }
 
             // Only transition if winning gesture is confirmed and debounced
