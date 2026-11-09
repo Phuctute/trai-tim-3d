@@ -125,32 +125,88 @@
             z-index: 2;
             filter: drop-shadow(0 6px 14px rgba(255, 101, 132, 0.25));
             animation: stickerFloat 4s infinite ease-in-out;
+            user-select: none;
         }
 
-        .sticker-ribbon {
-            bottom: 125px;
-            right: 36px;
-            font-size: 30px;
-            animation-delay: 1.5s;
+        .sticker-tulip {
+            top: 85px;
+            left: 110px;
+            font-size: 26px;
+            animation: stickerFloatAlt 4.5s infinite ease-in-out 3s;
+        }
+
+        .sticker-cupcake {
+            top: 155px;
+            left: 32px;
+            font-size: 28px;
+            animation: stickerFloat 4.2s infinite ease-in-out 0.5s;
+        }
+
+        .sticker-letter {
+            bottom: 180px;
+            left: 30px;
+            font-size: 26px;
+            animation: stickerFloatAlt 3.8s infinite ease-in-out 1.8s;
         }
 
         .sticker-boba {
             bottom: 30px;
             left: 90px;
             font-size: 32px;
-            animation-delay: 1s;
+            animation: stickerFloat 4.4s infinite ease-in-out 1s;
         }
 
         .sticker-strawberry {
             top: 90px;
             right: 32px;
             font-size: 28px;
-            animation-delay: 2s;
+            animation: stickerFloat 4s infinite ease-in-out 2s;
+        }
+
+        .sticker-cherry {
+            top: 240px;
+            right: 36px;
+            font-size: 26px;
+            animation: stickerFloatAlt 4.3s infinite ease-in-out 2.5s;
+        }
+
+        .sticker-ribbon {
+            bottom: 125px;
+            right: 36px;
+            font-size: 30px;
+            animation: stickerFloat 4s infinite ease-in-out 1.5s;
+        }
+
+        .sticker-star {
+            bottom: 50px;
+            right: 105px;
+            font-size: 24px;
+            animation: stickerFloatAlt 3.6s infinite ease-in-out 0.8s;
         }
 
         @keyframes stickerFloat {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-8px) rotate(6deg); }
+        }
+
+        @keyframes stickerFloatAlt {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-7px) rotate(-6deg); }
+        }
+
+        @media (max-width: 600px) {
+            .cute-sticker {
+                font-size: 20px !important;
+                opacity: 0.7;
+            }
+            .sticker-tulip { top: 75px; left: 85px; }
+            .sticker-cupcake { top: 135px; left: 12px; }
+            .sticker-letter { bottom: 160px; left: 12px; }
+            .sticker-boba { bottom: 25px; left: 75px; font-size: 24px !important; }
+            .sticker-strawberry { top: 80px; right: 14px; }
+            .sticker-cherry { top: 215px; right: 14px; }
+            .sticker-ribbon { bottom: 120px; right: 14px; font-size: 24px !important; }
+            .sticker-star { bottom: 45px; right: 80px; }
         }
 
         /* Ambient floating hearts & blossom petals */
@@ -1691,9 +1747,14 @@
     </div>
 
     <!-- Cute floating stickers -->
-    <div class="cute-sticker sticker-ribbon">🎀</div>
+    <div class="cute-sticker sticker-tulip">🌷</div>
+    <div class="cute-sticker sticker-cupcake">🧁</div>
+    <div class="cute-sticker sticker-letter">💌</div>
     <div class="cute-sticker sticker-boba">🧋</div>
     <div class="cute-sticker sticker-strawberry">🍓</div>
+    <div class="cute-sticker sticker-cherry">🍒</div>
+    <div class="cute-sticker sticker-ribbon">🎀</div>
+    <div class="cute-sticker sticker-star">⭐</div>
 
     <!-- Hidden YouTube Audio Player -->
     <div id="ytContainer" style="position:fixed; top:-9999px; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none;">
